@@ -100,7 +100,6 @@ The build fails loudly on malformed JSON and silently drops unknown source ids, 
 quick `grep` for the new key in `docs/` after building confirms it rendered.
 
 ## Deployment
-
 `docs/` is a self-contained static site with a `.nojekyll` marker. Point GitHub Pages at
 the `docs/` folder on the default branch, or upload the directory to any static host.
 Google Fonts are the only external request; everything else is local.
