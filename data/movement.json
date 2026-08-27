@@ -1,0 +1,23 @@
+{
+  "openings": [
+    {"date":"2026-07","brand":"zaxbys","brandName":"Zaxby's","location":"Upper East Side, Manhattan, NY","detail":"1267 First Avenue; 2,800+ SF with 16 dine-in seats and self-order kiosks.","src":"co-zaxbys-nyc"},
+    {"date":"2026-06-29","brand":"zaxbys","brandName":"Zaxby's","location":"Bronx, NY","detail":"First Zaxby's restaurant in New York City; 24th state for the brand.","src":"rd-zaxbys-nyc"},
+    {"date":"2026-04","brand":"daves-hot-chicken","brandName":"Dave's Hot Chicken","location":"Eight U.S. markets in one day","detail":"Brand record: eight restaurants opened on a single day, pushing the system past 400 locations worldwide.","src":"ifa-daves-eight"},
+    {"date":"2026-03","brand":"raising-canes","brandName":"Raising Cane's","location":"Hollywood Boulevard, Los Angeles, CA","detail":"1,000th Raising Cane's — two stories, LED screens and a seven-foot golden statue of Cane III.","src":"qsr-canes-london"},
+    {"date":"2026","brand":"golden-chick","brandName":"Golden Chick","location":"Little Elm, TX","detail":"250th restaurant, following a record 23 openings in 2025.","src":"qsr-golden-250"},
+    {"date":"2025-12","brand":"zaxbys","brandName":"Zaxby's","location":"Magnolia, NJ","detail":"First New Jersey location and the brand's Northeast debut.","src":"rd-zaxbys-nyc"},
+    {"date":"2025","brand":"el-pollo-loco","brandName":"El Pollo Loco","location":"Colorado Springs, CO","detail":"500th El Pollo Loco restaurant; nine openings in 2025.","src":"loco-q4-2025"},
+    {"date":"2025-05","brand":"chicken-salad-chick","brandName":"Chicken Salad Chick","location":"United States","detail":"300th location; unit count up 13% year over year.","src":"rd-csc-300"},
+    {"date":"2025-01","brand":"bojangles","brandName":"Bojangles","location":"Las Vegas, NV","detail":"First Las Vegas restaurant with four more planned.","src":"qsr-bojangles-portability"},
+    {"date":"2026-02","brand":"zaxbys","brandName":"Zaxby's","location":"National","detail":"Brand surpassed 1,000 locations.","src":"ifa-zaxbys-1000"}
+  ],
+  "closures": [
+    {"date":"2025-07 to 2026-07","brand":"kfc","brandName":"KFC","location":"United States","count":312,"detail":"312 U.S. restaurants permanently closed in twelve months — 7.64% of the American footprint.","src":"thestreet-kfc-300"},
+    {"date":"2025","brand":"kfc","brandName":"KFC","location":"United States","count":161,"detail":"161 U.S. closures against 15 openings; U.S. count fell from 3,669 to 3,523.","src":"thestreet-kfc-207"},
+    {"date":"2026-Q1","brand":"kfc","brandName":"KFC","location":"United States","count":46,"detail":"46 additional closures in the first quarter of 2026.","src":"thestreet-kfc-207"},
+    {"date":"2026","brand":"popeyes","brandName":"Popeyes","location":"Florida and Georgia","count":33,"detail":"Sailormen rejected leases on roughly 33 locations it could not sell in Chapter 11, forcing permanent closures.","src":"qsr-sailormen-97"},
+    {"date":"2025-06-04","brand":"hooters","brandName":"Hooters","location":"FL, GA, MI, NC, SC, TN, TX","count":30,"detail":"Roughly 30 restaurants closed on one day during Chapter 11 restructuring.","src":"rd-hooters"},
+    {"date":"2025","brand":"churchs-texas-chicken","brandName":"Church's Texas Chicken","location":"United States","count":14,"detail":"12 units ceased operations, one franchise agreement terminated and one corporate restaurant closed — against 26 openings.","src":"ft-church-2025"},
+    {"date":"2026-H1","brand":"jollibee-us","brandName":"Jollibee Foods Corporation","location":"Global (all brands)","count":200,"detail":"More than 200 stores closed group-wide; 2026 opening target cut to 1,000–1,100 from 1,200–1,300.","src":"thestreet-jollibee"}
+  ]
+}

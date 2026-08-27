@@ -1,0 +1,1395 @@
+[
+  {
+    "slug": "chick-fil-a",
+    "name": "Chick-fil-A",
+    "tags": [
+      "chicken sandwich",
+      "national",
+      "franchised",
+      "growing"
+    ],
+    "hq": "Atlanta, GA",
+    "founded": 1967,
+    "parent": "Chick-fil-A, Inc. (private, family-controlled)",
+    "ownership": "Private",
+    "franchiseModel": "Single-unit operator model. Operators are selected, pay a $10K franchise fee, do not build multi-unit portfolios, and split profits with the franchisor.",
+    "stats": {
+      "systemwideSales": {
+        "v": 23918208000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "qsr50-2026-chicken",
+        "note": "+5.2% YoY"
+      },
+      "usUnits": {
+        "v": 2863,
+        "asOf": "YE2025",
+        "src": "qsr50-2026-chicken",
+        "note": "Franchised + company-operated outlets; plus 435 licensed venues"
+      },
+      "auv": {
+        "v": 9161000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "qsr50-2026-chicken",
+        "note": "Average for domestic freestanding / drive-thru-only comp stores; median $9.087M"
+      },
+      "unitChange": {
+        "v": 179,
+        "asOf": "FY2025",
+        "src": "qsr50-2026-chicken",
+        "note": "Net new franchised and company-operated units"
+      },
+      "blendedAuv": {
+        "v": 7200000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "rd-auv-leaders",
+        "note": "Circana blended AUV including licensed locations — 3rd-highest of 50 major brands"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": 6.7,
+      "unitGrowthDerived": true,
+      "salesGrowthPct": 5.2,
+      "auvUsd": 9161000,
+      "capRateMid": 4.35,
+      "capRateBasis": "brand-specific asking range (Boulder Group)",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "4.20%–4.50% asking on 15-year ground leases; ~4.45% asking in Q2 2026",
+      "capSrc": [
+        "boulder-tenant-q1-2026",
+        "boulder-q2-2026"
+      ],
+      "notes": "The tightest-priced tenant in the QSR net-lease universe alongside McDonald's. Typical structure is a 20-year corporate absolute-NNN ground lease with 10% escalations every five years and multiple five-year options. Recent prototypes run roughly 5,000–6,000 SF on 1.5–2.0 acres, increasingly with dual drive-thru lanes.",
+      "notesSrc": [
+        "citybiz-cfa-hixson",
+        "chattanoogan-cfa"
+      ]
+    },
+    "pipeline": [
+      {
+        "text": "100+ new U.S. restaurants expected in 2026",
+        "src": "qsr-cfa-24b"
+      },
+      {
+        "text": "$1B international commitment; UK launched 2025 (5 restaurants planned in first two years, $100M over 10 years), Singapore entry with $75M over 10 years, five international markets targeted by 2030",
+        "src": "wattagnet-cfa-intl"
+      }
+    ],
+    "momentum": "leader",
+    "analysis": "Chick-fil-A is not competing in the same economic universe as the rest of the category. A $9.2M average unit volume on a six-day operating week means a single Chick-fil-A generates roughly what four Popeyes generate, and it does it with the industry's most sought-after operator pipeline. The interesting question is no longer whether Chick-fil-A wins the U.S. chicken sandwich war — it is what happens when unit volumes plateau. Systemwide sales growth of 5.2% in 2025 was driven substantially by the 179-unit build, and Restaurant Business has flagged that AUVs are pressing against a practical throughput ceiling. That is precisely why the $1B international push and the licensed-venue channel matter: they are the two remaining growth vectors that do not require squeezing more cars through the same drive-thru."
+  },
+  {
+    "slug": "raising-canes",
+    "name": "Raising Cane's",
+    "tags": [
+      "tenders",
+      "national",
+      "corporate",
+      "growing"
+    ],
+    "hq": "Plano, TX",
+    "founded": 1996,
+    "parent": "Raising Cane's Restaurants, LLC (private)",
+    "ownership": "Private — founder Todd Graves, co-CEO",
+    "franchiseModel": "Overwhelmingly company-operated. New growth is company-owned, including the first international company-operated market (UK).",
+    "stats": {
+      "systemwideSales": {
+        "v": 5480000000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "rbo-chicken-slows",
+        "note": "+10.6% YoY"
+      },
+      "usUnits": {
+        "v": 913,
+        "asOf": "YE2025",
+        "src": "rbo-chicken-slows",
+        "note": "+10.3% unit growth"
+      },
+      "auv": {
+        "v": 6300000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "rd-auv-leaders",
+        "note": "Circana 2026 rankings; 4th-highest AUV of 50 major brands. Technomic put 2024 AUV at $6.6M"
+      },
+      "currentUnits": {
+        "v": 953,
+        "asOf": "Early 2026",
+        "src": "nrn-canes-openings",
+        "note": "Across 43 states"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": 10.3,
+      "salesGrowthPct": 10.6,
+      "auvUsd": 6300000,
+      "capRateMid": 4.85,
+      "capRateBasis": "brand-specific asking range (Boulder Group)",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "4.70%–5.00% on 15-year ground leases (~5.00% asking, Q1 2026)",
+      "capSrc": [
+        "boulder-canes"
+      ],
+      "notes": "Because Cane's builds and operates rather than franchises, its net-lease product carries a corporate guarantee — which is why it prices within 40–60 bps of Chick-fil-A. Standard structure is a 20-year absolute-NNN ground lease with 10% increases every five years. A corporate-guaranteed 15-year ground lease traded at a 4.75% cap on a $6.84M price in a deal arranged by SRS and JLL.",
+      "notesSrc": [
+        "boulder-canes",
+        "connectcre-canes-gl"
+      ]
+    },
+    "pipeline": [
+      {
+        "text": "1,000th restaurant opened March 2026 on Hollywood Blvd, Los Angeles",
+        "src": "qsr-canes-london"
+      },
+      {
+        "text": "Nearly 100 new restaurants planned for 2026; long-term goal of 1,600 restaurants",
+        "src": "nrn-canes-openings"
+      },
+      {
+        "text": "London West End flagship at 21–22 Coventry Street — first European location, company-operated",
+        "src": "rd-canes-london"
+      }
+    ],
+    "momentum": "hot",
+    "analysis": "Cane's is the only brand in the category compounding double-digit unit growth on top of a $6M+ AUV, and it does it with a four-item menu and no franchisees to manage. That combination — corporate control, extreme menu simplicity, elite volumes — is why it has moved from regional curiosity to the clearest structural threat to Chick-fil-A in a decade. For real estate, the absence of franchising is the whole story: every Cane's is a corporate credit, so its ground leases price like investment-grade paper even though the company is private. Watch the London flagship. A company-operated international build is a capital-intensive way to grow, and it signals that Graves intends to own the brand's economics abroad rather than sell them to master franchisees."
+  },
+  {
+    "slug": "wingstop",
+    "name": "Wingstop",
+    "tags": [
+      "wings",
+      "national",
+      "franchised",
+      "public"
+    ],
+    "hq": "Addison, TX",
+    "founded": 1994,
+    "parent": "Wingstop Inc. (NASDAQ: WING)",
+    "ownership": "Public",
+    "franchiseModel": "~98% franchised. Heavy multi-unit development agreements; company operates a small corporate base for testing.",
+    "stats": {
+      "systemwideSales": {
+        "v": 5300000000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "wing-fy25",
+        "note": "+12.1% YoY"
+      },
+      "usUnits": {
+        "v": 2586,
+        "asOf": "2025-12-27",
+        "src": "wing-10k-2025",
+        "note": "2,529 franchised / 57 company-owned"
+      },
+      "globalUnits": {
+        "v": 3056,
+        "asOf": "2025-12-27",
+        "src": "wing-10k-2025",
+        "note": "Includes 470 international franchised restaurants"
+      },
+      "auv": {
+        "v": 2000000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "wing-fy25",
+        "note": "Domestic AUV, down from $2.1M in FY2024"
+      },
+      "unitChange": {
+        "v": 493,
+        "asOf": "FY2025",
+        "src": "wing-fy25",
+        "note": "Net new units, +19.2% unit growth"
+      },
+      "compsLatest": {
+        "v": -7.5,
+        "fmt": "pct",
+        "asOf": "Q2 2026",
+        "src": "wing-q2-2026",
+        "note": "Domestic same-store sales"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": 19.2,
+      "salesGrowthPct": 12.1,
+      "compsPct": -7.5,
+      "auvUsd": 2000000,
+      "capRateMid": 6.85,
+      "capRateBasis": "franchisee QSR benchmark",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Franchisee-guaranteed QSR pricing — Boulder Group's franchisee QSR benchmark was 6.85% in Q2 2026",
+      "capSrc": [
+        "boulder-q2-2026"
+      ],
+      "notes": "Wingstop is an inline / endcap tenant far more often than a freestanding one: roughly 1,700 SF boxes, no drive-thru at most legacy locations, and leases signed by franchisee entities rather than the public company. That is why Wingstop trades wide of freestanding chicken tenants despite the parent being an investment-grade-adjacent public company — the lease credit is the operator, not WING."
+    },
+    "pipeline": [
+      {
+        "text": "FY2026 guidance reiterated at 15%–16% global unit growth",
+        "src": "wing-q2-2026"
+      },
+      {
+        "text": "102 restaurants opened in Q2 2026 alone",
+        "src": "wing-q2-2026"
+      }
+    ],
+    "momentum": "split",
+    "analysis": "Wingstop is the sharpest divergence story in the category: development is still exceptional and comps have fallen off a cliff. The brand opened 493 net units in fiscal 2025 (+19.2%) and another 102 in a single quarter of 2026, while domestic same-store sales fell 7.5% in Q2 2026 and management cut full-year comp guidance to -4% to -6%. Management attributes the pressure to a 9% drop in digital visits in urban trade areas, where more than 55% of the system sits. The uncomfortable arithmetic for franchisees is that AUV has already slipped from $2.1M to $2.0M while the system adds units into the same trade areas. Unit-level cash flow, not unit count, is the number to watch in 2027 — and it is the number that will determine whether Wingstop's franchisee net-lease product holds its current pricing."
+  },
+  {
+    "slug": "popeyes",
+    "name": "Popeyes Louisiana Kitchen",
+    "tags": [
+      "chicken sandwich",
+      "fried chicken",
+      "national",
+      "franchised",
+      "declining"
+    ],
+    "hq": "Miami, FL",
+    "founded": 1972,
+    "parent": "Restaurant Brands International (NYSE: QSR)",
+    "ownership": "Public parent",
+    "franchiseModel": "Almost entirely franchised, with large multi-unit operators. RBI has selectively taken restaurants back onto its own balance sheet during operator distress.",
+    "stats": {
+      "usCanadaUnits": {
+        "v": 3578,
+        "asOf": "2025-12-31",
+        "src": "rbi-10k-2025",
+        "note": "U.S. & Canada combined"
+      },
+      "globalUnits": {
+        "v": 5413,
+        "asOf": "2025-12-31",
+        "src": "rbi-10k-2025"
+      },
+      "systemwideSales": {
+        "v": 7789000000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "rbi-10k-2025",
+        "note": "Global Popeyes systemwide sales"
+      },
+      "compsFY": {
+        "v": -3.2,
+        "fmt": "pct",
+        "asOf": "FY2025",
+        "src": "cnbc-rbi-q4-2025",
+        "note": "U.S. comparable sales"
+      },
+      "compsLatest": {
+        "v": -5.2,
+        "fmt": "pct",
+        "asOf": "Q2 2026",
+        "src": "rd-bk-popeyes-q2",
+        "note": "U.S. comparable sales; sixth consecutive negative quarter"
+      },
+      "franchiseeProfit": {
+        "v": 235000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "cnbc-rbi-q4-2025",
+        "note": "Average franchisee restaurant-level profitability"
+      }
+    },
+    "metrics": {
+      "compsPct": -5.2,
+      "capRateMid": 5.8,
+      "capRateBasis": "marketed average asking cap rate",
+      "netClosures": true,
+      "salesGrowthPct": -3.3,
+      "salesGrowthNote": "Popeyes system-wide sales growth, Q2 2026"
+    },
+    "realEstate": {
+      "capRate": "5.10%–6.80% marketed range; ~5.80% average asking",
+      "capSrc": [
+        "topnetlease-popeyes"
+      ],
+      "notes": "Typical Popeyes net-lease deals carry 15–20 year initial terms with 7.5%–10% rent bumps every five years, and pricing has historically run roughly $1.2M–$4.1M. The credit is almost always a franchisee entity, and 2026 has supplied a live stress test: Four Corners Property Trust has bought Popeyes assets with ~20 years of term remaining, while distressed franchisee lease rejections are pushing second-generation Popeyes boxes back into the market.",
+      "notesSrc": [
+        "topnetlease-popeyes",
+        "qsr-sailormen-97"
+      ]
+    },
+    "pipeline": [
+      {
+        "text": "Peter Perdue, formerly Burger King U.S. COO, named president of Popeyes U.S. & Canada",
+        "src": "rd-perdue"
+      },
+      {
+        "text": "Turnaround pillars: operations and service, a narrowed menu, and consistent everyday value ($5 Faves); field leadership team expanding roughly 75%",
+        "src": "qsr-popeyes-president"
+      }
+    ],
+    "momentum": "pressured",
+    "analysis": "Popeyes is the clearest example of why unit count is a lagging indicator. The system is still enormous — 3,578 restaurants across the U.S. and Canada — but U.S. comparable sales have now been negative for six straight quarters, Q1 2026 was the worst quarter in roughly two decades at -6.5%, and average franchisee restaurant-level profit has fallen to about $235,000. At that level of unit economics, a leveraged 100-unit operator does not have a cash-flow problem, it has a solvency problem, which is exactly what played out at Sailormen. RBI's answer is operational rather than promotional: a new U.S. president out of the Burger King turnaround, a narrower menu, permanent value architecture and a materially larger field organization. RBI's CEO expects positive comps in the second half of 2026. For real estate, the more important consequence is inventory — every distressed Popeyes portfolio produces second-generation drive-thru boxes in dense, chicken-proven trade areas."
+  },
+  {
+    "slug": "kfc",
+    "name": "KFC U.S.",
+    "tags": [
+      "fried chicken",
+      "national",
+      "franchised",
+      "declining"
+    ],
+    "hq": "Plano, TX (relocating from Louisville, KY)",
+    "founded": 1930,
+    "parent": "Yum! Brands (NYSE: YUM)",
+    "ownership": "Public parent",
+    "franchiseModel": "99% franchised globally; U.S. system dominated by large legacy operators such as KBP Brands.",
+    "stats": {
+      "usUnits": {
+        "v": 3523,
+        "asOf": "YE2025",
+        "src": "thestreet-kfc-207",
+        "note": "Down from 3,669 entering 2025"
+      },
+      "usClosures2025": {
+        "v": 161,
+        "asOf": "FY2025",
+        "src": "thestreet-kfc-207",
+        "note": "Against 15 openings (12 franchised, 3 company)"
+      },
+      "closures15mo": {
+        "v": 207,
+        "asOf": "Jan 2025 – Mar 2026",
+        "src": "thestreet-kfc-207",
+        "note": "~5% of the U.S. footprint"
+      },
+      "closuresTTM": {
+        "v": 312,
+        "asOf": "Jul 2025 – Jul 2026",
+        "src": "thestreet-kfc-300",
+        "note": "-7.64% of the U.S. footprint"
+      },
+      "globalUnits": {
+        "v": 33897,
+        "asOf": "YE2025",
+        "src": "yum-10k-2025",
+        "note": "KFC Division; 90% outside the U.S."
+      },
+      "globalSales": {
+        "v": 36400000000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "thestreet-kfc-207",
+        "note": "KFC global system sales, up from $34.4B; U.S. system sales -3%"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": -4,
+      "unitGrowthDerived": true,
+      "salesGrowthPct": -3,
+      "compsPct": 2,
+      "capRateMid": 6.85,
+      "capRateBasis": "franchisee QSR benchmark",
+      "netClosures": true
+    },
+    "realEstate": {
+      "capRate": "Franchisee QSR benchmark 6.85% (Q2 2026); older, shorter-term KFC assets trade wider",
+      "capSrc": [
+        "boulder-q2-2026"
+      ],
+      "notes": "KFC is the single largest source of second-generation chicken real estate in America right now. More than 300 U.S. locations closed in the twelve months ending July 2026, and the typical asset is an older freestanding box — often with a drive-thru, frequently in an infill trade area that has been proven for chicken for thirty years. That inventory is where conversions, redevelopments and mispriced land basis get created."
+    },
+    "pipeline": [
+      {
+        "text": "U.S. corporate headquarters relocating from Louisville, KY to Plano, TX — ~100 corporate roles over six months and 90 remote roles over 18 months",
+        "src": "nrn-kfc-hq"
+      },
+      {
+        "text": "Menu reset: spicy wings, returning potato wedges, expanded boneless and sauce lineup, new sandwiches",
+        "src": "cnbc-kfc-menu"
+      }
+    ],
+    "momentum": "turnaround",
+    "analysis": "KFC U.S. is shrinking and improving at the same time, which is not a contradiction — it is what a portfolio cleanup looks like. The chain has closed more than 300 U.S. restaurants in twelve months and ended 2025 at 3,523 units, but has also strung together three consecutive quarters of positive same-store sales after seven negative ones, with roughly +2% in the most recent quarter. Yum is doing what a franchisor does when the tail of the system is uneconomic: cull the weak boxes, move the U.S. team to Texas, and put the menu back on the parts of the bird the market actually wants (boneless, wings, sauce). The strategic risk is that KFC is now a 3,500-unit U.S. brand supporting the marketing weight of a 34,000-unit global brand, and the American franchisee base bears the fixed costs while international carries the growth."
+  },
+  {
+    "slug": "zaxbys",
+    "name": "Zaxby's",
+    "tags": [
+      "tenders",
+      "wings",
+      "regional",
+      "franchised",
+      "growing"
+    ],
+    "hq": "Athens, GA",
+    "founded": 1990,
+    "parent": "Zaxby's Franchising LLC (private; Goldman Sachs minority investment)",
+    "ownership": "Private",
+    "franchiseModel": "Mixed corporate and franchise; renewed franchise recruiting drive into the Midwest and Northeast.",
+    "stats": {
+      "usUnits": {
+        "v": 1000,
+        "asOf": "Feb 2026",
+        "src": "ifa-zaxbys-1000",
+        "note": "Surpassed 1,000 locations"
+      },
+      "unitsPrior": {
+        "v": 969,
+        "asOf": "YE2024",
+        "src": "nrn-zaxbys-ops",
+        "note": "+3% YoY (Technomic)"
+      },
+      "systemwideSales": {
+        "v": 2600000000,
+        "fmt": "usd",
+        "asOf": "FY2024",
+        "src": "nrn-zaxbys-ops",
+        "note": "+4.6% (Technomic); brand projected ~$2.8B for 2025"
+      },
+      "auv": {
+        "v": 2710000,
+        "fmt": "usd",
+        "asOf": "YE2024",
+        "src": "nrn-zaxbys-ops",
+        "note": "Technomic"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": 3.2,
+      "unitGrowthDerived": true,
+      "salesGrowthPct": 4.6,
+      "auvUsd": 2710000,
+      "capRateMid": 6.85,
+      "capRateBasis": "franchisee QSR benchmark",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Marketed franchisee product in the high-6% to mid-7% range — a Midwest City, OK asset was offered at a 7.42% cap ($2.11M)",
+      "capSrc": [
+        "bullrealty-zaxbys",
+        "boulder-zaxbys"
+      ],
+      "notes": "Zaxby's is a larger box than most of the category — historically 3,500+ SF with dine-in — which is why the brand is now leaning on smaller and non-traditional formats to enter dense Northeast markets. The Upper East Side unit is roughly 2,800 SF with 16 seats and kiosks.",
+      "notesSrc": [
+        "co-zaxbys-nyc"
+      ]
+    },
+    "pipeline": [
+      {
+        "text": "First NYC restaurant opened in the Bronx June 29, 2026; Manhattan (1267 First Avenue) followed",
+        "src": "rd-zaxbys-nyc"
+      },
+      {
+        "text": "First New Jersey location (Magnolia) opened December 2025 — the brand's Northeast debut; 24th state",
+        "src": "rd-zaxbys-nyc"
+      },
+      {
+        "text": "60+ openings targeted in 2026; long-term goal of 100 new stores per year",
+        "src": "rd-zaxbys-nyc"
+      }
+    ],
+    "momentum": "steady",
+    "analysis": "Zaxby's spent the last several years fixing operations rather than chasing unit count, and the payoff is a $2.71M AUV that sits second only to Chick-fil-A and Cane's among franchised chicken chains. Crossing 1,000 units and then walking into the Bronx and the Upper East Side is a genuine test: Zaxby's has never had to make a 2,800 SF, seat-constrained, no-drive-thru box work at Southeast economics. If it does, the brand's franchise recruiting pitch changes completely, because the addressable market stops being the Southeast and starts being every dense metro where Cane's and Wingstop already print volume."
+  },
+  {
+    "slug": "bojangles",
+    "name": "Bojangles",
+    "tags": [
+      "fried chicken",
+      "breakfast",
+      "regional",
+      "franchised",
+      "growing"
+    ],
+    "hq": "Charlotte, NC",
+    "founded": 1977,
+    "parent": "Bojangles, Inc. (private — Durational Capital Management and The Jordan Company)",
+    "ownership": "Private equity owned",
+    "franchiseModel": "Roughly two-thirds franchised; aggressive multi-unit development agreements outside the Southeast.",
+    "stats": {
+      "usUnits": {
+        "v": 860,
+        "asOf": "Late 2025",
+        "src": "qsr-bojangles-portability",
+        "note": "Brand cited 827 (266 company / 561 franchised) earlier in 2025"
+      },
+      "unitsPrior": {
+        "v": 825,
+        "asOf": "YE2024",
+        "src": "ft-top400-chicken",
+        "note": "559 franchised / 266 corporate"
+      },
+      "systemwideSales": {
+        "v": 1881000000,
+        "fmt": "usd",
+        "asOf": "FY2024",
+        "src": "ft-top400-chicken",
+        "note": "U.S. sales"
+      },
+      "auv": {
+        "v": 2351000,
+        "fmt": "usd",
+        "asOf": "FY2024",
+        "src": "ft-top400-chicken"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": 4.2,
+      "unitGrowthDerived": true,
+      "auvUsd": 2351000,
+      "capRateMid": 6.85,
+      "capRateBasis": "franchisee QSR benchmark",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Franchisee QSR pricing; benchmark 6.85% (Q2 2026)",
+      "capSrc": [
+        "boulder-q2-2026"
+      ],
+      "notes": "Bojangles' breakfast daypart makes its sites unusually dependent on morning commuter patterns — a materially different site-selection screen than a Cane's or Wingstop, and one reason the brand's western and northern expansion is being executed through experienced multi-unit operators rather than new franchisees."
+    },
+    "pipeline": [
+      {
+        "text": "Eyas Capital, now the largest franchisee, agreed to open 40+ units across Ohio",
+        "src": "rd-eyas-boj"
+      },
+      {
+        "text": "Texas: 18 units open, ~20 in development, plus a 21-unit San Antonio agreement",
+        "src": "qsr-bojangles-portability"
+      },
+      {
+        "text": "First Las Vegas location opened January 2025 with four more planned",
+        "src": "qsr-bojangles-portability"
+      }
+    ],
+    "momentum": "expanding",
+    "analysis": "Bojangles is running the most interesting portability experiment in the category. A brand built on Carolina breakfast biscuits and sweet tea is now signing 20- and 40-unit agreements in Ohio, Texas and Nevada — markets with no cultural memory of the brand. The financing structure is telling: the largest franchisee is now a private-equity-backed platform (Eyas Capital) rather than a family operator, which is how franchisors buy geographic expansion when the brand cannot fund it on the balance sheet. The number to watch is out-of-region AUV. If new-market units clear the $2.35M system average, Bojangles becomes a national development story; if they don't, it stays a Southeast brand with expensive outposts."
+  },
+  {
+    "slug": "churchs-texas-chicken",
+    "name": "Church's Texas Chicken",
+    "tags": [
+      "fried chicken",
+      "value",
+      "national",
+      "franchised"
+    ],
+    "hq": "Atlanta, GA",
+    "founded": 1952,
+    "parent": "Church's Texas Chicken (private — High Bluff Capital Partners)",
+    "ownership": "Private equity owned",
+    "franchiseModel": "Predominantly franchised, with a corporate base; heavy international master-franchise activity as Texas Chicken.",
+    "stats": {
+      "usUnits": {
+        "v": 885,
+        "asOf": "Entering 2026",
+        "src": "ft-church-2025",
+        "note": "+12 U.S. units in 2025"
+      },
+      "systemwideSales": {
+        "v": 862000000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "ft-church-2025",
+        "note": "U.S.; $847M in 2024"
+      },
+      "auv": {
+        "v": 1138000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "ft-church-2025",
+        "note": "Up from $1.097M in 2024 and ~$1.0M in 2023"
+      },
+      "openings2025": {
+        "v": 26,
+        "asOf": "FY2025",
+        "src": "ft-church-2025",
+        "note": "21 franchised + 5 corporate; 12 units ceased operations, 1 terminated, 1 corporate closure"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": 1.4,
+      "unitGrowthDerived": true,
+      "salesGrowthPct": 1.8,
+      "salesGrowthDerived": true,
+      "auvUsd": 1138000,
+      "capRateMid": 6.85,
+      "capRateBasis": "franchisee QSR benchmark",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Wide of the category — small-box, value-positioned franchisee credit trades at the high end of the franchisee QSR band (6.85%+ benchmark)",
+      "capSrc": [
+        "boulder-q2-2026"
+      ],
+      "notes": "Church's is the lowest-AUV of the major national chicken brands at $1.14M, which sets a hard ceiling on rent. Sites are typically small urban infill boxes rather than suburban pads, and rent-to-sales discipline matters more here than in any other brand in this database."
+    },
+    "pipeline": [
+      {
+        "text": "Growth capital committed by ownership for remodels and new builds",
+        "src": "qsr-church-growth"
+      },
+      {
+        "text": "600-unit development plan for China under the Texas Chicken brand; 900 units planned across Europe and other international markets",
+        "src": "rd-church-china"
+      }
+    ],
+    "momentum": "stabilizing",
+    "analysis": "Church's spent a decade shrinking; in 2025 it stopped. The U.S. system added 12 net units to 885, sales rose to $862M and AUV climbed to $1.138M — the third consecutive year of AUV improvement off a ~$1.0M base. That is a genuine stabilization, but it should be read for what it is: Church's is a value brand with roughly one-eighth the unit volume of Chick-fil-A, operating in trade areas where the consumer is most exposed to price. The international pipeline (600 units in China, 900 across Europe and beyond) is where the unit growth story actually lives."
+  },
+  {
+    "slug": "daves-hot-chicken",
+    "name": "Dave's Hot Chicken",
+    "tags": [
+      "hot chicken",
+      "tenders",
+      "national",
+      "franchised",
+      "growing"
+    ],
+    "hq": "Pasadena, CA",
+    "founded": 2017,
+    "parent": "Dave's Hot Chicken (majority owned by Roark Capital)",
+    "ownership": "Private equity controlled",
+    "franchiseModel": "Heavily franchised through experienced multi-unit operators; 87% of operators are multi-unit, multi-brand owners.",
+    "stats": {
+      "usUnits": {
+        "v": 390,
+        "asOf": "May 2026",
+        "src": "ifa-daves-eight",
+        "note": "Across 45 states, plus 25+ international units in Canada, the UAE, Qatar, Saudi Arabia and the UK"
+      },
+      "units2025": {
+        "v": 420,
+        "asOf": "YE2025 target",
+        "src": "rbo-roark-daves",
+        "note": "Company's stated year-end 2025 target"
+      },
+      "units2024": {
+        "v": 245,
+        "asOf": "YE2024",
+        "src": "cnbc-daves-roark",
+        "note": "+43% YoY"
+      },
+      "systemwideSales2024": {
+        "v": 617000000,
+        "fmt": "usd",
+        "asOf": "FY2024",
+        "src": "rbo-roark-daves",
+        "note": "Domestic; +57% YoY"
+      },
+      "salesGrowth2025": {
+        "v": 51,
+        "fmt": "pct",
+        "asOf": "FY2025",
+        "src": "rbo-chicken-slows",
+        "note": "Fastest-growing of the 200 largest U.S. chains; unit growth +52.3%"
+      },
+      "dealValue": {
+        "v": 1000000000,
+        "fmt": "usd",
+        "asOf": "June 2025",
+        "src": "cnbc-daves-roark",
+        "note": "Roark Capital majority acquisition"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": 52.3,
+      "salesGrowthPct": 51,
+      "auvUsd": 3000000,
+      "auvNote": "franchisee-reported",
+      "capRateMid": 6.85,
+      "capRateBasis": "franchisee QSR benchmark",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Trades tight for a young franchisee credit; brand-record cap rates have been set on new-construction drive-thru prototypes",
+      "capSrc": [
+        "rbo-roark-daves"
+      ],
+      "notes": "Dave's began as a 1,200–1,800 SF inline concept and has moved decisively to freestanding drive-thru prototypes on 15-year absolute-NNN leases with 10% increases every five years. Franchisee-reported AUVs above $3M against a small box are the reason net-lease buyers accept franchisee credit here at pricing normally reserved for corporate tenants."
+    },
+    "pipeline": [
+      {
+        "text": "Opened a record eight restaurants in a single day in April 2026",
+        "src": "ifa-daves-eight"
+      },
+      {
+        "text": "150+ openings planned for 2026; roughly 1,000 additional locations in development",
+        "src": "ifa-daves-eight"
+      }
+    ],
+    "momentum": "rocket",
+    "analysis": "Dave's is the fastest-growing large chain in America and the single most important development story in chicken real estate. Sales grew 51% and units 52.3% in 2025, Roark bought control at a $1B valuation, and the brand opened eight restaurants in one day in 2026. Franchisee-reported AUVs above $3M with 18–20% restaurant-level EBITDA margins explain why sophisticated multi-brand operators are stacking Dave's on top of existing portfolios — the payback math beats almost anything else they can buy. The risk is the standard hot-chicken risk: the concept is culturally hot right now, and roughly 1,000 units in development means the system will be selling into far less proven trade areas within 24 months than the ones that produced those AUVs."
+  },
+  {
+    "slug": "slim-chickens",
+    "name": "Slim Chickens",
+    "tags": [
+      "tenders",
+      "fast casual",
+      "national",
+      "franchised",
+      "growing"
+    ],
+    "hq": "Fayetteville, AR",
+    "founded": 2003,
+    "parent": "Slim Chickens (private)",
+    "ownership": "Private",
+    "franchiseModel": "96% franchised; growth driven by large area-development agreements.",
+    "stats": {
+      "globalUnits": {
+        "v": 300,
+        "asOf": "2026",
+        "src": "qsr-slim-2026",
+        "note": "More than 300 restaurants worldwide"
+      },
+      "auv": {
+        "v": 2440000,
+        "fmt": "usd",
+        "asOf": "2025 FDD",
+        "src": "qsr-slim-2026",
+        "note": "Qualifying system AUV; best-performing unit $5.36M"
+      },
+      "systemwideSales": {
+        "v": 570000000,
+        "fmt": "usd",
+        "asOf": "FY2024",
+        "src": "ft-top400-chicken",
+        "note": "+23.4% YoY; +37 units"
+      },
+      "agreements2025": {
+        "v": 110,
+        "asOf": "FY2025",
+        "src": "qsr-slim-2026",
+        "note": "Development agreements signed"
+      },
+      "pipelineUnits": {
+        "v": 1200,
+        "asOf": "2026",
+        "src": "qsr-slim-2026",
+        "note": "Committed development pipeline"
+      }
+    },
+    "metrics": {
+      "salesGrowthPct": 23.4,
+      "auvUsd": 2440000,
+      "capRateMid": 6.85,
+      "capRateBasis": "franchisee QSR benchmark",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Franchisee QSR pricing (6.85% benchmark, Q2 2026); new-construction drive-thru product prices inside that",
+      "capSrc": [
+        "boulder-q2-2026"
+      ],
+      "notes": "Slim Chickens builds a fast-casual box with a drive-thru and a full dine-in room — larger and more expensive than the tender-shack formats it competes with, which raises the AUV threshold a site has to clear."
+    },
+    "pipeline": [
+      {
+        "text": "Pipeline of more than 1,200 restaurants; 110 development agreements signed in 2025",
+        "src": "qsr-slim-2026"
+      },
+      {
+        "text": "Target markets include Illinois, Ohio, Pennsylvania, New York, Massachusetts, New Jersey and Connecticut, plus Europe, Asia and the GCC",
+        "src": "qsr-slim-2026"
+      },
+      {
+        "text": "Christina Vaughan named first President (also COO); Matt Green, ex-Starbucks, named Chief Development Officer",
+        "src": "qsr-slim-dev"
+      }
+    ],
+    "momentum": "expanding",
+    "analysis": "Slim Chickens has quietly built the largest committed pipeline-to-current-units ratio in the category — more than 1,200 units in development against roughly 300 open. That ratio is the single most useful number for anyone selling sites or capital to this brand, and it is also the number most likely to disappoint: signed area-development agreements convert to open restaurants at well under 100% across franchising generally. Hiring a former Starbucks site-strategy executive as Chief Development Officer is the right response — the constraint on Slim Chickens is no longer demand for agreements, it is real estate throughput."
+  },
+  {
+    "slug": "el-pollo-loco",
+    "name": "El Pollo Loco",
+    "tags": [
+      "grilled chicken",
+      "regional",
+      "public",
+      "franchised"
+    ],
+    "hq": "Costa Mesa, CA",
+    "founded": 1980,
+    "parent": "El Pollo Loco Holdings (NASDAQ: LOCO)",
+    "ownership": "Public",
+    "franchiseModel": "Mixed company-operated and franchised; franchise development pushing east from California.",
+    "stats": {
+      "systemwideSales": {
+        "v": 1125400000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "loco-q4-2025"
+      },
+      "usUnits": {
+        "v": 500,
+        "asOf": "FY2025",
+        "src": "loco-q4-2025",
+        "note": "Company-operated and franchised across nine states; 500th opened in Colorado Springs"
+      },
+      "auv": {
+        "v": 2300000,
+        "fmt": "usd",
+        "asOf": "FY2025",
+        "src": "loco-q4-2025",
+        "note": "Company-operated AUV; restaurant contribution margin 17.8%"
+      },
+      "compsFY": {
+        "v": 0.1,
+        "fmt": "pct",
+        "asOf": "FY2025",
+        "src": "loco-q4-2025",
+        "note": "System-wide comparable restaurant sales"
+      },
+      "compsLatest": {
+        "v": 2.1,
+        "fmt": "pct",
+        "asOf": "Q4 2025",
+        "src": "loco-q4-2025"
+      },
+      "openings": {
+        "v": 9,
+        "asOf": "FY2025",
+        "src": "loco-q4-2025"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": 1.8,
+      "unitGrowthDerived": true,
+      "compsPct": 2.1,
+      "auvUsd": 2300000,
+      "capRateMid": 5.85,
+      "capRateBasis": "corporate QSR benchmark",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Public-company corporate credit on company-operated sites; franchisee sites price at franchisee QSR levels",
+      "capSrc": [
+        "boulder-q2-2026"
+      ],
+      "notes": "El Pollo Loco's fire-grill platform requires a heavier kitchen build than fryer-only concepts, which raises both build cost and the switching cost of a second-generation conversion."
+    },
+    "pipeline": [
+      {
+        "text": "500th restaurant opened in Colorado Springs; nine openings in 2025",
+        "src": "loco-q4-2025"
+      }
+    ],
+    "momentum": "steady",
+    "analysis": "El Pollo Loco is the category's counter-programming: flame-grilled, Mexican-inspired, and largely insulated from the fried-chicken arms race. It is also the smallest growth story here — nine openings in a year against a 500-unit base, and flat full-year comps of +0.1%. The Q4 acceleration to +2.1% and a 17.8% restaurant contribution margin say the operating model is healthy; the constraint is geographic concentration in nine states and a build-cost profile that makes franchise development slower than a fryer-only competitor's."
+  },
+  {
+    "slug": "chicken-salad-chick",
+    "name": "Chicken Salad Chick",
+    "tags": [
+      "fast casual",
+      "regional",
+      "franchised",
+      "growing"
+    ],
+    "hq": "Atlanta, GA",
+    "founded": 2008,
+    "parent": "Chicken Salad Chick (private — Brentwood Associates)",
+    "ownership": "Private equity owned",
+    "franchiseModel": "Predominantly franchised; record franchise-agreement signing pace.",
+    "stats": {
+      "usUnits": {
+        "v": 300,
+        "asOf": "May 2025",
+        "src": "rd-csc-300",
+        "note": "300th location; unit count +13% YoY"
+      },
+      "unitsPrior": {
+        "v": 288,
+        "asOf": "YE2024",
+        "src": "ft-top400-chicken"
+      },
+      "systemwideSales": {
+        "v": 394200000,
+        "fmt": "usd",
+        "asOf": "FY2024",
+        "src": "qsr-csc-record",
+        "note": "Franchise Times reported $398M system sales for 2024"
+      },
+      "auv": {
+        "v": 1480000,
+        "fmt": "usd",
+        "asOf": "FY2024",
+        "src": "qsr-csc-record",
+        "note": "Franchise-store AUV, +~$75K vs 2023 (~5% same-store gain); record system AUV ~$1.5M"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": 13,
+      "auvUsd": 1480000,
+      "capRateMid": 6.85,
+      "capRateBasis": "franchisee QSR benchmark",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Franchisee credit, inline and endcap product; prices wide of freestanding drive-thru chicken",
+      "capSrc": [
+        "boulder-q2-2026"
+      ],
+      "notes": "Predominantly lunch-daypart, inline retail sites with a small footprint and no fryer line — a fundamentally different real estate profile from the rest of this database, and one that competes for space with fast-casual rather than QSR pads."
+    },
+    "pipeline": [
+      {
+        "text": "35 franchise agreements signed in Q1 2025 — the brand's most in any quarter",
+        "src": "rd-csc-300"
+      }
+    ],
+    "momentum": "growing",
+    "analysis": "Chicken Salad Chick is the only brand in this database that isn't really in the chicken sandwich war — it is a lunch-daypart, dine-in, non-fried concept with a $1.48M AUV and almost no drive-thru dependency. That makes it a poor comp for the rest of the category and an excellent one for anyone underwriting inline retail: the brand adds units at 13% a year without competing for the pads that Cane's, Chick-fil-A and Dave's are bidding up."
+  },
+  {
+    "slug": "golden-chick",
+    "name": "Golden Chick",
+    "tags": [
+      "fried chicken",
+      "tenders",
+      "regional",
+      "franchised",
+      "growing"
+    ],
+    "hq": "Richardson, TX",
+    "founded": 1967,
+    "parent": "Golden Chick (private)",
+    "ownership": "Private",
+    "franchiseModel": "Franchise-led, concentrated in Texas with multi-unit operators driving expansion.",
+    "stats": {
+      "usUnits": {
+        "v": 250,
+        "asOf": "2026",
+        "src": "qsr-golden-250",
+        "note": "250th restaurant opened in Little Elm, TX; 240+ locations across TX, OK, FL, LA, MS and KS"
+      },
+      "openings2025": {
+        "v": 23,
+        "asOf": "FY2025",
+        "src": "qsr-golden-250",
+        "note": "All-time brand record for annual openings"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": 9.2,
+      "unitGrowthDerived": true,
+      "capRateMid": 6.85,
+      "capRateBasis": "franchisee QSR benchmark",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Regional franchisee credit — prices at or wide of the 6.85% franchisee QSR benchmark",
+      "capSrc": [
+        "boulder-q2-2026"
+      ],
+      "notes": "Golden Chick's development is concentrated in Texas secondary and tertiary markets, where land basis and construction cost are materially lower than the metros the national brands are fighting over. That is the brand's structural advantage as a franchise investment."
+    },
+    "pipeline": [
+      {
+        "text": "SXThree Restaurant Group targeting 100 Golden Chicks by 2030; new development agreements in Alabama and Mississippi",
+        "src": "ft-golden-sxthree"
+      },
+      {
+        "text": "Korpal Group signed a 13-unit development agreement — 10 in greater Houston over four years and three in Beaumont",
+        "src": "ft-korpal"
+      },
+      {
+        "text": "Entering Nevada, Arkansas, Missouri and Arizona",
+        "src": "qsr-golden-250"
+      }
+    ],
+    "momentum": "growing",
+    "analysis": "Golden Chick is the best case study in this database for how a regional brand actually scales: not through a national franchise-sales push, but by finding two or three operator families and letting them compound. SXThree is on a path to 100 units by 2030; the Korpal brothers converted a second-generation Subway family operation into a 13-unit Golden Chick development agreement across Houston and Beaumont. Every incremental unit is being bought by someone who already owns units. For a brokerage or capital provider, that concentration is the opportunity — there are perhaps a dozen phone calls that control the brand's entire Texas development pipeline."
+  },
+  {
+    "slug": "huey-magoos",
+    "name": "Huey Magoo's",
+    "tags": [
+      "tenders",
+      "emerging",
+      "franchised",
+      "growing"
+    ],
+    "hq": "Orlando, FL",
+    "founded": 2004,
+    "parent": "Huey Magoo's Chicken Tenders (private)",
+    "ownership": "Private",
+    "franchiseModel": "Franchised, with a new lower-cost drive-thru prototype aimed at build-cost reduction.",
+    "stats": {
+      "usUnits": {
+        "v": 85,
+        "asOf": "YE2025",
+        "src": "rd-huey",
+        "note": "2026 FDD; up from 43 in early 2023"
+      },
+      "systemwideSales": {
+        "v": 137000000,
+        "fmt": "usd",
+        "asOf": "FY2024",
+        "src": "ft-top400-chicken",
+        "note": "+24.3% YoY; No. 280 on the Franchise Times Top 400 as a new entry"
+      }
+    },
+    "metrics": {
+      "salesGrowthPct": 24.3,
+      "capRateMid": 6.85,
+      "capRateBasis": "franchisee QSR benchmark",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Emerging-brand franchisee credit — thin trading history, prices wide",
+      "capSrc": [
+        "boulder-q2-2026"
+      ],
+      "notes": "Huey Magoo's has cut drive-thru build costs by roughly 40% with a new prototype, which is the single most important variable for an emerging tender brand: build cost determines whether a franchisee can clear a return at a $1.5M–$2.0M AUV.",
+      "notesSrc": [
+        "rd-huey"
+      ]
+    },
+    "pipeline": [
+      {
+        "text": "On track to reach 100 restaurants in 2026",
+        "src": "rd-huey"
+      }
+    ],
+    "momentum": "growing",
+    "analysis": "Huey Magoo's roughly doubled from 43 to 85 units in under three years and cut its drive-thru build cost by about 40%. That second number is the real story. Emerging chicken brands do not die from lack of demand — they die when a $2.2M build cost meets a $1.6M AUV. Getting the prototype cheaper is what turns a Florida tender brand into a franchisable national concept."
+  },
+  {
+    "slug": "laynes-chicken-fingers",
+    "name": "Layne's Chicken Fingers",
+    "tags": [
+      "tenders",
+      "emerging",
+      "franchised",
+      "growing"
+    ],
+    "hq": "Texas",
+    "founded": 1994,
+    "parent": "Layne's Chicken Fingers (private)",
+    "ownership": "Private",
+    "franchiseModel": "Franchised; attracting experienced operators from Wendy's, Arby's and other systems.",
+    "stats": {
+      "usUnits": {
+        "v": 50,
+        "asOf": "Q2 2026",
+        "src": "fb101-laynes-2026",
+        "note": "Up from 40 at the end of 2025"
+      },
+      "openings2025": {
+        "v": 21,
+        "asOf": "FY2025",
+        "src": "pr-laynes-2025",
+        "note": "110% growth over the prior year; 10 new franchisees added"
+      },
+      "agreements": {
+        "v": 68,
+        "asOf": "Late 2025",
+        "src": "pr-laynes-2025",
+        "note": "Restaurants under signed agreements, including a 44-store Texas deal and a 15-unit Wisconsin deal"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": 110,
+      "capRateMid": 6.85,
+      "capRateBasis": "franchisee QSR benchmark",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Emerging-brand franchisee credit; effectively no institutional trading history",
+      "capSrc": [
+        "boulder-q2-2026"
+      ],
+      "notes": "At 40–50 open units, Layne's real estate is still being underwritten on operator credit and personal guarantees rather than brand credit. That is normal at this stage and is exactly the window in which a developer can trade capital for below-market rent."
+    },
+    "pipeline": [
+      {
+        "text": "Up to 45 openings targeted in 2026 — a second consecutive year of ~100% unit growth",
+        "src": "fb101-laynes-2026"
+      },
+      {
+        "text": "24 franchise agreements signed in the first half of 2026; long-term vision of 300 units by 2030",
+        "src": "fb101-laynes-2026"
+      }
+    ],
+    "momentum": "rocket",
+    "analysis": "Layne's doubled its footprint in 2025 and is on track to do it again in 2026. The tell is who is signing: franchisees of Wendy's and Arby's, not first-time owners. When experienced QSR operators put capital into a 40-unit brand, they are underwriting the prototype economics, not the brand equity. Texas is the proving ground — a 44-store single agreement in the home state means the brand's next two years of unit growth are concentrated in a handful of hands, with all the development-speed upside and concentration risk that implies."
+  },
+  {
+    "slug": "pollo-campero",
+    "name": "Pollo Campero",
+    "tags": [
+      "fried chicken",
+      "grilled chicken",
+      "regional",
+      "franchised",
+      "growing"
+    ],
+    "hq": "Dallas, TX (U.S.)",
+    "founded": 1971,
+    "parent": "Campero International (private, Guatemala)",
+    "ownership": "Private, international parent",
+    "franchiseModel": "Mixed company and franchise in the U.S.",
+    "stats": {
+      "usUnits": {
+        "v": 140,
+        "asOf": "2025",
+        "src": "rd-campero",
+        "note": "Up from 118 U.S. locations in October 2024"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": 18.6,
+      "unitGrowthDerived": true,
+      "capRateMid": 6.85,
+      "capRateBasis": "franchisee QSR benchmark",
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Franchisee/corporate mix at franchisee QSR pricing",
+      "capSrc": [
+        "boulder-q2-2026"
+      ],
+      "notes": "Campero's U.S. growth follows Central American diaspora density rather than standard QSR demographic screens, which produces site selections that look wrong on a generic model and right on a trade-area basis."
+    },
+    "pipeline": [
+      {
+        "text": "Stated plan to grow from 90 U.S. units to 250 over five years",
+        "src": "rd-campero"
+      }
+    ],
+    "momentum": "growing",
+    "analysis": "Campero grows where the demographic screens of national chicken brands don't point. It is one of the few chains in the category whose site model is genuinely trade-area-specific rather than formulaic, and it is drawing millions of monthly visits in markets where the national brands under-index."
+  },
+  {
+    "slug": "krispy-krunchy-chicken",
+    "name": "Krispy Krunchy Chicken",
+    "tags": [
+      "fried chicken",
+      "non-traditional",
+      "c-store",
+      "national",
+      "franchised"
+    ],
+    "hq": "Louisiana",
+    "founded": 1989,
+    "parent": "Krispy Krunchy Foods (private)",
+    "ownership": "Private",
+    "franchiseModel": "Licensed foodservice programs inside convenience stores rather than standalone restaurants.",
+    "stats": {
+      "usUnits": {
+        "v": 3500,
+        "asOf": "2024-2025",
+        "src": "cstore-krispy",
+        "note": "Locations, predominantly inside convenience stores"
+      },
+      "openings2024": {
+        "v": 605,
+        "asOf": "FY2024",
+        "src": "cstore-krispy",
+        "note": "600+ planned for 2025"
+      }
+    },
+    "metrics": {
+      "unitGrowthPct": 17.3,
+      "unitGrowthDerived": true,
+      "capRateMid": null,
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Not applicable — Krispy Krunchy occupies space inside existing c-store real estate",
+      "notes": "The largest chicken 'chain' in America by location count owns essentially no restaurant real estate. Its expansion consumes back-of-house space in fuel and convenience assets, which is why it never appears in QSR net-lease data despite outnumbering KFC by roughly 3,000 locations."
+    },
+    "pipeline": [
+      {
+        "text": "~150 foodservice retrofit sites targeted by year-end 2026, scaling to ~300 by 2028 and ~500 by 2030",
+        "src": "rd-krispy-2025"
+      }
+    ],
+    "momentum": "growing",
+    "analysis": "Krispy Krunchy is the category's blind spot. With more than 3,500 locations it has more points of distribution than KFC, Popeyes or Church's — and almost no one models it as a competitor, because it lives inside gas stations. For anyone underwriting a value-positioned fried chicken box in a rural or exurban trade area, Krispy Krunchy is very often the real competitor, and it carries no rent, no separate labor line, and no real estate risk."
+  },
+  {
+    "slug": "bonchon",
+    "name": "Bonchon",
+    "tags": [
+      "wings",
+      "korean fried chicken",
+      "franchised",
+      "growing"
+    ],
+    "hq": "United States operations",
+    "founded": 2002,
+    "parent": "Bonchon (private, Korean origin)",
+    "ownership": "Private",
+    "franchiseModel": "Franchised, with growing non-traditional (airport) development.",
+    "stats": {
+      "usUnits": {
+        "v": 140,
+        "asOf": "2025",
+        "src": "eatthis-bonchon",
+        "note": "More than 140 U.S. locations"
+      }
+    },
+    "metrics": {
+      "capRateMid": null,
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Primarily leased inline and non-traditional space; not an established net-lease tenant",
+      "notes": "First U.S. airport location opened at John Wayne Airport in Orange County, California — a channel with very different economics from street retail.",
+      "notesSrc": [
+        "eatthis-bonchon"
+      ]
+    },
+    "pipeline": [
+      {
+        "text": "Stated belief the brand can reach 1,000 stores within five years",
+        "src": "eatthis-bonchon"
+      }
+    ],
+    "momentum": "growing",
+    "analysis": "Korean fried chicken is the most under-built segment of the American chicken market relative to consumer interest. Bonchon's move into airports is a rational read of its own economics: a high-ticket, dine-in-leaning, sauce-forward concept monetizes captive traffic better than it monetizes suburban drive-thru traffic."
+  },
+  {
+    "slug": "houston-tx-hot-chicken",
+    "name": "Houston TX Hot Chicken",
+    "tags": [
+      "hot chicken",
+      "emerging",
+      "franchised",
+      "growing"
+    ],
+    "hq": "Houston, TX",
+    "founded": 2020,
+    "parent": "Houston TX Hot Chicken (private)",
+    "ownership": "Private",
+    "franchiseModel": "Franchised, expanding through multi-unit commitments and an international master agreement.",
+    "stats": {
+      "usUnits": {
+        "v": 25,
+        "asOf": "YE2024",
+        "src": "nrn-houstontx",
+        "note": "Closed 2024 with 25 locations"
+      },
+      "commitments": {
+        "v": 26,
+        "asOf": "Jan 2026",
+        "src": "rn-houstontx",
+        "note": "New franchise commitments across four markets: 11 units in Illinois, 5 each in Louisiana, Arkansas and New York"
+      }
+    },
+    "metrics": {
+      "capRateMid": null,
+      "netClosures": false
+    },
+    "realEstate": {
+      "capRate": "Emerging-brand franchisee credit; no meaningful institutional trading history",
+      "notes": "Small-format hot chicken boxes, typically inline or endcap conversions rather than ground-up pads — a low-capital entry that competes directly for second-generation restaurant space."
+    },
+    "pipeline": [
+      {
+        "text": "15–20 restaurants planned to open in 2026, with an ambition of 50–60 units per year thereafter",
+        "src": "nrn-houstontx"
+      },
+      {
+        "text": "UK debut via an exclusive European franchise agreement with PizzaExpress — three locations in 2026 and 50 over three years",
+        "src": "rn-houstontx-uk"
+      }
+    ],
+    "momentum": "emerging",
+    "analysis": "Houston TX Hot Chicken is the clearest example of the second wave chasing Dave's. The brand is going after the same hot-chicken consumer with a smaller box and a lower entry cost, and it is signing multi-unit commitments in markets — Illinois, Arkansas, New York — where Dave's has not yet saturated. The European deal with PizzaExpress is unusual and worth watching: partnering with an established operator platform is a faster route into the UK than building a franchise network from scratch."
+  },
+  {
+    "slug": "hooters",
+    "name": "Hooters",
+    "tags": [
+      "wings",
+      "casual dining",
+      "franchised",
+      "distressed"
+    ],
+    "hq": "Atlanta, GA",
+    "founded": 1983,
+    "parent": "Hooters of America (post-Chapter 11, franchisee-owned)",
+    "ownership": "Restructured",
+    "franchiseModel": "Post-bankruptcy, the plan moves the system to fully franchisee-owned.",
+    "stats": {
+      "companyUnitsSold": {
+        "v": 151,
+        "asOf": "2025",
+        "src": "rd-hooters",
+        "note": "All company-owned restaurants agreed to be sold to two franchisee groups (Tampa- and Chicago-based)"
+      },
+      "closures": {
+        "v": 30,
+        "asOf": "June 2025",
+        "src": "rd-hooters",
+        "note": "Roughly 30 locations closed effective June 4, 2025 across FL, GA, MI, NC, SC, TN and TX"
+      },
+      "debt": {
+        "v": 376000000,
+        "fmt": "usd",
+        "asOf": "March 2025",
+        "src": "rd-hooters",
+        "note": "Debt cited in the Chapter 11 filing (filed March 31, 2025)"
+      }
+    },
+    "metrics": {
+      "capRateMid": null,
+      "netClosures": true
+    },
+    "realEstate": {
+      "capRate": "Distressed / vacant casual-dining pricing — value is in the land and the box, not the lease",
+      "notes": "Hooters closures produce the largest boxes in the chicken universe: 4,500–6,500 SF casual-dining restaurants on generous pads with parking. They are poor conversions for a 2,200 SF QSR prototype and excellent conversions for larger fast-casual, entertainment or multi-tenant redevelopment."
+    },
+    "pipeline": [],
+    "momentum": "distressed",
+    "analysis": "Hooters matters to this database for one reason: it is the clearest source of large-format second-generation restaurant real estate in the wing category. A Chapter 11 filed with $376M of debt, roughly 30 closures in a single day in June 2025, and all 151 company restaurants sold to franchisee groups — the operating brand survives, but a meaningful volume of pad-site casual dining came back to the market. Those boxes rarely re-tenant as chicken. They re-tenant as something bigger."
+  },
+  {
+    "slug": "jollibee-us",
+    "name": "Jollibee (U.S.)",
+    "tags": [
+      "fried chicken",
+      "international",
+      "growing"
+    ],
+    "hq": "Philippines (parent); U.S. operations",
+    "founded": 1978,
+    "parent": "Jollibee Foods Corporation (PSE: JFC)",
+    "ownership": "Public parent",
+    "franchiseModel": "Company-operated and franchised depending on market.",
+    "stats": {
+      "closuresH1": {
+        "v": 200,
+        "asOf": "H1 2026",
+        "src": "thestreet-jollibee",
+        "note": "Group-wide store closures across all JFC brands in the first half of 2026"
+      },
+      "openingTarget": {
+        "v": 1050,
+        "asOf": "FY2026",
+        "src": "thestreet-jollibee",
+        "note": "Group target lowered to 1,000–1,100 new stores from 1,200–1,300"
+      }
+    },
+    "metrics": {
+      "capRateMid": null,
+      "netClosures": true
+    },
+    "realEstate": {
+      "capRate": "Not an established U.S. net-lease tenant at scale",
+      "notes": "U.S. Jollibee sites are typically inline or endcap in high-density Filipino-American trade areas, with queue and seating demands that most QSR prototypes are not designed for."
+    },
+    "pipeline": [],
+    "momentum": "mixed",
+    "analysis": "Jollibee's U.S. business remains a genuine chicken competitor in specific trade areas, but the group signal in 2026 was caution: more than 200 closures across the portfolio in the first half and a cut to the global opening target. When a growth-mode international operator trims its pipeline, it is usually reading consumer softness earlier than the domestic brands do."
+  }
+]

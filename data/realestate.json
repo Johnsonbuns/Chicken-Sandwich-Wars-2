@@ -1,0 +1,36 @@
+{
+  "benchmarks": [
+    {"label":"Corporate-guaranteed QSR","value":"5.85%","change":"+3 bps QoQ","asOf":"Q2 2026","src":"boulder-q2-2026"},
+    {"label":"Franchisee-guaranteed QSR","value":"6.85%","change":"+5 bps QoQ","asOf":"Q2 2026","src":"boulder-q2-2026"},
+    {"label":"All single-tenant net lease","value":"6.80%","change":"-1 bp QoQ","asOf":"Q1 2026","src":"boulder-q2-2026"},
+    {"label":"Single-tenant retail","value":"6.55%","asOf":"Q1 2026","src":"boulder-q2-2026"},
+    {"label":"Premium QSR ground lease (McDonald's / Chick-fil-A)","value":"4.45%","asOf":"Q2 2026","src":"boulder-q2-2026"}
+  ],
+  "brandCapRates": [
+    {"brand":"Chick-fil-A","slug":"chick-fil-a","range":"4.20% – 4.50%","structure":"15-year ground lease, asking","src":"boulder-tenant-q1-2026"},
+    {"brand":"McDonald's (reference)","slug":null,"range":"4.30% – 4.60%","structure":"15-year ground lease, asking","src":"boulder-tenant-q1-2026"},
+    {"brand":"Raising Cane's","slug":"raising-canes","range":"4.70% – 5.00%","structure":"15-year ground lease; ~5.00% asking Q1 2026","src":"boulder-canes"},
+    {"brand":"Popeyes","slug":"popeyes","range":"5.10% – 6.80% (avg ~5.80%)","structure":"Marketed 15–20 year NNN, franchisee credit","src":"topnetlease-popeyes"},
+    {"brand":"Zaxby's","slug":"zaxbys","range":"Marketed to 7.42%","structure":"Single marketed offering, Midwest City OK","src":"bullrealty-zaxbys"},
+    {"brand":"Franchisee QSR (KFC, Wingstop, Bojangles, Church's, Slim Chickens, Golden Chick and peers)","slug":null,"range":"6.85% benchmark","structure":"Franchisee-guaranteed QSR asking cap rate","src":"boulder-q2-2026"}
+  ],
+  "leaseIntel": [
+    {"label":"Chick-fil-A","text":"20-year corporate absolute-NNN ground lease is standard; the record-setting Hixson TN deal was a shorter 15-year term with 10% increases every five years and ten 5-year options.","src":"citybiz-cfa-hixson"},
+    {"label":"Raising Cane's","text":"Typically a 20-year absolute-NNN ground lease with 10% rent increases every five years, corporate guaranteed — landlord has no roof, structure, parking or management obligation.","src":"boulder-canes"},
+    {"label":"Popeyes","text":"15–20 year initial terms with 7.5%–10% rent bumps every five years; historical pricing band roughly $1.2M–$4.1M per asset.","src":"topnetlease-popeyes"},
+    {"label":"Dave's Hot Chicken","text":"New-construction drive-thru prototypes on 15-year absolute-NNN leases with 10% increases every five years.","src":"rbo-roark-daves"},
+    {"label":"Credit spread","text":"The corporate-to-franchisee QSR spread stood at 100 basis points in Q2 2026 (5.85% vs 6.85%). Short-term, non-rated restaurant tenants can trade 200–300 bps wider than premium ground leases.","src":"boulder-tenant-q1-2026"}
+  ],
+  "supply": [
+    {"label":"KFC","text":"312 U.S. closures in the twelve months to July 2026 (-7.64% of the footprint); 161 closures in calendar 2025 against 15 openings.","src":"thestreet-kfc-300"},
+    {"label":"Popeyes","text":"Roughly 33 Sailormen locations went dark through lease rejection in the 2026 Chapter 11 across Florida and Georgia.","src":"qsr-sailormen-97"},
+    {"label":"Hooters","text":"Roughly 30 restaurants closed effective June 4, 2025 across FL, GA, MI, NC, SC, TN and TX — large-format casual-dining pads, 4,500–6,500 SF.","src":"rd-hooters"},
+    {"label":"Church's Texas Chicken","text":"12 units ceased operations in 2025 (after 20 in 2024 and nine the year prior), plus one franchise termination and one corporate closure.","src":"ft-church-2025"},
+    {"label":"Jollibee","text":"More than 200 stores closed group-wide in the first half of 2026 with the 2026 opening target cut to 1,000–1,100.","src":"thestreet-jollibee"}
+  ],
+  "marketConditions": [
+    {"text":"Single-tenant property supply jumped 12.5% quarter-over-quarter in Q2 2026 to nearly 5,800 available properties, with retail listings up 16.2%.","src":"boulder-q2-2026"},
+    {"text":"Boulder Group's Q1 2026 Net Lease Tenant Profiles report covered 87 tenants with asking cap rates as of March 2026, ranging from 4.30% for 15-year McDonald's ground leases to 9.00%+ for short-term Walgreens.","src":"boulder-tenant-q1-2026"},
+    {"text":"Four Corners Property Trust acquired 33 properties for $85.5M in the first half of 2026 (10 for $26.8M in Q1, 23 for $57.2M in Q2).","src":"fcpt-10q-q2-2026"}
+  ]
+}
