@@ -66,7 +66,7 @@ lib/
 
 pages/           one module per site section, each returning page descriptors
 build.js         orchestrates everything, writes docs/ + search index + sitemap
-docs/            generated output (GitHub Pages serves from here)
+docs/            generated output — git-ignored, rebuilt by Vercel on every deploy
 ```
 
 ## The CSW Score
