@@ -7,6 +7,7 @@ The site is a static build generated from a sourced dataset. There is no databas
 CMS and no runtime dependency — `node build.js` turns `data/` into `docs/`.
 
 ```bash
+npm test          # build, then check integrity — run before pushing
 npm run build     # data/ -> docs/  (77 pages, no dependencies)
 npm run serve     # build, then preview at http://localhost:4173
 ```
@@ -96,8 +97,10 @@ on `/methodology/`.
    as a build smell.
 3. `npm run build` and check the page.
 
-The build fails loudly on malformed JSON and silently drops unknown source ids, so a
-quick `grep` for the new key in `docs/` after building confirms it rendered.
+The build fails loudly on malformed JSON but silently drops unknown source ids — that
+is what `npm test` is for. It checks that every `src` in `data/` resolves, that every
+footnote superscript has its anchor, that internal links resolve, and that no page came
+out empty or with `undefined` in it.
 
 ## Deployment
 

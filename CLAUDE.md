@@ -5,25 +5,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
+npm test          # build, then scripts/check.js — run this before every push
 npm run build     # data/ -> docs/  (77 pages)
 npm run serve     # build, then preview at http://localhost:4173
 npm run clean     # rm -rf docs
 ```
 
-There is no test suite, no linter and no dependencies — `node build.js` runs on stock
-Node (>=18). Do not add a package unless it earns its place; a previous attempt to add
-`@vercel/analytics` was reverted because every one of its entry points needs a bundler
-this project does not have.
+`npm test` is not a unit-test suite; it is six integrity checks over the generated site,
+each of which catches a failure this codebase has actually produced: unresolved internal
+links, footnote superscripts with no matching anchor, near-empty pages, `undefined` /
+`NaN` / `[object Object]` leaking into the HTML, `src` ids in `data/` that are absent
+from `sources.json`, and a sitemap that has drifted from the page count. It exits
+non-zero, so it is safe to chain.
 
-Verification is the build plus three checks worth re-running after structural changes
-(no committed script — write them ad hoc):
+For anything visual, render a page in the Chromium binary at
+`/opt/pw-browsers/chromium-*/chrome-linux/chrome` with `--headless --screenshot`.
+Playwright is not installed; the browser is.
 
-1. Every internal `href`/`src` in `docs/` resolves to a real file. Skip `/_vercel/*`,
-   which is served by Vercel's edge and does not exist in the repo.
-2. Every `href="#src-N"` has a matching `id="src-N"` on the same page (see footnotes
-   below — this is the invariant most easily broken).
-3. Render a few pages in Chromium at `/opt/pw-browsers/chromium-*/chrome-linux/chrome`
-   with `--headless --screenshot`. Playwright is not installed; the binary is.
+**Dependencies.** The build has none and should keep none — `node build.js` runs on
+stock Node (>=18). An attempt to add `@vercel/analytics` was reverted because all of its
+entry points need a bundler this project does not have; the analytics tag is a plain
+script instead. Runtime dependencies for serverless functions under `api/` are a
+different category and may be justified — but they must never leak into the build path.
 
 ## The editorial rule that shapes the code
 
@@ -41,7 +44,16 @@ bugs but are deliberate:
   franchisee-reported figures are labelled as such.
 
 If asked to add data, add the source to `data/sources.json` first and reference its key.
-A stat whose `src` does not resolve renders silently without a footnote.
+A stat whose `src` does not resolve renders silently without a footnote — `npm test`
+catches that, nothing else will.
+
+**Provenance caveat on the existing dataset.** The figures were gathered in an
+environment where web search worked but direct page fetches were blocked by an egress
+proxy. Every one is attributed to a real publisher and URL, but the values came from
+search-result summaries of those sources rather than from reading the primary documents.
+Treat the high-stakes figures — AUVs and same-store sales, which drive the rankings — as
+worth re-verifying against the original filing or report before they are relied on
+publicly. New data added from now on should be read off the primary source.
 
 ## Architecture
 
@@ -120,3 +132,48 @@ The Vercel Web Analytics tag lives in `lib/layout.js` as a plain
 the output; everything else is relative so the site can be served from any subpath. The
 tag 404s harmlessly off Vercel, and also 404s *on* Vercel until Web Analytics is enabled
 in the project dashboard.
+
+**Current state:** the site is live on Vercel with Web Analytics enabled and verified.
+The repository is connected to Vercel, so a merge to `main` deploys and every pull
+request gets a preview. GitHub Pages served the site briefly and has been retired — if
+you find a reference to it anywhere, it is stale. (`docs/.nojekyll` is still written, but
+only so the output stays servable by any plain static host.)
+
+## Known gaps
+
+These are understood and deliberate-for-now, not oversights. Do not "fix" them by
+inventing data or a stand-in.
+
+**Forms have no backend.** Every form — newsletter, sell, buy, submit-deal, contact —
+is handled by `assets/js/site.js`, which copies the fields to the clipboard and opens a
+`mailto:` draft. The visitor still has to press send. Nothing is stored. This is the
+single most consequential gap in the project: lead capture is what the whole site exists
+to do.
+
+**Polls have no backend.** Votes live in the visitor's own `localStorage`, so no
+aggregate exists and none is published. The stated goal was longitudinal consumer
+preference data, which needs one row per vote with a timestamp — not a counter.
+
+The agreed shape for both, not yet built: an `api/` directory of Vercel Functions
+(`POST /api/submit`, `POST /api/vote`, `GET /api/poll?id=`) over a single Neon Postgres
+from the Vercel Marketplace — a `submissions` table keyed by form name with a `jsonb`
+payload, and a `votes` table with a salted `voter_hash` under a unique index per poll per
+day for ballot-stuffing control. One integration rather than adding Upstash alongside it.
+Provisioning needs the account owner: `vercel link`, then `vercel integration add neon`.
+
+Two things that must land with that work: a **privacy policy** page, since the forms will
+start collecting names, emails, phone numbers and property addresses and the site has no
+disclosure today; and **somewhere to read submissions** — an email notification or a
+protected view — because a database nobody checks is worse than the current `mailto:`,
+which at least reaches an inbox.
+
+**Data freshness.** Figures are current to August 2026. Quarterly results from Popeyes,
+Wingstop, KFC and El Pollo Loco move the rankings; stale rankings on a site whose product
+is accuracy are worse than none.
+
+## Working conventions
+
+Develop on a branch, open a pull request against `main`, and let Vercel's preview build
+be part of the review. Keep `docs/` out of commits (it is git-ignored). Run `npm test`
+before pushing — a broken footnote anchor or an unresolvable source id is invisible in
+review but obvious to the script.

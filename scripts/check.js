@@ -1,0 +1,103 @@
+'use strict';
+/**
+ * Integrity checks for the generated site. Run after `node build.js`:
+ *
+ *   npm test
+ *
+ * These are cheap and catch the failures this codebase actually produces —
+ * every one of them has happened at least once during development.
+ */
+const fs = require('fs');
+const path = require('path');
+
+const ROOT = path.join(__dirname, '..');
+const OUT = path.join(ROOT, 'docs');
+const failures = [];
+const fail = (check, detail) => failures.push({ check, detail });
+
+if (!fs.existsSync(OUT)) {
+  console.error('docs/ does not exist — run `node build.js` first.');
+  process.exit(1);
+}
+
+function walk(dir, acc = []) {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) walk(p, acc); else acc.push(p);
+  }
+  return acc;
+}
+
+const files = walk(OUT);
+const present = new Set(files);
+const pages = files.filter((f) => f.endsWith('.html'));
+
+for (const file of pages) {
+  const html = fs.readFileSync(file, 'utf8');
+  const dir = path.dirname(file);
+  const rel = path.relative(ROOT, file);
+
+  // 1. Internal links and assets resolve. /_vercel/* is served by Vercel's edge
+  //    and deliberately does not exist in the repo.
+  for (const m of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
+    const href = m[1];
+    if (/^(https?:|mailto:|data:|#)/.test(href) || href.startsWith('/_vercel/')) continue;
+    const target = path.join(dir, href.split('#')[0]);
+    if (!present.has(target) && !present.has(path.join(target, 'index.html'))) {
+      fail('broken link', `${rel} -> ${href}`);
+    }
+  }
+
+  // 2. Every footnote superscript has its anchor on the same page. Breaks whenever
+  //    a page calls R.ref() but forgets R.render().
+  const refs = new Set([...html.matchAll(/href="#src-(\d+)"/g)].map((m) => m[1]));
+  const anchors = new Set([...html.matchAll(/id="src-(\d+)"/g)].map((m) => m[1]));
+  for (const r of refs) {
+    if (!anchors.has(r)) fail('orphan footnote', `${rel} references #src-${r} with no anchor`);
+  }
+
+  // 3. No page should be near-empty — catches a page module returning a broken body.
+  const text = html.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+  if (text.length < 900) fail('thin page', `${rel} has only ${text.length} characters of text`);
+
+  // 4. Rendering artefacts from a missing value or a bad template expression.
+  for (const token of ['undefined', '[object Object]', 'NaN']) {
+    if (html.includes(`>${token}<`) || html.includes(`"${token}"`)) {
+      fail('render artefact', `${rel} contains ${token}`);
+    }
+  }
+}
+
+// 5. Every src id referenced anywhere in data/ resolves against sources.json.
+//    An unresolvable id renders silently with no footnote, so nothing else catches it.
+const sources = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'sources.json'), 'utf8'));
+const dataBlob = fs.readdirSync(path.join(ROOT, 'data'))
+  .filter((f) => f !== 'sources.json' && f.endsWith('.json'))
+  .map((f) => fs.readFileSync(path.join(ROOT, 'data', f), 'utf8')).join('\n');
+const used = new Set([...dataBlob.matchAll(/"srcs?"\s*:\s*(?:"([^"]+)"|\[([^\]]*)\])/g)]
+  .flatMap((m) => (m[1] ? [m[1]] : m[2].split(',').map((s) => s.trim().replace(/"/g, '')).filter(Boolean))));
+for (const id of used) {
+  if (!sources[id]) fail('unresolvable source', `data/ references "${id}", absent from sources.json`);
+}
+
+// 6. The sitemap lists every page exactly once.
+const sitemap = fs.readFileSync(path.join(OUT, 'sitemap.xml'), 'utf8');
+const locs = (sitemap.match(/<loc>/g) || []).length;
+if (locs !== pages.length) fail('sitemap', `${locs} sitemap entries for ${pages.length} pages`);
+
+/* ---------- report ---------- */
+if (failures.length) {
+  const byCheck = {};
+  for (const f of failures) (byCheck[f.check] = byCheck[f.check] || []).push(f.detail);
+  console.error(`\n✗ ${failures.length} problem${failures.length === 1 ? '' : 's'}:\n`);
+  for (const [check, details] of Object.entries(byCheck)) {
+    console.error(`  ${check} (${details.length})`);
+    for (const d of details.slice(0, 10)) console.error(`    ${d}`);
+    if (details.length > 10) console.error(`    …and ${details.length - 10} more`);
+  }
+  console.error('');
+  process.exit(1);
+}
+
+console.log(`✓ ${pages.length} pages · links resolve · footnotes anchored · ${used.size} source ids resolve · sitemap complete`);
