@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-27T21:37:13.684Z",
+  "generated": "2026-08-28T17:59:59.508Z",
   "notice": "Every figure carries a source id resolvable against the sources object. Where a value is absent it has not been published; CSW does not estimate.",
   "sources": {
     "qsr50-2026-chicken": {
