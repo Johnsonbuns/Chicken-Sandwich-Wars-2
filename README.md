@@ -109,6 +109,11 @@ The recommended setup is importing the GitHub repository in the Vercel dashboard
 deploys every push to `main` automatically and gives every pull request a preview URL.
 The CLI alternative, from a local clone, is `vercel login` then `vercel --prod`.
 
+Canonical URLs and `sitemap.xml` follow the deployment: the build reads Vercel's
+`VERCEL_PROJECT_PRODUCTION_URL`, so attaching a custom domain is enough to move them.
+Set `CSW_SITE_ORIGIN` to override. Preview deployments canonicalise at production and
+ship `noindex`, so they never compete with the live site in search.
+
 **Web Analytics has to be switched on in the dashboard** (Project → Analytics → Enable).
 The script tag is already in the root layout and ships on all 77 pages, but
 `/_vercel/insights/script.js` returns 404 until analytics is enabled on the project — so

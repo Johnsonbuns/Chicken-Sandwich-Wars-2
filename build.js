@@ -63,6 +63,24 @@ const ticker = [
   { label: 'Wings wholesale', value: '$0.98/lb YE’25', dir: 'down' }
 ];
 
+/**
+ * Canonical origin.
+ *
+ * VERCEL_PROJECT_PRODUCTION_URL is the project's stable production domain — the
+ * custom domain once one is attached, the *.vercel.app production host before
+ * that. Deliberately not VERCEL_URL, which is unique per deployment and would
+ * canonicalise every page at a URL that dies with the next deploy.
+ *
+ * Preview builds still canonicalise at production and are marked noindex, so a
+ * preview never competes with the live site in search results.
+ */
+const SITE_ORIGIN = (
+  process.env.CSW_SITE_ORIGIN ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL && `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`) ||
+  'https://chickensandwichwars.com'
+).replace(/\/+$/, '');
+const IS_PRODUCTION = (process.env.VERCEL_ENV || 'production') === 'production';
+
 const ctx = { data, sources, ranking, scoreBySlug, brandBySlug, operatorsByBrand };
 
 /* ---------- run page modules ---------- */
@@ -81,7 +99,7 @@ function writeFile(rel, content) {
 }
 
 for (const pg of pages) {
-  writeFile(pg.path, layout.page({ ...pg, ticker }));
+  writeFile(pg.path, layout.page({ ...pg, ticker, origin: SITE_ORIGIN, noindex: !IS_PRODUCTION }));
 }
 
 /* copy static assets */
@@ -119,15 +137,18 @@ for (const b of data.brands) {
 }
 writeFile('assets/data/csw-brands.csv', csvRows.join('\n') + '\n');
 
-/* sitemap + robots + GitHub Pages passthrough */
-const base = 'https://chickensandwichwars.com/';
+/* sitemap + robots + no-Jekyll marker for plain static hosts */
+const base = SITE_ORIGIN + '/';
 writeFile('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages.map((p) => `  <url><loc>${base}${p.canonicalPath || p.path}</loc></url>`).join('\n')}
+${pages.map((p) => `  <url><loc>${base}${p.canonicalPath ?? p.path}</loc></url>`).join('\n')}
 </urlset>\n`);
-writeFile('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${base}sitemap.xml\n`);
+writeFile('robots.txt', IS_PRODUCTION
+  ? `User-agent: *\nAllow: /\nSitemap: ${base}sitemap.xml\n`
+  : 'User-agent: *\nDisallow: /\n');
 writeFile('.nojekyll', '');
 
 console.log(`Built ${pages.length} pages → docs/`);
+console.log(`  origin ${SITE_ORIGIN}${IS_PRODUCTION ? '' : ' (preview build — noindex)'}`);
 console.log(`  brands ${data.brands.length} · operators ${data.operators.length} · news ${data.news.length} · markets ${data.markets.length} · research ${data.research.length} · charts ${data.datacenter.length}`);
 console.log(`  rated brands ${ranking.rated.length} · unrated ${ranking.unrated.length} · sources ${Object.keys(sources).length}`);
