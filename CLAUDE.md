@@ -108,6 +108,13 @@ Vercel, configured by `vercel.json`: no install step, `node build.js`, output `d
 `cleanUrls` is deliberately omitted — enabling it would 308-redirect the ~40 brand and
 market pages that are linked with explicit `.html` paths.
 
+Canonical URLs and `sitemap.xml` are built from `SITE_ORIGIN` in `build.js`, which reads
+`CSW_SITE_ORIGIN` if set, else Vercel's `VERCEL_PROJECT_PRODUCTION_URL` (the stable
+production domain — deliberately *not* `VERCEL_URL`, which is unique per deployment),
+else falls back to `https://chickensandwichwars.com`. Preview builds canonicalise at
+production and emit `noindex` plus a disallow-all `robots.txt`, so a preview never
+competes with the live site in search.
+
 The Vercel Web Analytics tag lives in `lib/layout.js` as a plain
 `<script defer src="/_vercel/insights/script.js">`. It is the only root-absolute path in
 the output; everything else is relative so the site can be served from any subpath. The
