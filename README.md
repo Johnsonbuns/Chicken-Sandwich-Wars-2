@@ -100,6 +100,20 @@ The build fails loudly on malformed JSON and silently drops unknown source ids, 
 quick `grep` for the new key in `docs/` after building confirms it rendered.
 
 ## Deployment
-`docs/` is a self-contained static site with a `.nojekyll` marker. Point GitHub Pages at
-the `docs/` folder on the default branch, or upload the directory to any static host.
-Google Fonts are the only external request; everything else is local.
+
+The site is hosted on **Vercel**. `vercel.json` tells it there is nothing to install,
+`node build.js` is the build, and `docs/` is the output — the same command that runs
+locally.
+
+The recommended setup is importing the GitHub repository in the Vercel dashboard, which
+deploys every push to `main` automatically and gives every pull request a preview URL.
+The CLI alternative, from a local clone, is `vercel login` then `vercel --prod`.
+
+**Web Analytics has to be switched on in the dashboard** (Project → Analytics → Enable).
+The script tag is already in the root layout and ships on all 77 pages, but
+`/_vercel/insights/script.js` returns 404 until analytics is enabled on the project — so
+"the tag is there" is not the same as "analytics is recording".
+
+`docs/` is also self-contained and carries a `.nojekyll` marker, so it can be served by
+any static host without a build step. Google Fonts are the only external request;
+everything else is local.
