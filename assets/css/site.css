@@ -22,11 +22,20 @@ hr{border:0;border-top:1px solid var(--line);margin:2rem 0}
 
 /* ---------- header ---------- */
 .topbar{background:#000;border-bottom:1px solid var(--line);font-size:12px;letter-spacing:.04em}
-.topbar .wrap{display:flex;gap:18px;align-items:center;height:34px;overflow:hidden;white-space:nowrap}
-.topbar .tag{color:var(--accent);font-weight:700;text-transform:uppercase;flex:none}
-.ticker{display:flex;gap:26px;overflow-x:auto;scrollbar-width:none;color:var(--ink-2)}
-.ticker::-webkit-scrollbar{display:none}
+/* Full-bleed marquee: two identical tracks scroll left in lockstep, each
+   translating by its own width, so the second is in position the moment the
+   first clears. min-width keeps the loop seamless on very wide viewports. */
+.ticker{display:flex;align-items:center;height:34px;overflow:hidden;white-space:nowrap;color:var(--ink-2)}
+.ticker-track{display:flex;gap:26px;padding-right:26px;flex:none;min-width:100%;animation:ticker-scroll 70s linear infinite}
+.ticker:hover .ticker-track,.ticker:focus-within .ticker-track{animation-play-state:paused}
 .ticker b{color:var(--ink);font-weight:600}
+@keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+@media (prefers-reduced-motion:reduce){
+  .ticker{overflow-x:auto;scrollbar-width:none}
+  .ticker::-webkit-scrollbar{display:none}
+  .ticker-track{animation:none}
+  .ticker-track[aria-hidden]{display:none}
+}
 .up{color:var(--up)} .down{color:var(--down)} .flat{color:var(--flat)}
 
 header.site{position:sticky;top:0;z-index:50;background:rgba(10,11,13,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
