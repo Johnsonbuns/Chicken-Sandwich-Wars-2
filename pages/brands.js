@@ -128,12 +128,12 @@ module.exports = function brands(ctx) {
 <section class="section" style="padding-bottom:20px"><div class="wrap">
   <div class="eyebrow">Brand profile</div>
   <div style="display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap">
-    <div style="flex:1;min-width:280px">
+    <div style="flex:1;min-width:min(280px,100%)">
       <h1 style="margin-bottom:10px">${esc(b.name)}</h1>
       <div class="tags" style="margin-bottom:14px">${C.momentumBadge(b.momentum)}${b.tags.map((t) => C.badge(t)).join('')}</div>
       <p class="dek">${esc(b.franchiseModel)}</p>
     </div>
-    ${sc && sc.rated ? `<div class="panel" style="min-width:320px;flex:0 1 380px">
+    ${sc && sc.rated ? `<div class="panel" style="min-width:min(320px,100%);flex:0 1 380px">
       <div class="panel-head"><h3>CSW Score</h3><a class="more" style="margin-left:auto;font-size:12px" href="../methodology/">Methodology →</a></div>
       <div class="panel-body">
         <div class="scorebox" style="margin-bottom:14px">
@@ -142,7 +142,7 @@ module.exports = function brands(ctx) {
         </div>
         ${C.scoreBars(sc.parts)}
       </div>
-    </div>` : `<div class="panel" style="min-width:280px;flex:0 1 340px"><div class="panel-head"><h3>CSW Score</h3></div><div class="panel-body"><p class="note" style="margin:0">Unrated. Fewer than three of the five scoring components have been published for this brand. CSW does not fill that gap with an estimate.</p></div></div>`}
+    </div>` : `<div class="panel" style="min-width:min(280px,100%);flex:0 1 340px"><div class="panel-head"><h3>CSW Score</h3></div><div class="panel-body"><p class="note" style="margin:0">Unrated. Fewer than three of the five scoring components have been published for this brand. CSW does not fill that gap with an estimate.</p></div></div>`}
   </div>
 
   <div class="stats" style="margin-top:26px">
