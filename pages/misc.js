@@ -48,7 +48,7 @@ module.exports = function misc(ctx) {
     <input class="searchinput" data-filter-text placeholder="Filter by brand or market…" style="max-width:300px">
   </div>
 
-  ${C.table({ cols: ['Announced', 'Brand', 'Operator', 'Market', 'Commitment', 'Timeline'], rows }).replace('<table>', '<table data-sortable>')}
+  ${C.table({ cols: [{ label: 'Announced', hideSmall: true }, 'Brand', { label: 'Operator', hideSmall: true }, 'Market', 'Commitment', 'Timeline'], rows }).replace('<table>', '<table data-sortable>')}
 
   <div class="cta" style="margin-top:26px">
     <h3>Signed a development agreement?</h3>
@@ -77,7 +77,7 @@ module.exports = function misc(ctx) {
     <div>
       <h2>Closures</h2>
       ${C.table({
-        cols: ['Period', 'Brand', 'Geography', { label: 'Units', num: true }, 'Detail'],
+        cols: ['Period', { label: 'Brand', id: true }, { label: 'Geography', hideSmall: true }, { label: 'Units', num: true }, 'Detail'],
         rows: data.movement.closures.map((m) => [
           esc(m.date), `<a href="../brands/${m.brand}.html"><b>${esc(m.brandName)}</b></a>`, esc(m.location),
           m.count ? `<b class="down">${num(m.count)}</b>` : '—', `<span class="note">${esc(m.detail)}${R.ref(m.src)}</span>`
@@ -86,7 +86,7 @@ module.exports = function misc(ctx) {
 
       <h2 style="margin-top:40px">Openings</h2>
       ${C.table({
-        cols: ['Date', 'Brand', 'Location', 'Detail'],
+        cols: ['Date', { label: 'Brand', id: true }, 'Location', 'Detail'],
         rows: data.movement.openings.map((m) => [
           esc(m.date), `<a href="../brands/${m.brand}.html"><b>${esc(m.brandName)}</b></a>`, esc(m.location),
           `<span class="note">${esc(m.detail)}${R.ref(m.src)}</span>`
@@ -223,7 +223,7 @@ module.exports = function misc(ctx) {
   <h1>Franchise Opportunities</h1>
   <p class="dek">Every chicken franchisor will show you their best number. This table shows the same four numbers for all of them — average unit volume, unit growth, same-store sales and franchise structure — sourced and dated.</p>
 
-  ${C.table({ cols: ['Brand', { label: 'AUV', num: true }, { label: 'Unit growth', num: true }, { label: 'Comps', num: true }, 'Franchise structure'], rows })
+  ${C.table({ cols: ['Brand', { label: 'AUV', num: true }, { label: 'Unit growth', num: true }, { label: 'Comps', num: true }, { label: 'Franchise structure', hideSmall: true }], rows })
     .replace('<table>', '<table data-sortable>')}
 
   <div class="callout" style="margin-top:24px">
@@ -479,7 +479,7 @@ module.exports = function misc(ctx) {
   <h1>Industry Events</h1>
   <p class="dek">Where chicken operators, franchisors, brokers and capital actually meet. CSW lists only events with dates published by the organiser.</p>
   ${C.table({
-    cols: ['Event', 'Date', 'Location', 'Why it matters'],
+    cols: ['Event', 'Date', { label: 'Location', hideSmall: true }, 'Why it matters'],
     rows: data.events.map((e) => [
       `<b>${esc(e.name)}</b>${R.ref(e.src)}`, esc(e.date), esc(e.location), `<span class="note">${esc(e.why)}</span>`
     ])

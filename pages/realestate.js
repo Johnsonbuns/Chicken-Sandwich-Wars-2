@@ -45,7 +45,7 @@ module.exports = function realestate(ctx) {
 
       <h2 style="margin-top:36px">Recent comparable sales</h2>
       ${C.table({
-        cols: ['Date', 'Brand', 'Location', { label: 'Price', num: true }, { label: 'Cap', num: true }],
+        cols: ['Date', { label: 'Brand', id: true }, 'Location', { label: 'Price', num: true }, { label: 'Cap', num: true }],
         rows: data.transactions.property.map((t) => [
           esc(t.date), esc(t.brand), esc(t.location) + R.ref(t.src), usd(t.price), t.capRate ? t.capRate.toFixed(2) + '%' : '—'
         ])
@@ -108,7 +108,7 @@ module.exports = function realestate(ctx) {
 
   <h2 style="margin-top:34px">Real estate</h2>
   ${C.table({
-    cols: ['Date', 'Type', 'Brand', 'Location', { label: 'Price', num: true }, { label: 'Cap', num: true }, 'Terms'],
+    cols: ['Date', { label: 'Type', hideSmall: true }, { label: 'Brand', id: true }, 'Location', { label: 'Price', num: true }, { label: 'Cap', num: true }, { label: 'Terms', hideSmall: true }],
     rows: data.transactions.property.map((t) => [
       esc(t.date), esc(t.type), `<b>${esc(t.brand)}</b>`, esc(t.location) + R2.ref(t.src),
       usd(t.price), t.capRate ? t.capRate.toFixed(2) + '%' : '—',
@@ -118,7 +118,7 @@ module.exports = function realestate(ctx) {
 
   <h2 style="margin-top:40px">Corporate, franchise portfolio and M&amp;A</h2>
   ${C.table({
-    cols: ['Date', 'Type', 'Target', 'Acquirer', { label: 'Value', num: true }],
+    cols: ['Date', { label: 'Type', hideSmall: true }, { label: 'Target', id: true }, 'Acquirer', { label: 'Value', num: true }],
     rows: data.transactions.corporate.map((t) => [
       esc(t.date), esc(t.type), `<b>${esc(t.target)}</b><div class="note">${esc(t.detail)}${R2.ref(t.src)}</div>`,
       esc(t.acquirer), t.value ? usd(t.value) : '<span class="note">Not disclosed</span>'

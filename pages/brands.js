@@ -57,7 +57,7 @@ module.exports = function brands(ctx) {
   </div>
 
   ${C.table({
-    cols: ['Brand', { label: 'U.S. units', num: true }, { label: 'Systemwide sales', num: true }, { label: 'AUV', num: true }, { label: 'Unit growth', num: true }, 'Read', { label: 'CSW Score', num: true }],
+    cols: ['Brand', { label: 'U.S. units', num: true }, { label: 'Systemwide sales', num: true, hideSmall: true }, { label: 'AUV', num: true }, { label: 'Unit growth', num: true }, { label: 'Read', hideSmall: true }, { label: 'CSW Score', num: true }],
     rows,
     cls: 'sortable'
   }).replace('<table>', '<table data-sortable>')}
@@ -174,17 +174,17 @@ module.exports = function brands(ctx) {
       </div></div>
 
       ${brandProps.length ? `<h3 style="margin-top:26px">Verified transactions</h3>
-      ${C.table({ cols: ['Date', 'Location', { label: 'Price', num: true }, { label: 'Cap', num: true }, 'Terms'], rows: brandProps.map((t) => [
+      ${C.table({ cols: ['Date', { label: 'Location', id: true }, { label: 'Price', num: true }, { label: 'Cap', num: true }, 'Terms'], rows: brandProps.map((t) => [
         esc(t.date), esc(t.location) + R2.ref(t.src), usd(t.price), t.capRate ? t.capRate.toFixed(2) + '%' : '—', esc(t.term || '—')
       ]) })}` : ''}
 
       ${brandExp.length ? `<h3 style="margin-top:26px">Development pipeline</h3>
-      ${C.table({ cols: ['Announced', 'Market', 'Commitment', 'Timeline'], rows: brandExp.map((e) => [
+      ${C.table({ cols: ['Announced', { label: 'Market', id: true }, 'Commitment', 'Timeline'], rows: brandExp.map((e) => [
         esc(e.announced), esc(e.market) + R2.ref(e.src), esc(e.unitsLabel), esc(e.timeline || '—')
       ]) })}` : ''}
 
       ${(brandOpen.length || brandClose.length) ? `<h3 style="margin-top:26px">Unit movement</h3>
-      ${C.table({ cols: ['Date', 'Type', 'Detail'], rows: [
+      ${C.table({ cols: ['Date', 'Type', { label: 'Detail', id: true }], rows: [
         ...brandOpen.map((m) => [esc(m.date), C.badge('Opening', 'good'), `<b>${esc(m.location)}</b> — ${esc(m.detail)}${R2.ref(m.src)}`]),
         ...brandClose.map((m) => [esc(m.date), C.badge('Closure', 'bad'), `<b>${esc(m.location)}</b>${m.count ? ` (${num(m.count)})` : ''} — ${esc(m.detail)}${R2.ref(m.src)}`])
       ] })}` : ''}

@@ -167,7 +167,32 @@
       if (text) text.addEventListener('input', apply);
     });
 
-    /* ---------- table sorting ---------- */
+    /* ---------- table scroll affordance ----------
+     Only marks a table as scrollable when it measurably is, so a table that
+     fits never tells the reader to swipe. Re-measured on resize, on font load
+     (webfont metrics move column widths) and when the column toggle changes. */
+  var scrollers = [];
+  document.querySelectorAll('.tablescroll').forEach(function (sc) {
+    var wrap = sc.querySelector('.tablewrap');
+    if (!wrap) return;
+    function sync() {
+      var over = wrap.scrollWidth - wrap.clientWidth;
+      sc.classList.toggle('is-scrollable', over > 4);
+      sc.classList.toggle('at-end', wrap.scrollLeft >= over - 4);
+    }
+    wrap.addEventListener('scroll', sync, { passive: true });
+    var toggle = sc.querySelector('.colstoggle');
+    if (toggle) toggle.addEventListener('change', function () { setTimeout(sync, 0); });
+    scrollers.push(sync);
+    sync();
+  });
+  function syncScrollers() { scrollers.forEach(function (f) { f(); }); }
+  if (scrollers.length) {
+    window.addEventListener('resize', syncScrollers);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncScrollers).catch(function () {});
+  }
+
+  /* ---------- table sorting ---------- */
     document.querySelectorAll('table[data-sortable] th').forEach(function (th, i) {
       th.style.cursor = 'pointer';
       th.title = 'Sort';

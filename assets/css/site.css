@@ -110,6 +110,13 @@ a.card:hover h3{color:var(--accent)}
 .pad{padding:16px 18px}
 
 /* ---------- tables ---------- */
+/* .tablescroll stacks the scroller, an edge fade and a hint line. Both extras
+   are display:none here, so on desktop this is the plain bordered box it has
+   always been -- the grid just gives the fade somewhere to sit without
+   absolute positioning or height arithmetic. */
+.tablescroll{display:grid;grid-template-columns:minmax(0,1fr)}
+.tablescroll > .tablewrap{grid-row:1;grid-column:1}
+.tablescroll > .tablefade,.tablescroll > .tablehint{display:none}
 .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
 table{border-collapse:collapse;width:100%;font-size:14px}
 th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:500;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--bg-2);position:sticky;top:0}
@@ -250,6 +257,37 @@ footer.site .fine{margin-top:32px;padding-top:20px;border-top:1px solid var(--li
   .sticky{position:static}
   footer.site .cols{grid-template-columns:repeat(2,1fr)}
 }
+/* Table scroll was invisible everywhere below the desktop layout: mobile and
+   tablet browsers hide scrollbars, so 36 of 52 tables cut their content off
+   with nothing to say so -- the brands index showed 351px of an 893px table.
+   The fade covers every width where a table can scroll, not only phones; the
+   worded hints further down are phone-specific. */
+@media(max-width:920px){
+  .tablescroll > .tablefade{grid-row:1;grid-column:1;justify-self:end;align-self:stretch;
+    width:56px;margin:1px 1px 1px 0;pointer-events:none;
+    border-radius:0 var(--radius) var(--radius) 0;
+    background:linear-gradient(to left,var(--panel) 18%,rgba(20,23,28,0));
+    opacity:0;transition:opacity .18s ease}
+  .tablescroll.is-scrollable > .tablefade{display:block;opacity:1}
+  .tablescroll.at-end > .tablefade{opacity:0}
+}
+
+/* 761-920px -- an iPad in portrait is 810 or 820pt, and lands here. The full
+   desktop masthead does not fit: logo, five nav items and a labelled search
+   button need 903px, so below that the page scrolled sideways exactly as
+   phones did -- 142px of overrun at 761px. This band keeps the horizontal nav
+   rather than dropping to the drawer, since a 900px-wide laptop window should
+   not suddenly grow a hamburger; it only tightens it enough to fit. */
+@media(min-width:761px) and (max-width:920px){
+  .masthead{gap:16px}
+  .logo{font-size:16px;gap:8px;min-width:0}
+  .logo .mark{width:23px;height:23px;font-size:13px}
+  nav.primary{gap:14px;font-size:12px;letter-spacing:.05em}
+  .searchbtn span{display:none}
+  .searchbtn{padding:7px 10px}
+  .subnav .wrap{gap:16px;font-size:12px}
+}
+
 @media(max-width:760px){
   /* ---- header ----
      The masthead used to measure 440px against a 393px viewport, which put the
@@ -342,10 +380,38 @@ footer.site .fine{margin-top:32px;padding-top:20px;border-top:1px solid var(--li
   .chip{min-height:36px;padding:6px 14px}
   .filters .searchinput{max-width:none;flex:1 1 100%}
 
+  /* width:100% on a table narrower than its content crushes whichever columns
+     can wrap: the numeric ones held their nowrap width and the name column
+     absorbed the entire shortfall, so "Krispy Krunchy Chicken" came out over
+     three lines. A floor under the name column stops that. Long labels still
+     wrap rather than forcing the column open, and the extra scroll it can cost
+     is now signposted. */
+  .tablewrap .idcol{min-width:min(48vw,180px)}
+  /* When the first column is not the identity column it is a rank or a date --
+     always short, and nothing is gained by letting "2026-07" break in half. */
+  .tablewrap td:first-child:not(.idcol),.tablewrap th:first-child:not(.idcol){white-space:nowrap}
+  .tablehint{grid-row:2;grid-column:1;margin:8px 0 0;font-family:var(--mono);
+    font-size:11px;letter-spacing:.06em;line-height:1.5;color:var(--ink-3)}
+  .tablescroll.is-scrollable > [data-swipehint]{display:block}
+  .tablewrap th{position:static}
+
   .overlay{padding:6vh 12px}
   .searchpanel input{font-size:16px}
   #searchResults{max-height:60vh}
   #searchResults a{padding:13px 16px}
+}
+
+@media(max-width:640px){
+  /* Columns marked hideSmall step aside here rather than sitting off-screen.
+     Nothing is lost: the label below every such table restores the full set,
+     and it is a checkbox, so it works with JavaScript switched off. */
+  .hide-sm{display:none}
+  .tablescroll > label.tablehint{display:block;cursor:pointer;padding:9px 0 0;margin:0}
+  label.tablehint b{color:var(--accent);font-weight:500;text-decoration:underline;text-underline-offset:3px}
+  .tablehint .th-b{display:none}
+  .colstoggle:checked ~ .tablehint .th-a{display:none}
+  .colstoggle:checked ~ .tablehint .th-b{display:inline}
+  .colstoggle:checked ~ .tablewrap .hide-sm{display:table-cell}
 }
 
 @media(max-width:520px){
