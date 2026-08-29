@@ -39,8 +39,8 @@ module.exports = function home(ctx) {
   const body = `
 <section class="hero"><div class="wrap">
   <div class="eyebrow">Independent industry intelligence</div>
-  <h1>Who is winning the Chicken Sandwich Wars?</h1>
-  <p class="dek">Chicken Sandwich Wars tracks the brands, operators, real estate and consumer trends shaping America's chicken restaurant industry — with every figure sourced, dated and attributed.</p>
+  <h1>Who's Winning in Chicken?</h1>
+  <p class="dek">We track the brands, operators, real estate and consumer trends shaping America's chicken restaurant industry</p>
   <div class="hero-stats">
     <div class="cell"><div class="v">+5.3%${R.ref('rbo-chicken-slows')}</div><div class="l">Chicken chain sales growth, 2025 — down from 9.1% in 2024</div></div>
     <div class="cell"><div class="v">102.8 lbs${R.ref('usda-ers-percapita')}</div><div class="l">Projected 2026 U.S. per-capita chicken availability — a record</div></div>
