@@ -6,6 +6,11 @@
   --accent:#F2A413; --accent-2:#E5484D; --hot:#FF5A1F;
   --up:#3DD68C; --down:#FF6369; --flat:#8A93A0;
   --max:1240px; --radius:4px;
+  /* Vertical rhythm. Every gap inside a boxed component comes from this scale,
+     so a label sits closer to its heading than the heading does to its body and
+     the grouping is deliberate rather than whatever the leading happened to
+     leave behind. */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px; --sp-7:32px;
   --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   --display:'Archivo','Inter',system-ui,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -64,19 +69,30 @@ nav.primary a:hover,nav.primary a.on{color:var(--ink);border-bottom-color:var(--
 .drawer,.drawer-scrim{display:none}
 
 /* ---------- type ---------- */
-h1,h2,h3,h4{font-family:var(--display);font-weight:800;letter-spacing:-.02em;line-height:1.12;margin:0 0 .5em}
-h1{font-size:clamp(30px,4.4vw,50px)}
-h2{font-size:clamp(22px,2.6vw,31px)}
-h3{font-size:20px}
-h4{font-size:16px;letter-spacing:0}
+/* One line-height for four sizes cannot be right for all of them: 1.12 is a
+   display setting, and on a 17px card title that wraps to two lines it puts the
+   descenders of one line into the ascenders of the next. Leading tightens as
+   size grows, which is the standard relationship. */
+h1,h2,h3,h4{font-family:var(--display);font-weight:800;letter-spacing:-.02em;margin:0 0 .5em}
+h1{font-size:clamp(30px,4.4vw,50px);line-height:1.08}
+h2{font-size:clamp(22px,2.6vw,31px);line-height:1.18}
+h3{font-size:20px;line-height:1.3}
+h4{font-size:16px;letter-spacing:0;line-height:1.35}
 p{margin:0 0 1rem}
 .dek{color:var(--ink-2);font-size:clamp(16px,1.6vw,19px);line-height:1.55;max-width:70ch}
-.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
-.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
-.lede{font-size:18px;color:var(--ink-2)}
+/* Overlines. Both used to inherit the 1.6 body leading, which on an 11px line
+   is 3.3px of half-leading above and below -- so the gap to the heading under
+   them was an accident of the line box rather than a decision, and read as the
+   label touching the title. Tight leading plus an explicit margin makes the
+   pair a group: label to heading is smaller than heading to body.
+   The margin is inert on the few `<span class="kicker">` uses, since vertical
+   margins do not apply to inline boxes. */
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);line-height:1.4;margin-bottom:12px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);line-height:1.4;margin-bottom:6px}
+.lede{font-size:18px;color:var(--ink-2);line-height:1.6}
 .section{padding:44px 0;border-top:1px solid var(--line)}
 .section:first-of-type{border-top:0}
-.section-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.section-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:var(--sp-6)}
 .section-head h2{margin:0}
 .section-head .more{margin-left:auto;font-size:13px;color:var(--accent);font-weight:600}
 
@@ -89,27 +105,37 @@ p{margin:0 0 1rem}
 .hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:32px}
 .hero-stats .cell{background:var(--bg);padding:16px 18px}
 .hero-stats .v{font-family:var(--display);font-size:26px;font-weight:800;letter-spacing:-.02em}
-.hero-stats .l{font-size:12px;color:var(--ink-3);margin-top:2px;line-height:1.35}
+.hero-stats .l{font-size:12px;color:var(--ink-3);margin-top:5px;line-height:1.4}
 
 /* ---------- grid + cards ---------- */
-.grid{display:grid;gap:20px}
+/* The gutter between cards is wider than the padding inside them, so the cards
+   read as separate objects rather than one field of text. */
+.grid{display:grid;gap:var(--sp-6)}
 .g2{grid-template-columns:repeat(2,1fr)}
 .g3{grid-template-columns:repeat(3,1fr)}
 .g4{grid-template-columns:repeat(4,1fr)}
 .split{display:grid;grid-template-columns:1.55fr .95fr;gap:34px;align-items:start}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:var(--sp-5)}
 .card.tight{padding:14px 16px}
-.card h3{font-size:17px;margin-bottom:8px}
-.card p:last-child{margin-bottom:0}
-.card .meta{font-size:12px;color:var(--ink-3);font-family:var(--mono)}
+.card h3{font-size:17px;line-height:1.3;margin-bottom:var(--sp-2)}
+.card.tight .kicker{margin-bottom:var(--sp-1)}
+/* A list is a body element like any other: its 1em top margin stacked on the
+   heading's own and opened a gap twice the size of the one under every other
+   card heading. */
+.card ol,.card ul{margin-top:0}
+.card > :last-child{margin-bottom:0}
+/* Card footer meta -- a count or a date under the description. Far enough to
+   read as a separate line of the card, not another paragraph of it. */
+.card .meta{font-size:12px;color:var(--ink-3);font-family:var(--mono);margin-top:14px}
 a.card{display:block}
 a.card:hover{border-color:var(--line-2);background:var(--panel-2);color:inherit}
 a.card:hover h3{color:var(--accent)}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}
-.panel-head{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.panel-head{padding:14px var(--sp-5);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
 .panel-head h3{margin:0;font-size:15px;letter-spacing:0}
-.panel-body{padding:16px 18px}
-.pad{padding:16px 18px}
+.panel-body{padding:18px var(--sp-5)}
+.panel-body > :last-child{margin-bottom:0}
+.pad{padding:18px var(--sp-5)}
 
 /* ---------- tables ---------- */
 /* .tablescroll stacks the scroller, an edge fade and a hint line. Both extras
@@ -143,19 +169,26 @@ td.name{font-weight:600}
 sup.ref{font-family:var(--mono);font-size:9.5px;color:var(--accent);margin-left:3px;vertical-align:super}
 sup.ref a{color:var(--accent)}
 .srclist{font-size:12.5px;color:var(--ink-3);line-height:1.7}
-.srclist li{margin-bottom:4px}
+.srclist li{margin-bottom:6px}
 .asof{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
-.note{font-size:13px;color:var(--ink-3);line-height:1.6}
+/* Secondary body copy -- card descriptions, panel notes, form intros. 13px is
+   below the size this much running prose wants; 14px at slightly tighter
+   leading is the same block of text, easier to read, and closer in weight to
+   the heading it sits under. */
+.note{font-size:14px;color:var(--ink-3);line-height:1.55;font-weight:400}
 .callout{border-left:2px solid var(--accent);padding:2px 0 2px 16px;color:var(--ink-2);margin:18px 0}
-.analysis{background:linear-gradient(180deg,rgba(242,164,19,.06),transparent);border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:var(--radius);padding:18px 20px}
-.analysis .kicker{margin-bottom:8px}
+.analysis{background:linear-gradient(180deg,rgba(242,164,19,.06),transparent);border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:var(--radius);padding:var(--sp-5)}
+.analysis .kicker{margin-bottom:var(--sp-2)}
+.analysis > :last-child{margin-bottom:0}
 
 /* ---------- stat blocks ---------- */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
-.stat{background:var(--panel);padding:14px 16px}
+.stat{background:var(--panel);padding:var(--sp-4)}
 .stat .v{font-family:var(--display);font-size:23px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
-.stat .l{font-size:11.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);margin-top:6px}
-.stat .n{font-size:12px;color:var(--ink-3);margin-top:6px;line-height:1.45}
+/* The label names the value, the note qualifies it -- an equal gap either side
+   of the label left it ambiguous which it belonged to. */
+.stat .l{font-size:11.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);line-height:1.4;margin-top:var(--sp-1)}
+.stat .n{font-size:12px;color:var(--ink-3);margin-top:var(--sp-2);line-height:1.45}
 
 /* ---------- score ---------- */
 .scorebox{display:flex;align-items:center;gap:18px}
@@ -177,11 +210,11 @@ sup.ref a{color:var(--accent)}
 .chart .lbl{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* ---------- news ---------- */
-.newsitem{border-bottom:1px solid var(--line);padding:18px 0}
+.newsitem{border-bottom:1px solid var(--line);padding:var(--sp-5) 0}
 .newsitem:last-child{border-bottom:0}
-.newsitem .head{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
-.newsitem h3{font-size:19px;margin:0 0 6px;line-height:1.25}
-.newsitem .means{color:var(--ink-2);font-size:14.5px;line-height:1.62}
+.newsitem .head{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:var(--sp-2)}
+.newsitem h3{font-size:19px;margin:0 0 var(--sp-2);line-height:1.28}
+.newsitem .means{color:var(--ink-2);font-size:15px;line-height:1.6;margin-bottom:0}
 .newsitem .means b{color:var(--ink)}
 .date{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.05em}
 
@@ -232,16 +265,20 @@ footer.site .fine{margin-top:32px;padding-top:20px;border-top:1px solid var(--li
 .list-reset{list-style:none;margin:0;padding:0}
 .bullets{padding-left:18px;color:var(--ink-2)}
 .bullets li{margin-bottom:7px}
-.empty{border:1px dashed var(--line-2);border-radius:var(--radius);padding:26px;text-align:center;color:var(--ink-3)}
-.empty h3{color:var(--ink-2)}
+.empty{border:1px dashed var(--line-2);border-radius:var(--radius);padding:var(--sp-7) var(--sp-6);text-align:center;color:var(--ink-3)}
+.empty h3{color:var(--ink-2);margin-bottom:var(--sp-2)}
 .prose{max-width:74ch}
-.prose h2{margin-top:2em;font-size:24px}
-.prose p{font-size:16.5px;color:var(--ink-2)}
+.prose h2{margin-top:2em;margin-bottom:.55em;font-size:24px}
+/* Long-form measure is 74ch; at that width 16.5px wants more leading than the
+   1.6 the body sets, or the eye loses the line return. */
+.prose p{font-size:16.5px;color:var(--ink-2);line-height:1.7}
 .toc{font-size:13.5px;color:var(--ink-2)}
 .toc a{display:block;padding:5px 0;border-bottom:1px solid var(--line)}
 .sticky{position:sticky;top:120px}
-.cta{background:linear-gradient(120deg,rgba(242,164,19,.12),rgba(229,72,77,.08));border:1px solid var(--line-2);border-radius:var(--radius);padding:24px}
-.cta h3{margin-bottom:6px}
+.cta{background:linear-gradient(120deg,rgba(242,164,19,.12),rgba(229,72,77,.08));border:1px solid var(--line-2);border-radius:var(--radius);padding:var(--sp-6)}
+.cta h3{margin-bottom:var(--sp-2)}
+.cta p{margin-bottom:18px}
+.cta > :last-child{margin-bottom:0}
 
 @media(max-width:1000px){
   .g4{grid-template-columns:repeat(2,1fr)}
@@ -354,7 +391,8 @@ footer.site .fine{margin-top:32px;padding-top:20px;border-top:1px solid var(--li
   footer.site .cols{grid-template-columns:1fr 1fr;gap:22px}
   footer.site .cols > *{min-width:0}
   .cta{padding:18px}
-  .card{padding:16px}
+  .card{padding:var(--sp-4)}
+  .grid{gap:18px}
   .panel-body,.pad{padding:14px 16px}
   /* A single non-wrapping flex row of title + badge + score is wider than a
      phone once a brand name is long. */
@@ -421,7 +459,12 @@ footer.site .fine{margin-top:32px;padding-top:20px;border-top:1px solid var(--li
    Grid children default to min-width:auto, so a wide table inside an aside can
    force its track past its fr share and squeeze the main column. */
 .split > *, .grid > *, .hero-stats > *, .stats > *{min-width:0}
+/* An aside panel has roughly 440px to divide. table-layout:fixed splits that
+   into equal columns, which left a street address 130px wide and four lines
+   deep beside two figures that need eighty. Sizing the numeric columns to what
+   they actually hold gives the identity column the remainder. */
 .panel table{table-layout:fixed;width:100%}
+.panel table td.num,.panel table th.num{width:88px}
 .panel table td{word-wrap:break-word;overflow-wrap:anywhere}
 .tablewrap table{table-layout:auto}
 [id^="src-"], .prose h2, section[id]{scroll-margin-top:130px}
