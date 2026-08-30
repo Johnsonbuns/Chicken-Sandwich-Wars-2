@@ -1,0 +1,111 @@
+'use strict';
+/**
+ * Shared helpers for the database scripts. No dependencies, by design: the build box
+ * has no node_modules, and keeping the tooling dependency-free keeps it runnable
+ * anywhere Node 18 runs.
+ */
+const crypto = require('crypto');
+const { execFileSync } = require('child_process');
+
+/* ---------- deterministic ids ----------
+ * Entities get a UUIDv5 derived from their natural key, so re-running the import
+ * produces the same ids every time. That is what makes the import idempotent and the
+ * round-trip stable: no lookup tables, no ordering dependence, no surprise churn in
+ * the exported JSON because a row was recreated.
+ */
+const NS = 'a4f1b0c2-5e7d-4a3b-9c8e-1d2f3a4b5c6d'; // fixed CSW namespace
+
+function uuid5(name) {
+  const nsBytes = Buffer.from(NS.replace(/-/g, ''), 'hex');
+  const hash = crypto.createHash('sha1').update(Buffer.concat([nsBytes, Buffer.from(name, 'utf8')])).digest();
+  const b = Buffer.from(hash.subarray(0, 16));
+  b[6] = (b[6] & 0x0f) | 0x50;          // version 5
+  b[8] = (b[8] & 0x3f) | 0x80;          // RFC 4122 variant
+  const h = b.toString('hex');
+  return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;
+}
+const id = (kind, key) => uuid5(`${kind}:${key}`);
+
+/* ---------- SQL literals ---------- */
+const q = (v) => {
+  if (v === null || v === undefined || v === '') return 'null';
+  return `'${String(v).replace(/'/g, "''")}'`;
+};
+const qn = (v) => (v === null || v === undefined || v === '' || Number.isNaN(v) ? 'null' : String(v));
+const qb = (v) => (v === null || v === undefined ? 'null' : v ? 'true' : 'false');
+const qa = (arr) => (!arr || !arr.length ? 'null' : `array[${arr.map(q).join(',')}]`);
+
+/* Emits an INSERT ... ON CONFLICT DO NOTHING so the seed can be re-applied safely. */
+function insert(table, columns, rows, conflict = '(id)') {
+  if (!rows.length) return `-- ${table}: no rows\n`;
+  const body = rows.map((r) => `  (${r.join(', ')})`).join(',\n');
+  return `insert into ${table} (${columns.join(', ')}) values\n${body}\non conflict ${conflict} do nothing;\n`;
+}
+
+/* ---------- period parsing ----------
+ * asOf values are display labels, not dates: 'FY2025', 'Jul 2025 - Jul 2026', '2025 FDD',
+ * 'YE2025 target', 'Entering 2026'. The label is always preserved verbatim; these dates
+ * are a best-effort convenience for querying and are left null when ambiguous.
+ */
+const MONTHS = { jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12 };
+function parsePeriod(label) {
+  if (!label) return { start: null, end: null };
+  const s = String(label).trim();
+  let m;
+  if ((m = s.match(/^(?:FY|YE)\s?(\d{4})/i)))       return { start: `${m[1]}-01-01`, end: `${m[1]}-12-31` };
+  if ((m = s.match(/^Q([1-4])\s?(\d{4})$/i))) {
+    const qtr = +m[1]; const endM = qtr * 3;
+    return { start: `${m[2]}-${String(endM - 2).padStart(2,'0')}-01`,
+             end: `${m[2]}-${String(endM).padStart(2,'0')}-${endM === 6 || endM === 9 ? 30 : 31}` };
+  }
+  if ((m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/)))   return { start: s, end: s };
+  if ((m = s.match(/^(\d{4})-(\d{2})$/)))           return { start: `${s}-01`, end: null };
+  if ((m = s.match(/^([A-Za-z]{3})[a-z]*\s(\d{4})$/))) {
+    const mo = MONTHS[m[1].toLowerCase()];
+    if (mo) return { start: `${m[2]}-${String(mo).padStart(2,'0')}-01`, end: null };
+  }
+  if ((m = s.match(/^(\d{4})$/)))                   return { start: `${s}-01-01`, end: `${s}-12-31` };
+  return { start: null, end: null };   // deliberately unparsed
+}
+
+/* ---------- database access ----------
+ * Two backends behind one call.
+ *   psql     - local Postgres, used by the round-trip check and by CI
+ *   postgrest- Supabase over HTTPS with global fetch, no client library
+ */
+function makeClient(opts = {}) {
+  const mode = opts.mode || (process.env.SUPABASE_URL ? 'postgrest' : 'psql');
+  if (mode === 'psql') {
+    const conn = opts.psql || process.env.CSW_PSQL || '-h /tmp -p 5433 -U postgres -d cswdata';
+    const args = conn.split(/\s+/);
+    return {
+      mode,
+      async rows(table, select = '*') {
+        const sql = `select coalesce(json_agg(t), '[]'::json) from (select ${select} from ${table}) t`;
+        const out = execFileSync('psql', [...args, '-tAc', sql], { encoding: 'utf8', maxBuffer: 1 << 28 });
+        return JSON.parse(out.trim());
+      },
+      async exec(sql) {
+        return execFileSync('psql', [...args, '-v', 'ON_ERROR_STOP=1', '-q', '-c', sql],
+          { encoding: 'utf8', maxBuffer: 1 << 28 });
+      }
+    };
+  }
+  const url = (opts.url || process.env.SUPABASE_URL || '').replace(/\/+$/, '');
+  const key = opts.key || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+  if (!url || !key) throw new Error('SUPABASE_URL and a key are required for postgrest mode');
+  return {
+    mode,
+    async rows(table, select = '*') {
+      const bare = table.replace(/^public\./, '');
+      const r = await fetch(`${url}/rest/v1/${bare}?select=${encodeURIComponent(select)}`, {
+        headers: { apikey: key, Authorization: `Bearer ${key}`, Accept: 'application/json' }
+      });
+      if (!r.ok) throw new Error(`${table}: ${r.status} ${await r.text()}`);
+      return r.json();
+    },
+    async exec() { throw new Error('postgrest mode cannot execute arbitrary SQL; use the SQL Editor'); }
+  };
+}
+
+module.exports = { id, uuid5, q, qn, qb, qa, insert, parsePeriod, makeClient };
