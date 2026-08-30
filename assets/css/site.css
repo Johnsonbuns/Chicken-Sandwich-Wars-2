@@ -487,3 +487,7 @@ footer.site .fine{margin-top:32px;padding-top:20px;border-top:1px solid var(--li
 [id^="src-"], .prose h2, section[id]{scroll-margin-top:130px}
 .subnav .wrap{-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent)}
 .panel td.num{white-space:normal}
+
+/* Honeypot. Positioned off-screen rather than display:none, which some bots skip;
+   aria-hidden and tabindex="-1" keep it out of the accessibility tree and tab order. */
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}

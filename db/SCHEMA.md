@@ -1399,12 +1399,24 @@ allowed list (e.g. snake_case metric keys, which the exporter maps back).
 
 The migration does not proceed past Phase 2 until:
 
-- `db-roundtrip-check.js` passes clean
-- `npm test` still reports **75 pages**, links resolving, footnotes anchored, sitemap complete
-- `git diff --stat data/` after a full export is **empty**
+- `db-roundtrip-check.js` passes clean — **it does**
+- `npm test` still reports **75 pages**, links resolving, footnotes anchored, sitemap complete — **it does**
+- Scores recomputed after a round-trip match `lib/score.js` for all 21 brands — **12 rated
+  with identical scores and ranks, 9 unrated**
+- `data/` is untouched during Phase 2 — **it is**
 
-That last one is the strongest possible statement: the database reproduces the current
-dataset byte-for-byte. Until it does, the database is not ready to be upstream.
+**A correction to an earlier draft of this document**, which set the bar at "`git diff
+--stat data/` is empty." That was written before anyone looked at how `data/*.json` is
+formatted. Each of the thirteen files is hand-laid-out, and `markets`, `datacenter` and
+`research` group keys onto lines in ways no general rule reproduces. Byte-identical output
+would take thirteen bespoke serializers encoding cosmetic choices — which would bake
+formatting accidents into the pipeline for no gain.
+
+The gate is therefore **semantic**: the round-trip check compares parsed values, and it is
+clean. The exporter emits one consistent house style close to the existing shape, so seven
+of the thirteen files already come out byte-identical and the other six reformat exactly
+once, when Phase 4 makes `data/` generated. Every data change after that is a small
+readable diff.
 
 ---
 
@@ -1412,18 +1424,28 @@ dataset byte-for-byte. Until it does, the database is not ready to be upstream.
 
 Each phase is independently shippable and leaves the site working.
 
-**Phase 0 — Provision.** Owner runs `vercel link`, creates the Supabase project (Vercel
-Marketplace integration, so env vars land automatically). Set `SUPABASE_URL`,
-`SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`. Enable `postgis`, `citext`, `pg_trgm`.
-No repo change. *Requires the account owner — cannot be done by an agent.*
+**Phase 0 — Provision.** Create the Supabase project. No Vercel CLI step is needed: the
+repository is already connected to Vercel, and Supabase is provisioned on its own rather
+than through the Vercel Marketplace, so there is nothing to `vercel link`.
 
-**Phase 1 — Schema.** `supabase/migrations/0001_init.sql` … `0007_rls.sql`. Nothing reads
-it. Site untouched. Verify: migrations apply to a clean database and `supabase db reset`
-succeeds.
+Extensions are enabled in SQL, so they are part of migration `0001` rather than a console
+task. The only genuinely manual step is adding `SUPABASE_URL`, `SUPABASE_ANON_KEY` and
+`SUPABASE_SERVICE_ROLE_KEY` to the Vercel project's environment variables — and that is
+**not needed until Phase 3**, when `api/` first reads them. Phases 1 and 2 need no Vercel
+change at all.
 
-**Phase 2 — Import and round-trip.** `scripts/db-import.js`, `scripts/export-data.js`,
-`scripts/db-roundtrip-check.js`. Gate as §13.1. Site still builds from committed JSON.
-**Highest-value phase and the one to get exactly right.**
+*Requires the account owner. See `db/PROVISIONING.md` for the click-by-click.*
+
+**Phase 1 — Schema. ✅ Done.** Eleven migrations in `supabase/migrations/`, from
+`0001_extensions.sql` to `0011_seed_vocab.sql`. 43 tables — 38 in `public`, 4 in `intake`,
+1 in `audit` — plus 27 enums and 76 RLS policies. Nothing reads them yet and the site is
+untouched. `supabase/validate.sh` applies the whole set to a scratch Postgres and
+exercises the constraints that carry design weight.
+
+**Phase 2 — Import and round-trip. ✅ Done.** `scripts/db-import.js` emits an idempotent
+SQL seed, `scripts/export-data.js` reads back through psql or PostgREST, and
+`scripts/db-roundtrip-check.js` compares. The gate in §13.1 passes. Four migrations
+(`0012`–`0015`) came out of writing it — each one the data correcting the model.
 
 **Phase 3 — Forms.** `api/submit.js`, `intake` tables, `/privacy/` page, email
 notification. Update `assets/js/site.js` to `POST` and fall back to the existing `mailto:`

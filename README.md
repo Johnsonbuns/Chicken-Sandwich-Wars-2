@@ -8,7 +8,7 @@ CMS and no runtime dependency — `node build.js` turns `data/` into `docs/`.
 
 ```bash
 npm test          # build, then check integrity — run before pushing
-npm run build     # data/ -> docs/  (75 pages, no dependencies)
+npm run build     # data/ -> docs/  (76 pages, no dependencies)
 npm run serve     # build, then preview at http://localhost:4173
 ```
 
@@ -115,7 +115,7 @@ Set `CSW_SITE_ORIGIN` to override. Preview deployments canonicalise at productio
 ship `noindex`, so they never compete with the live site in search.
 
 **Web Analytics has to be switched on in the dashboard** (Project → Analytics → Enable).
-The script tag is already in the root layout and ships on all 75 pages, but
+The script tag is already in the root layout and ships on all 76 pages, but
 `/_vercel/insights/script.js` returns 404 until analytics is enabled on the project — so
 "the tag is there" is not the same as "analytics is recording".
 

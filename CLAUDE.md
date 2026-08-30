@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 npm test              # build, check.js, then mobile-check.js — run before every push
-npm run build         # data/ -> docs/  (75 pages)
+npm run build         # data/ -> docs/  (76 pages)
 npm run serve         # build, then preview at http://localhost:4173
 npm run check:mobile  # layout check at 393px; pass a width to use another
 npm run clean         # rm -rf docs
@@ -18,6 +18,11 @@ links, footnote superscripts with no matching anchor, near-empty pages, `undefin
 `NaN` / `[object Object]` leaking into the HTML, `src` ids in `data/` that are absent
 from `sources.json`, and a sitemap that has drifted from the page count. It exits
 non-zero, so it is safe to chain.
+
+`scripts/check-api.js` is the eighth check. It stubs `fetch` and exercises
+`api/submit.js` without credentials, covering the things that are expensive to get wrong:
+that the endpoint refuses what it should, that a raw IP address is never written, and that
+submitting a valuation request does not quietly opt someone into the newsletter.
 
 `scripts/mobile-check.js` is the seventh check and the only one that needs a browser,
 so it skips with a notice rather than failing when there is no Chromium (Vercel's build
@@ -230,23 +235,24 @@ only so the output stays servable by any plain static host.)
 These are understood and deliberate-for-now, not oversights. Do not "fix" them by
 inventing data or a stand-in.
 
-**Forms have no backend.** Every form — newsletter, sell, buy, submit-deal, contact —
-is handled by `assets/js/site.js`, which copies the fields to the clipboard and opens a
-`mailto:` draft. The visitor still has to press send. Nothing is stored. This is the
-single most consequential gap in the project: lead capture is what the whole site exists
-to do.
+**Forms are wired — but the fallback is load-bearing.** All five forms POST to
+`api/submit.js`, which writes to the `intake` schema in Supabase. If that request fails
+for any reason, `assets/js/site.js` falls back to the original clipboard-and-`mailto:`
+behaviour, so an outage costs nothing. **Do not remove the fallback**: it is why a
+misconfigured deploy cannot silently swallow a lead, and why the endpoint returns 503
+rather than a cheerful 200 when credentials are missing.
 
-The agreed shape, not yet built: an `api/` directory of Vercel Functions
-(`POST /api/submit`) over a single Neon Postgres from the Vercel Marketplace — a
-`submissions` table keyed by form name with a `jsonb` payload. One integration rather
-than adding Upstash alongside it.
-Provisioning needs the account owner: `vercel link`, then `vercel integration add neon`.
+`api/` has no dependencies and must keep none — `vercel.json` sets `installCommand` to a
+no-op, so `node_modules` does not exist at runtime. Supabase is reached over PostgREST
+with global `fetch`.
 
-Two things that must land with that work: a **privacy policy** page, since the forms will
-start collecting names, emails, phone numbers and property addresses and the site has no
-disclosure today; and **somewhere to read submissions** — an email notification or a
-protected view — because a database nobody checks is worse than the current `mailto:`,
-which at least reaches an inbox.
+The service-role key bypasses every RLS policy. It is read from the environment inside the
+function and must never reach a browser, a build artifact or a commit. The `intake` schema
+is not exposed to PostgREST, so this endpoint is the only door to it.
+
+Submissions are stored but **nobody is notified unless `RESEND_API_KEY` and
+`CSW_NOTIFY_EMAIL` are set**. A database nobody reads is worse than the `mailto:` it
+replaced, so treat those two variables as part of shipping, not as a nice-to-have.
 
 **Data freshness.** Figures are current to August 2026. Quarterly results from Popeyes,
 Wingstop, KFC and El Pollo Loco move the rankings; stale rankings on a site whose product

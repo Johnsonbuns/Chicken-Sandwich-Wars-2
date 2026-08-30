@@ -216,19 +216,65 @@
       });
     });
 
-    /* ---------- forms: never silently drop a submission ---------- */
+    /* ---------- forms: never silently drop a submission ----------
+       POST to /api/submit first. If that fails for any reason - the function is down,
+       the project has no Supabase credentials, the visitor is offline - fall back to
+       the clipboard-and-mailto behaviour this site shipped with, so a lead is never
+       lost to an outage. The fallback is the old code path, unchanged. */
     document.querySelectorAll('[data-csw-form]').forEach(function (f) {
+      var note = f.querySelector('[data-formnote]');
+      var button = f.querySelector('button[type=submit]');
+
+      function fallback(body, reason) {
+        if (navigator.clipboard) navigator.clipboard.writeText(body).catch(function () {});
+        if (note) note.innerHTML = 'Copied to your clipboard and opening your email client. ' +
+          'If nothing opens, email the details to ' +
+          '<a href="mailto:desk@chickensandwichwars.com">desk@chickensandwichwars.com</a>.';
+        window.location.href = 'mailto:desk@chickensandwichwars.com?subject=' +
+          encodeURIComponent('CSW submission: ' + f.id) + '&body=' + encodeURIComponent(body);
+      }
+
       f.addEventListener('submit', function (e) {
         e.preventDefault();
         var data = new FormData(f);
+        var fields = {};
         var lines = [];
-        data.forEach(function (v, k) { if (String(v).trim()) lines.push(k + ': ' + v); });
+        data.forEach(function (v, k) {
+          if (!String(v).trim()) return;
+          fields[k] = String(v);
+          if (k !== 'website') lines.push(k + ': ' + v);
+        });
         var body = lines.join('\n');
-        var note = f.querySelector('[data-formnote]');
-        if (navigator.clipboard) navigator.clipboard.writeText(body).catch(function () {});
-        if (note) note.innerHTML = 'Copied to your clipboard and opening your email client. If nothing opens, email the details to <a href="mailto:desk@chickensandwichwars.com">desk@chickensandwichwars.com</a>.';
-        window.location.href = 'mailto:desk@chickensandwichwars.com?subject=' +
-          encodeURIComponent('CSW submission: ' + f.id) + '&body=' + encodeURIComponent(body);
+        var label = button ? button.textContent : '';
+
+        if (button) { button.disabled = true; button.textContent = 'Sending…'; }
+        if (note) note.textContent = 'Sending…';
+
+        var done = false;
+        var timer = setTimeout(function () { if (!done) { done = true; fallback(body); } }, 8000);
+
+        fetch('/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ form: f.id, fields: fields })
+        }).then(function (r) {
+          return r.json().then(function (j) { return { ok: r.ok && j.ok, data: j }; });
+        }).then(function (out) {
+          if (done) return;
+          done = true; clearTimeout(timer);
+          if (!out.ok) { fallback(body); return; }
+          f.reset();
+          if (button) { button.disabled = false; button.textContent = label; }
+          if (note) {
+            note.textContent = out.data.pending
+              ? 'Almost there — check your inbox and confirm your subscription.'
+              : 'Received. Someone from the desk will be in touch.';
+          }
+        }).catch(function () {
+          if (done) return;
+          done = true; clearTimeout(timer);
+          fallback(body);
+        });
       });
     });
   }
