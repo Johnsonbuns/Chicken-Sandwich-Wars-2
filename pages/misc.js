@@ -272,45 +272,9 @@ module.exports = function misc(ctx) {
     <ul class="bullets" style="margin:0">${cons.context.map((c) => `<li>${esc(c.text)}${R.ref(c.src)}</li>`).join('')}</ul>
   </div></div>
 
-  <div class="cta" style="margin-top:30px">
-    <h3>Cast your own vote</h3>
-    <p class="note">CSW runs open ballots on the sandwich, the tenders, the wings and the value play.</p>
-    <a class="btn" href="../battles/">Go to Battles &amp; Polls</a>
-  </div>
 </div></section>
 <div class="wrap">${R.render()}</div>`,
       index: { t: "America's Best Chicken Sandwiches", s: 'What published rankings actually say', u: 'best-chicken-sandwiches/', k: 'best chicken sandwich ranking reviews taste test consumer popular' }
-    });
-  }
-
-  /* ---------------- battles / polls ---------------- */
-  {
-    const cons = data.consumer;
-    out.push({
-      path: 'battles/index.html', title: 'Battles & Polls', active: 'battles', depth: 1,
-      canonicalPath: 'battles/',
-      description: 'Vote in the chicken wars — sandwich, tenders, wings and value battles.',
-      body: `<section class="section"><div class="wrap">
-  <div class="eyebrow">Consumer voting</div>
-  <h1>Battles &amp; Polls</h1>
-  <p class="dek">Settle it. Votes are recorded in your own browser — CSW publishes no aggregate totals until the ballot runs on a server, because inventing vote counts is exactly the thing this site exists not to do.</p>
-
-  <div class="grid g2" style="margin-top:30px">
-    ${cons.polls.map((p) => `<div class="poll" data-poll="${esc(p.id)}">
-      <h3>${esc(p.question)}</h3>
-      ${p.options.map((o) => `<button class="pollopt" data-opt="${esc(o)}">
-        <span class="barfill"></span>
-        <span class="txt"><span>${esc(o)}</span><span class="pctv"></span></span>
-      </button>`).join('')}
-      <p class="note" data-polltotal style="margin:10px 0 0"></p>
-    </div>`).join('')}
-  </div>
-
-  <div class="callout" style="margin-top:30px">
-    Why bother with a poll on an industry data site? Because longitudinal consumer preference is genuinely valuable to franchisors, private equity, developers, investors and suppliers — and almost nobody holds it at the category level. A goofy ballot, run consistently for long enough, becomes proprietary consumer intelligence.
-  </div>
-</div></section>`,
-      index: { t: 'Battles & Polls', s: 'Vote in the chicken wars', u: 'battles/', k: 'polls vote battles best sandwich tenders wings value consumer' }
     });
   }
 

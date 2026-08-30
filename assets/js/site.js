@@ -1,10 +1,10 @@
-/* ChickenSandwichWars.com — client behaviour: search, filters, polls, forms */
+/* ChickenSandwichWars.com — client behaviour: search, filters, forms */
 (function () {
   /* Loaded async, and everything below runs on DOM ready. Async matters: a
      classic script -- defer included -- is held until every pending stylesheet
      has arrived, and this page's fonts come from fonts.googleapis.com. That
      made the whole script hostage to a third party, so a slow phone connection
-     left the menu, search, filters, polls and form handling all inert while the
+     left the menu, search, filters and form handling all inert while the
      page sat there looking finished. An async script is not blocked by
      stylesheets; the readiness guard is what replaces the ordering defer gave.
      Nothing here reads layout, so running before the fonts land is safe. */
@@ -214,42 +214,6 @@
         table.setAttribute('data-sort-col', i);
         table.setAttribute('data-sort-dir', asc ? 'asc' : 'desc');
       });
-    });
-
-    /* ---------- polls (local to this browser; no invented vote totals) ---------- */
-    document.querySelectorAll('[data-poll]').forEach(function (poll) {
-      var id = poll.getAttribute('data-poll');
-      var key = 'csw.poll.' + id;
-      function read() {
-        try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) { return {}; }
-      }
-      function write(v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) {} }
-      function paint() {
-        var data = read();
-        var total = Object.keys(data).reduce(function (s, k) { return s + (k === 'mine' ? 0 : data[k]); }, 0);
-        poll.querySelectorAll('.pollopt').forEach(function (btn) {
-          var opt = btn.getAttribute('data-opt');
-          var n = data[opt] || 0;
-          var p = total ? Math.round((n / total) * 100) : 0;
-          btn.querySelector('.barfill').style.width = (total ? p : 0) + '%';
-          btn.querySelector('.pctv').textContent = total ? p + '% · ' + n : '';
-        });
-        var meta = poll.querySelector('[data-polltotal]');
-        if (meta) {
-          meta.textContent = total
-            ? total + ' vote' + (total === 1 ? '' : 's') + ' recorded in this browser. CSW does not publish invented vote counts — aggregate results appear once the ballot is wired to the CSW vote service.'
-            : 'No votes recorded in this browser yet.';
-        }
-      }
-      poll.querySelectorAll('.pollopt').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var data = read();
-          var opt = btn.getAttribute('data-opt');
-          data[opt] = (data[opt] || 0) + 1;
-          write(data); paint();
-        });
-      });
-      paint();
     });
 
     /* ---------- forms: never silently drop a submission ---------- */

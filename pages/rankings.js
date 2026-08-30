@@ -120,7 +120,6 @@ module.exports = function rankings(ctx) {
     <li>Popeyes is reported by its parent on a combined U.S. and Canada basis. KFC's global figures include markets where the brand is growing while the U.S. shrinks.</li>
     <li>Where a brand has no independently published cap rate series, CSW uses the applicable corporate or franchisee QSR benchmark. That component therefore does not discriminate between franchisee-credit brands.</li>
     <li>AUV definitions vary — freestanding comp store, blended including licensed units, company-operated only. Each figure states which.</li>
-    <li>Consumer polls on this site record votes in the visitor's own browser. CSW does not publish aggregate vote counts until the ballot is wired to a server-side vote service, because inventing them would be exactly the thing this page exists to prevent.</li>
   </ul>
 
   <h2 style="margin-top:36px">Corrections</h2>
