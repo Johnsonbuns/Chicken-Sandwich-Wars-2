@@ -1412,10 +1412,17 @@ dataset byte-for-byte. Until it does, the database is not ready to be upstream.
 
 Each phase is independently shippable and leaves the site working.
 
-**Phase 0 — Provision.** Owner runs `vercel link`, creates the Supabase project (Vercel
-Marketplace integration, so env vars land automatically). Set `SUPABASE_URL`,
-`SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`. Enable `postgis`, `citext`, `pg_trgm`.
-No repo change. *Requires the account owner — cannot be done by an agent.*
+**Phase 0 — Provision.** Create the Supabase project. No Vercel CLI step is needed: the
+repository is already connected to Vercel, and Supabase is provisioned on its own rather
+than through the Vercel Marketplace, so there is nothing to `vercel link`.
+
+Extensions are enabled in SQL, so they are part of migration `0001` rather than a console
+task. The only genuinely manual step is adding `SUPABASE_URL`, `SUPABASE_ANON_KEY` and
+`SUPABASE_SERVICE_ROLE_KEY` to the Vercel project's environment variables — and that is
+**not needed until Phase 3**, when `api/` first reads them. Phases 1 and 2 need no Vercel
+change at all.
+
+*Requires the account owner. See `db/PROVISIONING.md` for the click-by-click.*
 
 **Phase 1 — Schema.** `supabase/migrations/0001_init.sql` … `0007_rls.sql`. Nothing reads
 it. Site untouched. Verify: migrations apply to a clean database and `supabase db reset`

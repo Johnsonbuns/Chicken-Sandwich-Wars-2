@@ -15,6 +15,11 @@ until the Phase 2 gate passes, and do not touch Phase 5 (Sanity) at all.
 
 Branch: `claude/database-phase-1-2`, cut from `main`.
 
+Provisioning that only the owner can do is in `db/PROVISIONING.md`. Phase 1 needs no
+credentials — migrations are `.sql` files run in the Supabase SQL Editor. Never ask for or
+accept a `service_role` / secret key in the conversation; if Phase 2 needs one, have the
+owner run the import themselves.
+
 ## Non-negotiable constraints
 
 These are the things that will quietly ruin the project if you get them wrong.
