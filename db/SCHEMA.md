@@ -1424,9 +1424,11 @@ change at all.
 
 *Requires the account owner. See `db/PROVISIONING.md` for the click-by-click.*
 
-**Phase 1 — Schema.** `supabase/migrations/0001_init.sql` … `0007_rls.sql`. Nothing reads
-it. Site untouched. Verify: migrations apply to a clean database and `supabase db reset`
-succeeds.
+**Phase 1 — Schema. ✅ Done.** Eleven migrations in `supabase/migrations/`, from
+`0001_extensions.sql` to `0011_seed_vocab.sql`. 43 tables — 38 in `public`, 4 in `intake`,
+1 in `audit` — plus 27 enums and 76 RLS policies. Nothing reads them yet and the site is
+untouched. `supabase/validate.sh` applies the whole set to a scratch Postgres and
+exercises the constraints that carry design weight.
 
 **Phase 2 — Import and round-trip.** `scripts/db-import.js`, `scripts/export-data.js`,
 `scripts/db-roundtrip-check.js`. Gate as §13.1. Site still builds from committed JSON.

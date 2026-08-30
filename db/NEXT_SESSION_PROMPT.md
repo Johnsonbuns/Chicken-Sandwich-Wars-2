@@ -10,10 +10,13 @@ Implement the Postgres/Supabase backend described in `db/SCHEMA.md`. **Read that
 in full before writing anything** — it is the design of record, and the reasoning in it
 matters as much as the DDL.
 
-Work through **Phase 1 and Phase 2 only** in this session. Do not start Phase 3 (forms)
-until the Phase 2 gate passes, and do not touch Phase 5 (Sanity) at all.
+**Phase 1 is complete.** Your scope is **Phase 2 only** — import, export and the
+round-trip gate. Do not start Phase 3 (forms) until the Phase 2 gate passes, and do not
+touch Phase 5 (Sanity) at all.
 
-Branch: `claude/database-phase-1-2`, cut from `main`.
+Branch: continue on `claude/database-schema-design` (pull request #16), or cut
+`claude/database-phase-2` from it. Do not branch from `main` — the migrations are not
+merged yet.
 
 Provisioning that only the owner can do is in `db/PROVISIONING.md`. Phase 1 needs no
 credentials — migrations are `.sql` files run in the Supabase SQL Editor. Never ask for or
@@ -45,32 +48,23 @@ These are the things that will quietly ruin the project if you get them wrong.
 
 5. **Do not commit `docs/`.** It is git-ignored and Vercel rebuilds it.
 
-## Phase 1 — Schema
+## Phase 1 — Schema ✅ already done
 
-Create `supabase/migrations/`, numbered and individually applicable:
+`supabase/migrations/0001_extensions.sql` … `0011_seed_vocab.sql` exist and are validated.
+43 tables (38 `public`, 4 `intake`, 1 `audit`), 27 enums, 76 RLS policies. Read them before
+writing the import — they are the contract.
 
-| File | Contents |
-|---|---|
-| `0001_extensions.sql` | `citext`, `postgis`, `pg_trgm`, `btree_gist` (needed for the occupancy exclusion constraint) |
-| `0002_enums.sql` | Every enum type in `db/SCHEMA.md` |
-| `0003_provenance.sql` | `sources`, `metrics`, `facts`, `entity_notes`, plus `v_current_facts` |
-| `0004_entities.sql` | `momentum_states`, `tags`, `companies`, `company_roles`, `brands`, `brand_tags`, `brand_operators`, `brand_cap_rates`, `markets` |
-| `0005_realestate.sql` | `properties`, `property_occupancies`, `leases`, `transactions`, `transaction_properties`, `listings`, `listing_properties`, `expansion_agreements` |
-| `0006_content.sql` | `articles`, `article_entities`, `article_sources`, `chart_*`, `published_ranking*`, `industry_events`, `job_postings`, `newsletter_issues` |
-| `0007_scoring.sql` | `score_versions`, `score_components`, `score_adjustments`, `brand_scores`, `brand_score_components` |
-| `0008_intake.sql` | `intake` schema, `contacts`, `submissions`, `buy_criteria`, `subscriptions` |
-| `0009_audit.sql` | `audit.record_changes` + the generic trigger function |
-| `0010_rls.sql` | RLS on every `public` table; revoke `intake` from `anon`/`authenticated` |
-| `0011_seed_vocab.sql` | `momentum_states` (13 rows), `tags`, `metrics` (33 keys + derived), `score_versions` v1 matching `lib/score.js` exactly |
+`./supabase/validate.sh` applies the whole set to a throwaway local Postgres and exercises
+the constraints that carry design weight. It passes. Re-run it after any migration change.
 
-Verify: migrations apply cleanly to an empty database, and re-applying from scratch
-(`supabase db reset`) succeeds. If the Supabase CLI is unavailable in the session, still
-write the migrations and verify the SQL parses — say plainly that you could not execute
-them rather than implying you did.
+Two things it does not cover, both stated in the script: PostGIS is usually absent locally,
+so the two `extensions.geography` lines are substituted; and it stubs Supabase's `anon`,
+`authenticated`, `service_role` roles and `auth` schema. Neither has been executed against
+a real Supabase project yet — **the first person to run these against Supabase should
+report what happens**, since that is the one untested surface.
 
-`0011` must reproduce `lib/score.js` exactly: five components with weights 30/25/18/15/12,
-their floors and ceilings (including the inverted cap-rate component, ceiling 4.2 below
-floor 7.5), `min_components = 3`, and the uniform −4 net-unit-decline adjustment.
+`0011_seed_vocab.sql` is generated from `data/*.json` and `lib/score.js`. Regenerate it
+rather than hand-editing if the vocabularies change.
 
 ## Phase 2 — Import, export, round-trip
 
@@ -105,8 +99,15 @@ comparison succeed.
   `period_end` only where unambiguous. Round-trip fidelity depends on the label.
 - **`stats` is sparse.** 33 distinct keys across 21 brands, 24 used exactly once. Every one
   becomes a `facts` row. Do not drop the rare ones.
+- **Use `metrics.json_key`, never a snake_case algorithm.** snake_case is not reversible:
+  `closuresTTM` → `closures_ttm` → `closuresTtm`. Every metric row stores the exact key it
+  had in `data/*.json`; the exporter must round-trip through that column.
 - **`metrics.*Derived` flags** (`unitGrowthDerived`, `salesGrowthDerived`) map to
   `derivation = 'derived'`. The site labels these; losing the flag breaks the editorial rule.
+- **Three `metrics` fields are not metrics.** `capRateBasis` → `brand_cap_rates.basis`;
+  `auvNote` and `salesGrowthNote` → the `note` column on their respective fact row.
+  `netClosures` is the boolean gating the −4 penalty and is stored as metric
+  `net_unit_decline` with value 1 or 0.
 - **Operator `brands[]` includes 12 non-chicken brands, and not all are restaurants.**
   Taco Bell, Arby's, Sonic, Subway, Burger King, Little Caesars, Pizza Hut, 7 Brew, Au Bon
   Pain, 7-Eleven, Meineke, Take 5 Oil Change. Create them as `brands` rows with
