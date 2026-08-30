@@ -2,7 +2,13 @@
 :root{
   --bg:#0A0B0D; --bg-2:#101216; --panel:#14171C; --panel-2:#1A1E24;
   --line:#252A32; --line-2:#333A45;
-  --ink:#EDEFF2; --ink-2:#B4BBC4; --ink-3:#7C8590;
+  /* Three inks, and the muted one is a contrast floor as much as a colour.
+     At #7C8590 it measured 4.80:1 on a card and 4.47:1 on a hovered one --
+     under the 4.5:1 WCAG AA minimum, so every card description, table header
+     and date on the site failed the moment the pointer landed on it. #98A2AE
+     is 6.94:1 on a card and 6.48:1 hovered, and still reads as clearly
+     subordinate to --ink and --ink-2. */
+  --ink:#EDEFF2; --ink-2:#B4BBC4; --ink-3:#98A2AE;
   --accent:#F2A413; --accent-2:#E5484D; --hot:#FF5A1F;
   --up:#3DD68C; --down:#FF6369; --flat:#8A93A0;
   --max:1240px; --radius:4px;
@@ -86,9 +92,20 @@ p{margin:0 0 1rem}
    label touching the title. Tight leading plus an explicit margin makes the
    pair a group: label to heading is smaller than heading to body.
    The margin is inert on the few `<span class="kicker">` uses, since vertical
-   margins do not apply to inline boxes. */
-.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);line-height:1.4;margin-bottom:12px}
-.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);line-height:1.4;margin-bottom:6px}
+   margins do not apply to inline boxes.
+
+   Size, weight and tracking are the other half of it. 11px is below the 12px
+   floor every mainstream design system sets, and this string is also uppercase
+   and tracked -- which removes the word shapes lowercase gives the eye. Three
+   legibility taxes stacked on one label. So: 12px, weight 500 (already in the
+   font request, and small strokes bloom lighter on a dark ground than they do
+   on white), and .12em rather than .14em, which at this size was pulling the
+   words apart. The kicker takes --ink-2 (9.28:1 on a card): a category label is
+   a signpost meant to be scanned, so it sits brighter than the description
+   under it, the standard editorial arrangement. It cannot compete with the
+   title regardless -- 12px tracked caps against 17px of 800-weight display. */
+.eyebrow{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);line-height:1.4;margin-bottom:12px}
+.kicker{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);line-height:1.4;margin-bottom:6px}
 .lede{font-size:18px;color:var(--ink-2);line-height:1.6}
 .section{padding:44px 0;border-top:1px solid var(--line)}
 .section:first-of-type{border-top:0}

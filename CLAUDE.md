@@ -153,6 +153,19 @@ Secondary body copy (`.note`) is 14px/1.55, not the heading's weight and not so 
 reads as a caption. Card padding is `--sp-5` and the grid gutter `--sp-6`, so the space
 between two cards is always larger than the space inside one.
 
+**Contrast is a constraint, not a preference.** `--ink-3` was #7C8590, which measured
+4.80:1 on a card and 4.47:1 on a hovered one — under the 4.5:1 WCAG AA minimum, so every
+card description, table header and date on the site failed the moment the pointer landed
+on it. It is #98A2AE now: 6.94:1 on a card, 6.47:1 hovered, and the worst text/background
+pair anywhere on the site. Check any new colour against the surface it sits on
+(`#0A0B0D`, `#101216`, `#14171C`, and `#1A1E24` for `a.card:hover`) before adding it.
+
+The overline is 12px — not 11px, which is under the floor every mainstream design system
+sets — at weight 500, `.12em` tracking, and `--ink-2`. Uppercase and tracked text has
+already given up the word shapes the eye reads by, so it cannot also be tiny, thin and
+dim. It sits brighter than the description under it on purpose: a category label is
+scanned, a deck is read.
+
 ## Footnotes
 
 `C.refs(sources)` returns a per-page tracker. `R.ref(id)` emits a numbered superscript
