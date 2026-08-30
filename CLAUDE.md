@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 npm test              # build, check.js, then mobile-check.js — run before every push
-npm run build         # data/ -> docs/  (77 pages)
+npm run build         # data/ -> docs/  (75 pages)
 npm run serve         # build, then preview at http://localhost:4173
 npm run check:mobile  # layout check at 393px; pass a width to use another
 npm run clean         # rm -rf docs
@@ -51,7 +51,6 @@ bugs but are deliberate:
 - 9 of 21 brands are **unrated** in the rankings because fewer than three scoring
   components have been published for them. Do not fill the gap.
 - The properties marketplace and job board render **empty states**, not sample listings.
-- Polls store votes in `localStorage` and publish **no aggregate totals**.
 - Figures derived arithmetically from two published numbers are marked *derived*;
   franchisee-reported figures are labelled as such.
 
@@ -114,7 +113,7 @@ Three things that will look like over-engineering and are not:
 
 **`site.js` is `async`, not `defer`.** A classic script waits for every pending
 stylesheet, `defer` included, and this page fetches one from `fonts.googleapis.com`.
-With `defer` the menu, search, filters, polls and form handling were all held until a
+With `defer` the menu, search, filters and form handling were all held until a
 third party answered. `async` is not blocked by stylesheets; the script guards on DOM
 readiness itself. Do not "fix" it back to `defer`.
 
@@ -203,15 +202,10 @@ is handled by `assets/js/site.js`, which copies the fields to the clipboard and 
 single most consequential gap in the project: lead capture is what the whole site exists
 to do.
 
-**Polls have no backend.** Votes live in the visitor's own `localStorage`, so no
-aggregate exists and none is published. The stated goal was longitudinal consumer
-preference data, which needs one row per vote with a timestamp — not a counter.
-
-The agreed shape for both, not yet built: an `api/` directory of Vercel Functions
-(`POST /api/submit`, `POST /api/vote`, `GET /api/poll?id=`) over a single Neon Postgres
-from the Vercel Marketplace — a `submissions` table keyed by form name with a `jsonb`
-payload, and a `votes` table with a salted `voter_hash` under a unique index per poll per
-day for ballot-stuffing control. One integration rather than adding Upstash alongside it.
+The agreed shape, not yet built: an `api/` directory of Vercel Functions
+(`POST /api/submit`) over a single Neon Postgres from the Vercel Marketplace — a
+`submissions` table keyed by form name with a `jsonb` payload. One integration rather
+than adding Upstash alongside it.
 Provisioning needs the account owner: `vercel link`, then `vercel integration add neon`.
 
 Two things that must land with that work: a **privacy policy** page, since the forms will

@@ -84,7 +84,6 @@ module.exports = function realestate(ctx) {
     <a class="card" href="../properties/"><div class="kicker">Marketplace</div><h3>Properties for sale</h3><p class="note">Chicken restaurant investment properties listed with CSW.</p></a>
     <a class="card" href="../sell/"><div class="kicker">Owners</div><h3>Sell a property</h3><p class="note">Request a confidential valuation on a chicken restaurant asset.</p></a>
     <a class="card" href="../buy/"><div class="kicker">Investors</div><h3>Buy a property</h3><p class="note">Register a buying criteria — brands, geography, cap rate, 1031 timing.</p></a>
-    <a class="card" href="../investment/"><div class="kicker">Capital</div><h3>Chicken Capital Partners</h3><p class="note">Investing across the real estate lifecycle of the chicken ecosystem.</p></a>
   </div>
 </div></section>
 
@@ -298,45 +297,11 @@ module.exports = function realestate(ctx) {
           <li class="note">Franchise portfolios and operating businesses</li>
           <li class="note">Conversions, land and recapitalizations</li>
         </ul>
-        <p style="margin:16px 0 0"><a class="btn ghost" href="../investment/">About Chicken Capital Partners →</a></p>
       </div></div>
     </aside>
   </div>
 </div></section>`,
     index: { t: 'Submit an Opportunity', s: 'Bring a chicken real estate or operating deal to CSW', u: 'submit-deal/', k: 'submit deal opportunity sale leaseback development distressed portfolio' }
-  });
-
-  /* ---------------- investment ---------------- */
-  out.push({
-    path: 'investment/index.html', title: 'Investment', active: 'investment', depth: 1,
-    canonicalPath: 'investment/',
-    description: 'Chicken Capital Partners invests across the real estate lifecycle of the U.S. chicken restaurant ecosystem.',
-    body: `<section class="section"><div class="wrap">
-  <div class="eyebrow">Chicken Capital Partners</div>
-  <h1>Investment</h1>
-  <p class="dek" style="max-width:60ch">Chicken Capital Partners invests across the real estate lifecycle of the U.S. chicken restaurant ecosystem.</p>
-
-  <div class="grid g3" style="margin-top:36px">
-    <div class="card"><div class="kicker">Income</div><h3>Stabilized</h3><p class="note">Net-leased chicken restaurant real estate with durable operators and structured escalations.</p></div>
-    <div class="card"><div class="kicker">Value creation</div><h3>Mispriced &amp; troubled</h3><p class="note">Vacant, distressed, short-term and mispriced assets — including second-generation boxes created by brand rationalization and franchisee distress.</p></div>
-    <div class="card"><div class="kicker">Growth capital</div><h3>Development &amp; operators</h3><p class="note">Sale-leasebacks, build-to-suit, development, land and expansion capital for operators with committed pipelines.</p></div>
-  </div>
-
-  <div class="split" style="margin-top:40px">
-    <div>
-      <h2>Why this sector, now</h2>
-      <p class="note">Three conditions are true at the same time, and rarely are. Chicken demand is at a record — U.S. per-capita availability is projected at 102.8 pounds in 2026, the most consumed animal protein in the country. Category sales growth has slowed to 5.3%, which means share is being taken rather than created, and losers are being created alongside winners. And the losing side is producing real estate: more than 300 KFC closures in twelve months, roughly 33 rejected Popeyes leases out of a single bankruptcy, and a wave of casual-dining pads from the Hooters restructuring.</p>
-      <p class="note">That combination — durable end demand, brand-level churn, and physical inventory hitting the market through distress rather than through a marketed process — is what makes the sector investable at this point in the cycle.</p>
-      <p style="margin-top:20px"><a class="btn" href="../submit-deal/">Submit an opportunity</a></p>
-    </div>
-    <aside>
-      <div class="panel"><div class="panel-head"><h3>Disclosure</h3></div><div class="panel-body">
-        <p class="note" style="margin:0">Nothing on this page is an offer to sell or a solicitation of an offer to buy any security, nor is it investment advice. Chicken Sandwich Wars publishes industry intelligence; any investment activity is conducted separately and subject to its own documentation.</p>
-      </div></div>
-    </aside>
-  </div>
-</div></section>`,
-    index: { t: 'Investment — Chicken Capital Partners', s: 'Income, value creation, development and operator capital', u: 'investment/', k: 'investment chicken capital partners sale leaseback development distressed income' }
   });
 
   return out;

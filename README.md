@@ -8,7 +8,7 @@ CMS and no runtime dependency — `node build.js` turns `data/` into `docs/`.
 
 ```bash
 npm test          # build, then check integrity — run before pushing
-npm run build     # data/ -> docs/  (77 pages, no dependencies)
+npm run build     # data/ -> docs/  (75 pages, no dependencies)
 npm run serve     # build, then preview at http://localhost:4173
 ```
 
@@ -30,9 +30,6 @@ In practice that means:
 - Brands missing too much published data are left **unrated** in the rankings instead of
   being filled in. Nine of twenty-one brands currently sit in that bucket; the gap is
   treated as a finding, not something to paper over.
-- Consumer polls record votes in the visitor's own browser and publish no aggregate
-  totals until the ballot runs server-side. Inventing vote counts is exactly the thing
-  the site exists not to do.
 - The property marketplace and job board ship empty rather than with placeholder
   listings.
 
@@ -56,7 +53,7 @@ data/          the dataset — the single source of truth
   markets.json      8 metro market profiles
   research.json     4 long-form CSW reports
   datacenter.json   9 chart series
-  consumer.json     published rankings, category context, poll definitions
+  consumer.json     published rankings, category context
   events.json       industry events with organiser-published dates
 
 lib/
@@ -118,7 +115,7 @@ Set `CSW_SITE_ORIGIN` to override. Preview deployments canonicalise at productio
 ship `noindex`, so they never compete with the live site in search.
 
 **Web Analytics has to be switched on in the dashboard** (Project → Analytics → Enable).
-The script tag is already in the root layout and ships on all 77 pages, but
+The script tag is already in the root layout and ships on all 75 pages, but
 `/_vercel/insights/script.js` returns 404 until analytics is enabled on the project — so
 "the tag is there" is not the same as "analytics is recording".
 

@@ -1,35 +1,53 @@
 {
-  "publishedRankings":[
+  "publishedRankings": [
     {
-      "title":"Top 5 fast food chicken sandwiches in the U.S. (2026)",
-      "publisher":"RoadTour","src":"roadtour-top5",
-      "method":"Analysis of customer feedback across Reddit, Facebook, YouTube and TikTok, focused on items introduced or meaningfully upgraded in 2026.",
-      "items":["Bojangles BLT Chicken","Huey Magoo's Chicken Sandwich","Dave's Hot Chicken","Popeyes","Culver's Chicken Sandwich"]
+      "title": "Top 5 fast food chicken sandwiches in the U.S. (2026)",
+      "publisher": "RoadTour",
+      "src": "roadtour-top5",
+      "method": "Analysis of customer feedback across Reddit, Facebook, YouTube and TikTok, focused on items introduced or meaningfully upgraded in 2026.",
+      "items": [
+        "Bojangles BLT Chicken",
+        "Huey Magoo's Chicken Sandwich",
+        "Dave's Hot Chicken",
+        "Popeyes",
+        "Culver's Chicken Sandwich"
+      ]
     },
     {
-      "title":"Best new fast food chicken sandwich of 2026 so far",
-      "publisher":"Tasting Table","src":"tastingtable-2026",
-      "method":"Editorial taste evaluation of new 2026 menu items.",
-      "items":["Whataburger Hot Honey Crisp Whatachick'n"]
+      "title": "Best new fast food chicken sandwich of 2026 so far",
+      "publisher": "Tasting Table",
+      "src": "tastingtable-2026",
+      "method": "Editorial taste evaluation of new 2026 menu items.",
+      "items": [
+        "Whataburger Hot Honey Crisp Whatachick'n"
+      ]
     },
     {
-      "title":"Major fried chicken chains ranked by consumer popularity",
-      "publisher":"Stacker, using YouGov data on 272 dining brands","src":"stacker-yougov",
-      "method":"YouGov brand popularity surveys, filtered to the 10 fried chicken chains in the panel.",
-      "items":["Chick-fil-A ranks third among fried chicken chains on consumer popularity — behind two others, despite leading the category on every financial measure"]
+      "title": "Major fried chicken chains ranked by consumer popularity",
+      "publisher": "Stacker, using YouGov data on 272 dining brands",
+      "src": "stacker-yougov",
+      "method": "YouGov brand popularity surveys, filtered to the 10 fried chicken chains in the panel.",
+      "items": [
+        "Chick-fil-A ranks third among fried chicken chains on consumer popularity — behind two others, despite leading the category on every financial measure"
+      ]
     }
   ],
-  "context":[
-    {"text":"The chicken sandwich wars began on August 12, 2019, when Popeyes launched its chicken sandwich and the resulting exchange with Chick-fil-A went viral. More than 20 American fast food brands added chicken sandwiches within the following two years.","src":"rbo-cs-wars-history"},
-    {"text":"Fried chicken concept traffic rose 3% in the year ending September 2025 while traffic to all restaurant concepts fell 1%.","src":"placer-chicken"},
-    {"text":"Dave's Hot Chicken, Raising Cane's and Church's Texas Chicken each draw millions of visits per month; Chick-fil-A posted year-over-year visit growth from September 2025 through February 2026.","src":"placer-chicken"},
-    {"text":"U.S. per-capita chicken availability is projected at a record 102.8 pounds in 2026, keeping chicken the most consumed animal protein in the country.","src":"usda-ers-percapita"}
-  ],
-  "polls":[
-    {"id":"canes-vs-cfa","question":"Who makes the better chicken tender?","options":["Raising Cane's","Chick-fil-A"]},
-    {"id":"best-sandwich","question":"Best chicken sandwich in America right now","options":["Popeyes","Chick-fil-A","Dave's Hot Chicken","Bojangles","Wendy's"]},
-    {"id":"best-wings","question":"Best wings","options":["Wingstop","Buffalo Wild Wings","Bonchon","KFC","Local spot"]},
-    {"id":"best-value","question":"Best value in chicken right now","options":["Popeyes $5 Faves","KFC","Church's Texas Chicken","Krispy Krunchy","Raising Cane's"]},
-    {"id":"who-wins","question":"Who wins the chicken sandwich wars by 2030?","options":["Chick-fil-A","Raising Cane's","Dave's Hot Chicken","Popeyes","Someone not on this list"]}
+  "context": [
+    {
+      "text": "The chicken sandwich wars began on August 12, 2019, when Popeyes launched its chicken sandwich and the resulting exchange with Chick-fil-A went viral. More than 20 American fast food brands added chicken sandwiches within the following two years.",
+      "src": "rbo-cs-wars-history"
+    },
+    {
+      "text": "Fried chicken concept traffic rose 3% in the year ending September 2025 while traffic to all restaurant concepts fell 1%.",
+      "src": "placer-chicken"
+    },
+    {
+      "text": "Dave's Hot Chicken, Raising Cane's and Church's Texas Chicken each draw millions of visits per month; Chick-fil-A posted year-over-year visit growth from September 2025 through February 2026.",
+      "src": "placer-chicken"
+    },
+    {
+      "text": "U.S. per-capita chicken availability is projected at a record 102.8 pounds in 2026, keeping chicken the most consumed animal protein in the country.",
+      "src": "usda-ers-percapita"
+    }
   ]
 }
