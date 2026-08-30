@@ -77,7 +77,7 @@ module.exports = function misc(ctx) {
     <div>
       <h2>Closures</h2>
       ${C.table({
-        cols: ['Period', { label: 'Brand', id: true }, { label: 'Geography', hideSmall: true }, { label: 'Units', num: true }, 'Detail'],
+        cols: ['Period', { label: 'Brand', id: 120 }, { label: 'Geography', hideSmall: true }, { label: 'Units', num: true }, 'Detail'],
         rows: data.movement.closures.map((m) => [
           esc(m.date), `<a href="../brands/${m.brand}.html"><b>${esc(m.brandName)}</b></a>`, esc(m.location),
           m.count ? `<b class="down">${num(m.count)}</b>` : '—', `<span class="note">${esc(m.detail)}${R.ref(m.src)}</span>`
@@ -86,7 +86,7 @@ module.exports = function misc(ctx) {
 
       <h2 style="margin-top:40px">Openings</h2>
       ${C.table({
-        cols: ['Date', { label: 'Brand', id: true }, 'Location', 'Detail'],
+        cols: ['Date', { label: 'Brand', id: 120 }, 'Location', 'Detail'],
         rows: data.movement.openings.map((m) => [
           esc(m.date), `<a href="../brands/${m.brand}.html"><b>${esc(m.brandName)}</b></a>`, esc(m.location),
           `<span class="note">${esc(m.detail)}${R.ref(m.src)}</span>`
