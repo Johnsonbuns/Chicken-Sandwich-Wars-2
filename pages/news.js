@@ -26,7 +26,6 @@ module.exports = function news(ctx) {
   <div class="split" style="margin-top:20px">
     <div>${items}</div>
     <aside>
-      <div class="cta"><h3>The Chicken Wire</h3><p class="note">The five things shaping the chicken restaurant industry this week.</p><a class="btn" href="../newsletter/">Subscribe</a></div>
       <div class="panel" style="margin-top:18px"><div class="panel-head"><h3>Coverage areas</h3></div><div class="panel-body">
         <p class="note" style="margin:0">Brands · Operators · Real Estate · M&amp;A · Franchising · Development · Supply Chain · Consumer</p>
       </div></div>

@@ -81,7 +81,6 @@ module.exports = function realestate(ctx) {
 
 <section class="section"><div class="wrap">
   <div class="grid g4">
-    <a class="card" href="../properties/"><div class="kicker">Marketplace</div><h3>Properties for sale</h3><p class="note">Chicken restaurant investment properties listed with CSW.</p></a>
     <a class="card" href="../sell/"><div class="kicker">Owners</div><h3>Sell a property</h3><p class="note">Request a confidential valuation on a chicken restaurant asset.</p></a>
     <a class="card" href="../buy/"><div class="kicker">Investors</div><h3>Buy a property</h3><p class="note">Register a buying criteria — brands, geography, cap rate, 1031 timing.</p></a>
   </div>
@@ -178,7 +177,6 @@ module.exports = function realestate(ctx) {
     canonicalPath: 'properties/',
     description: 'Chicken restaurant investment properties, second-generation boxes and development sites listed with CSW.',
     body: propBody,
-    index: { t: 'Properties for Sale', s: 'Chicken real estate marketplace', u: 'properties/', k: 'properties for sale marketplace listings net lease investment property' }
   });
 
   /* ---------------- sell ---------------- */

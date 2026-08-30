@@ -98,12 +98,6 @@ module.exports = function home(ctx) {
         <table><tbody>${expansion}</tbody></table>
       </div>
 
-      <div class="cta" style="margin-top:18px">
-        <h3>The Chicken Wire</h3>
-        <p class="note">The five things shaping the chicken restaurant industry this week — brands, operators, real estate.</p>
-        <a class="btn" href="newsletter/">Subscribe</a>
-      </div>
-
       <div class="panel" style="margin-top:18px">
         <div class="panel-head"><h3>Distress watch</h3></div>
         <div class="panel-body">
