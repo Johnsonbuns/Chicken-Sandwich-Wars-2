@@ -400,6 +400,74 @@ module.exports = function misc(ctx) {
     index: { t: 'Advertise & Partner', s: 'Newsletter, research, vendor and data partnerships', u: 'advertise/', k: 'advertise partner sponsorship newsletter research vendor jobs data access' }
   });
 
+  /* ---------------- privacy ---------------- */
+  out.push({
+    path: 'privacy/index.html', title: 'Privacy', active: '', depth: 1,
+    canonicalPath: 'privacy/',
+    description: 'What Chicken Sandwich Wars collects when you use a form, why, where it is stored and how to have it deleted.',
+    body: `<section class="section"><div class="wrap">
+  <div class="eyebrow">Privacy</div>
+  <h1>What we collect, and what we do with it</h1>
+  <div class="split" style="margin-top:30px">
+    <div class="prose">
+      <p class="lede">CSW collects the details you type into a form, and almost nothing else. This page says exactly what that means, because a site that asks operators and owners for confidential information owes them a straight answer.</p>
+
+      <h2>What you give us</h2>
+      <p>Five forms on this site submit data: the newsletter signup, the contact form, <a href="../sell/">sell a property</a>, <a href="../buy/">buy a property</a> and <a href="../submit-deal/">submit a deal</a>. Between them they collect your name, email address, phone number, company and role, and whatever you enter about a property or an opportunity — including addresses, lease terms, rents, asking prices and buying criteria.</p>
+      <p>Only what you type is stored. There is no tracking pixel, no advertising network and no third-party form embed.</p>
+
+      <h2>What we record automatically</h2>
+      <p>With each submission we store the time, the page you submitted from, your browser's user-agent string, and a one-way hash of your IP address. The hash exists to rate-limit abuse. <strong>The address itself is never stored</strong> — it is combined with a private salt and hashed before anything is written, and the original cannot be recovered from what we keep.</p>
+      <p>Separately, the site uses Vercel Web Analytics for page counts. It sets no cookies and does not build a profile of you.</p>
+
+      <h2>Why we hold it</h2>
+      <p>To reply to you, and to do the thing you asked for — value a property, register buying criteria, look at a deal, send the newsletter. Property and deal details also inform CSW's market coverage, but <strong>nothing you submit is published without your explicit written permission</strong>, and no property is ever listed without the owner's written authorization.</p>
+
+      <h2>The newsletter is opt-in, twice</h2>
+      <p>Subscribing to The Chicken Wire sends a confirmation email; you are not on the list until you click it. Submitting any other form does <em>not</em> subscribe you — consent is tracked separately for each purpose. Every issue carries an unsubscribe link, and unsubscribing is immediate.</p>
+
+      <h2>Where it lives</h2>
+      <p>In a Postgres database hosted by Supabase in the United States, and in the email inbox of the CSW desk. The database tables holding personal data are not reachable from the public internet: they sit behind a server-side function and are not exposed through the public API.</p>
+
+      <h2>Who sees it</h2>
+      <p>The people who run CSW. We do not sell personal data, rent it, or share it with advertisers. We share details of a specific opportunity with a counterparty only when you have asked us to — for example passing a property to a registered buyer — and never before.</p>
+      <p>Our processors are Supabase (database hosting), Vercel (site hosting and analytics) and our email provider, each acting on our instructions.</p>
+
+      <h2>How long we keep it</h2>
+      <p>Newsletter subscriptions until you unsubscribe. Enquiries and deal submissions for as long as the relationship is live, and then for a reasonable period afterwards as a record of what was discussed. Unconfirmed newsletter signups are cleared after 90 days. Ask us to delete something sooner and we will.</p>
+
+      <h2>What you can ask for</h2>
+      <p>A copy of what we hold on you, a correction, or deletion. Email <a href="mailto:desk@chickensandwichwars.com">desk@chickensandwichwars.com</a> and we will act within 30 days. You do not need to give a reason, and asking costs you nothing.</p>
+      <p>If you are in the UK or EU, we process this data on the basis of your consent for the newsletter and our legitimate interest in responding to you for everything else. If you are in California, we do not sell or share personal information as those terms are defined by the CCPA.</p>
+
+      <h2>Children</h2>
+      <p>This is a trade publication for the restaurant industry. It is not directed at children, and we do not knowingly collect data from anyone under 16.</p>
+
+      <h2>Changes</h2>
+      <p>If this policy changes materially we will say so on this page and date the change. Last updated August 2026.</p>
+    </div>
+    <aside>
+      <div class="panel"><div class="panel-head"><h3>The short version</h3></div><div class="panel-body">
+        <ul class="bullets" style="margin:0">
+          <li class="note">Only what you type into a form</li>
+          <li class="note">Your IP address is hashed, never stored</li>
+          <li class="note">Nothing you submit is published without your written permission</li>
+          <li class="note">The newsletter needs a confirmation click</li>
+          <li class="note">We never sell your data</li>
+          <li class="note">Email the desk to see it or delete it</li>
+        </ul>
+      </div></div>
+      <div class="cta" style="margin-top:18px">
+        <h3>Questions</h3>
+        <p class="note">Ask before you send anything you would rather we did not hold.</p>
+        <a class="btn" href="../contact/">Contact the desk</a>
+      </div>
+    </aside>
+  </div>
+</div></section>`,
+    index: { t: 'Privacy', s: 'What CSW collects, why, and how to have it deleted', u: 'privacy/', k: 'privacy policy data protection gdpr ccpa personal information deletion' }
+  });
+
   /* ---------------- jobs ---------------- */
   out.push({
     path: 'jobs/index.html', title: 'Chicken Industry Jobs', active: '', depth: 1,

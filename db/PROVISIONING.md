@@ -15,7 +15,8 @@ to link. An earlier draft of `db/SCHEMA.md` said otherwise; it was wrong.
 | Supabase project exists | everything | ✅ done |
 | Run migrations in the SQL Editor | Phase 1 | Yes, when Phase 1 lands |
 | Project URL + keys available to whoever runs the import | Phase 2 | Yes, when Phase 2 lands |
-| Env vars set in Vercel | Phase 3 (`api/`) | **No — not until forms are built** |
+| Env vars set in Vercel | Phase 3 (`api/`) | **Yes — the forms are built and need them** |
+| `RESEND_API_KEY` + `CSW_NOTIFY_EMAIL` | being told a lead arrived | Yes, or submissions land unread |
 
 **Phase 1 needs no credentials from you at all.** Migrations are `.sql` files; you paste
 them into the Supabase SQL Editor and press Run. Nothing has to leave the dashboard.
@@ -53,9 +54,11 @@ Two things to check afterwards, both in the dashboard:
 - **Table Editor** should list the new tables, and the `intake` schema should appear in
   the schema dropdown.
 
-## 3. Vercel environment variables (Phase 3 only)
+## 3. Vercel environment variables — needed now
 
-Do this when the forms work starts, not before.
+The forms are wired. Until these are set, `POST /api/submit` returns 503 and the site
+falls back to the old clipboard-and-`mailto:` behaviour, so nothing breaks — but nothing
+is stored either.
 
 1. <https://vercel.com/dashboard> → select the Chicken Sandwich Wars project.
 2. **Settings** tab → **Environment Variables** in the left menu.
@@ -66,6 +69,9 @@ Do this when the forms work starts, not before.
 | `SUPABASE_URL` | the Project URL |
 | `SUPABASE_ANON_KEY` | the publishable / anon key |
 | `SUPABASE_SERVICE_ROLE_KEY` | the secret / service_role key — mark it **Sensitive** |
+| `CSW_IP_SALT` | any long random string; it is what makes stored IP hashes irreversible |
+| `RESEND_API_KEY` | optional, from resend.com — without it submissions are stored but nobody is emailed |
+| `CSW_NOTIFY_EMAIL` | optional; where those notifications go |
 
 4. Redeploy. Vercel only injects environment variables at build and invocation time, so
    existing deployments will not see them.
