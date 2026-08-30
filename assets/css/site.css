@@ -386,10 +386,13 @@ footer.site .fine{margin-top:32px;padding-top:20px;border-top:1px solid var(--li
      three lines. A floor under the name column stops that. Long labels still
      wrap rather than forcing the column open, and the extra scroll it can cost
      is now signposted. */
-  .tablewrap .idcol{min-width:min(48vw,180px)}
-  /* When the first column is not the identity column it is a rank or a date --
-     always short, and nothing is gained by letting "2026-07" break in half. */
-  .tablewrap td:first-child:not(.idcol),.tablewrap th:first-child:not(.idcol){white-space:nowrap}
+  .tablewrap .idcol{min-width:min(48vw,var(--idw,180px))}
+  /* --fcw is measured in C.table() from the widest token in the first column, so
+     a date never breaks at its hyphens while a phrase still wraps at its spaces.
+     nowrap would not do: the column then sizes to its longest whole value, and
+     "2025-07 to 2026-07" took 168px of a 359px table, pushing a column clean off
+     the screen. */
+  .tablewrap td:first-child:not(.idcol),.tablewrap th:first-child:not(.idcol){min-width:var(--fcw,0px)}
   .tablehint{grid-row:2;grid-column:1;margin:8px 0 0;font-family:var(--mono);
     font-size:11px;letter-spacing:.06em;line-height:1.5;color:var(--ink-3)}
   .tablescroll.is-scrollable > [data-swipehint]{display:block}
