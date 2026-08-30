@@ -53,6 +53,8 @@ nav.primary a:hover,nav.primary a.on{color:var(--ink);border-bottom-color:var(--
 .subnav .wrap::-webkit-scrollbar{display:none}
 .subnav a{white-space:nowrap}
 .subnav a.on{color:var(--accent)}
+/* Primary links ride in the subnav scroller only on phones -- see layout.js. */
+.subnav a.phone-only{display:none}
 .menutoggle{display:none;background:none;border:1px solid var(--line);color:var(--ink);border-radius:3px;padding:6px 10px;cursor:pointer}
 
 /* ---------- mobile drawer ----------
@@ -298,6 +300,7 @@ footer.site .fine{margin-top:32px;padding-top:20px;border-top:1px solid var(--li
   .menutoggle{display:grid}
   .subnav .wrap{height:44px;gap:18px}
   .subnav a{padding:12px 0}
+  .subnav a.phone-only{display:block}
 
   /* ---- drawer ----
      Fixed, not absolute. The old panel was absolutely positioned at left:0
