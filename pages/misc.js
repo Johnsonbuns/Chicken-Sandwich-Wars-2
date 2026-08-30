@@ -156,7 +156,7 @@ module.exports = function misc(ctx) {
       <div class="kicker">${esc(r.date)} · ${esc(r.readTime)}</div>
       <h3>${esc(r.title)}</h3>
       <p class="note">${esc(r.dek)}</p>
-      <p class="meta" style="margin-top:10px">${r.sections.length} sections</p>
+      <p class="meta">${r.sections.length} sections</p>
     </a>`).join('')}
   </div>
   <div class="cta" style="margin-top:30px">

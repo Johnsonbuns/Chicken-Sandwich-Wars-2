@@ -18,7 +18,7 @@ module.exports = function markets(ctx) {
       <div class="kicker">${esc(m.state)}</div>
       <h3>${esc(m.name)}</h3>
       <p class="note">${esc(m.thesis)}</p>
-      <p class="meta" style="margin-top:10px">${m.activity.length} tracked developments</p>
+      <p class="meta">${m.activity.length} tracked developments</p>
     </a>`).join('')}
   </div>
 

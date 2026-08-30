@@ -132,7 +132,7 @@ module.exports = function operators(ctx) {
             const slug = Object.values(brandBySlug).find((x) => x.name.toLowerCase().includes(b.toLowerCase()) || b.toLowerCase().includes(x.name.split(' ')[0].toLowerCase()));
             return `<p style="margin:0 0 8px">${slug ? `<a href="../brands/${slug.slug}.html">${esc(b)}</a>` : esc(b)}</p>`;
           }).join('') : '<p class="note" style="margin:0">No chicken brands recorded.</p>'}
-          ${(o.brands || []).filter((b) => !(o.chickenBrands || []).includes(b)).length ? `<hr><div class="kicker" style="margin-bottom:8px">Other brands</div>
+          ${(o.brands || []).filter((b) => !(o.chickenBrands || []).includes(b)).length ? `<hr><div class="kicker">Other brands</div>
             <div class="tags">${(o.brands || []).filter((b) => !(o.chickenBrands || []).includes(b)).map((b) => C.badge(b)).join('')}</div>` : ''}
         </div>
       </div>

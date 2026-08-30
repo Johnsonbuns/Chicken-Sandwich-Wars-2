@@ -94,9 +94,11 @@ against brand names, so a renamed brand can silently drop its operator list).
 ## Mobile
 
 Desktop is the base stylesheet; every mobile rule lives inside a media query, so the
-desktop cascade never sees it. Renders at 1280px are pixel-identical to the pre-mobile
-build, and that is worth keeping true — check it with a screenshot diff rather than by
-eye, and ignore the top 35px, where the ticker's animation phase differs between runs.
+desktop cascade never sees it. A mobile change must leave a 1280px render untouched —
+that held through the whole mobile build and is worth keeping true. Check it with a
+screenshot diff rather than by eye, and ignore the top 35px, where the ticker's
+animation phase differs between runs. (The typography pass in the base stylesheet moved
+the desktop render deliberately; it is the current baseline, not a regression.)
 
 Four bands, largest first:
 
@@ -131,6 +133,25 @@ screens; without it the numeric columns hold their nowrap width and the name col
 absorbs the entire shortfall, a word per line. The fallback picks the first column that
 is not numeric, not `hideSmall` and not `#`, which is wrong whenever a table leads with
 a date, so mark those explicitly.
+
+## Type and spacing
+
+The base stylesheet carries a spacing scale (`--sp-1` 4px … `--sp-7` 32px) and every gap
+inside a boxed component comes from it. Two rules hold the boxed components together and
+are what the pattern is for:
+
+- **Leading is a function of size.** `h1`–`h4` each set their own `line-height` — 1.08 at
+  display size up to 1.35 at 16px. A single value cannot serve both; 1.12 on a 17px card
+  title that wraps put one line's descenders into the next line's ascenders.
+- **Proximity encodes grouping.** A `.kicker` or `.eyebrow` sits closer to the heading it
+  labels (6–12px) than the heading sits to its body copy, and a `.card .meta` footer sits
+  further away than either. Both overlines set their own tight `line-height`, because with
+  the 1.6 body leading the gap under them was whatever the line box happened to leave
+  rather than a decision — which is what made the label read as touching the title.
+
+Secondary body copy (`.note`) is 14px/1.55, not the heading's weight and not so small it
+reads as a caption. Card padding is `--sp-5` and the grid gutter `--sp-6`, so the space
+between two cards is always larger than the space inside one.
 
 ## Footnotes
 
