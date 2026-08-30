@@ -187,11 +187,6 @@ module.exports = function misc(ctx) {
       <div class="panel sticky"><div class="panel-head"><h3>Contents</h3></div><div class="panel-body toc">
         ${r.sections.map((s, i) => `<a href="#s${i}">${esc(s.h)}</a>`).join('')}
       </div></div>
-      <div class="cta" style="margin-top:18px">
-        <h3>Get CSW research by email</h3>
-        <p class="note">New reports go to Chicken Wire subscribers first.</p>
-        <a class="btn" href="../newsletter/">Subscribe</a>
-      </div>
     </aside>
   </div>
 </div></section>
@@ -311,7 +306,6 @@ module.exports = function misc(ctx) {
     </aside>
   </div>
 </div></section>`,
-    index: { t: 'The Chicken Wire', s: 'Weekly newsletter — five things shaping the industry', u: 'newsletter/', k: 'newsletter chicken wire subscribe email weekly' }
   });
 
   /* ---------------- about ---------------- */
@@ -339,7 +333,6 @@ module.exports = function misc(ctx) {
         <p class="note">News tips, operator updates, corrections, real estate opportunities, partnerships and advertising all route through one desk.</p>
         <a class="btn" href="../contact/">Contact CSW</a>
       </div></div>
-      <div class="cta" style="margin-top:18px"><h3>The Chicken Wire</h3><p class="note">The five things shaping the industry each week.</p><a class="btn" href="../newsletter/">Subscribe</a></div>
     </aside>
   </div>
 </div></section>`,
