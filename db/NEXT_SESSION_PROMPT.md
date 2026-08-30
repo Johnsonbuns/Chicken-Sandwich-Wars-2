@@ -66,31 +66,32 @@ report what happens**, since that is the one untested surface.
 `0011_seed_vocab.sql` is generated from `data/*.json` and `lib/score.js`. Regenerate it
 rather than hand-editing if the vocabularies change.
 
-## Phase 2 — Import, export, round-trip
+## Phase 2 — Import, export, round-trip ✅ already done
 
-Three scripts, all dependency-free, all using `fetch`:
+`scripts/db-import.js` (JSON → idempotent SQL seed), `scripts/export-data.js` (DB → JSON,
+via psql locally or PostgREST against Supabase), `scripts/db-roundtrip-check.js` (the
+gate). Wired as `npm run db:import`, `db:export`, `db:check`.
 
-- **`scripts/db-import.js`** — reads `data/*.json`, writes to Supabase. Idempotent: safe
-  to run repeatedly. Resolve every `src` id to a `sources.id` FK and **fail loudly** on an
-  unresolvable one. Follow the mapping table in `db/SCHEMA.md` §13.
-- **`scripts/export-data.js`** — reads Supabase, writes the same JSON shapes back.
-- **`scripts/db-roundtrip-check.js`** — runs import then export into a temp directory and
-  deep-compares against `data/`, key-order-insensitive. Exits non-zero on any difference.
+The gate passes: all thirteen files round-trip clean, `npm test` still builds 75 pages,
+scores recompute identically (12 rated, 9 unrated), and `data/` is untouched. Verified
+against a database seeded exactly the way production was.
 
-Wire up `npm run db:import`, `npm run db:export`, `npm run db:check`.
+Migrations `0012`–`0015` all came out of writing the import — the data correcting the
+model. Read their headers; each explains what broke and why.
 
-### The gate
+## Your scope: Phase 3 — forms
 
-Do not report Phase 2 complete until all four hold:
+`api/submit.js`, the `intake` tables (already created), a `/privacy/` page, and an email
+notification. Update `assets/js/site.js` to POST and fall back to the existing `mailto:`
+if the request fails, so a function outage degrades to today's behaviour rather than
+losing a lead.
 
-- [ ] `npm run db:check` reports zero differences
-- [ ] `npm test` reports 75 pages, all checks passing
-- [ ] `git diff --stat data/` is empty
-- [ ] Brand scores computed from the database match `lib/score.js` for all 21 brands — 12 rated with identical scores and ranks, 9 unrated
+The privacy policy ships in the SAME pull request as the endpoint, not after it — the
+moment the first submission lands the site is collecting names, emails, phone numbers and
+property addresses with no disclosure.
 
-If the round-trip cannot be made clean, **stop and report exactly which fields differ and
-why**. A near-miss is a finding, not a pass. Do not adjust `data/*.json` to make the
-comparison succeed.
+Remember `vercel.json` has no install step: use global `fetch` against PostgREST, add no
+dependencies, and never put the service-role key anywhere the browser can see it.
 
 ## Import details that will bite
 

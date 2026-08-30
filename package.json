@@ -8,7 +8,10 @@
     "test": "node build.js && node scripts/check.js && node scripts/mobile-check.js",
     "serve": "node build.js && node scripts/serve.js",
     "clean": "rm -rf docs",
-    "check:mobile": "node scripts/mobile-check.js"
+    "check:mobile": "node scripts/mobile-check.js",
+    "db:import": "node scripts/db-import.js > supabase/seed.sql",
+    "db:export": "node scripts/export-data.js",
+    "db:check": "node scripts/db-roundtrip-check.js"
   },
   "engines": {
     "node": ">=18"

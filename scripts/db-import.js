@@ -108,9 +108,10 @@ say('\n' + insert('public.company_roles', ['company_id','role'],
 const SECTOR = { 'meineke':'automotive','take-5-oil-change':'automotive','7-eleven':'convenience' };
 const chickenNames = new Set(data.brands.map((b) => b.name.toLowerCase()));
 const others = new Map();
+const chickenSlugs = new Set(data.brands.map((b) => slugify(b.name)));
 for (const o of data.operators) {
   for (const bn of o.brands || []) {
-    if (chickenNames.has(bn.toLowerCase())) continue;
+    if (chickenNames.has(bn.toLowerCase()) || chickenSlugs.has(slugify(bn))) continue;
     const s = slugify(bn);
     if (!others.has(s)) others.set(s, bn);
   }
@@ -120,13 +121,17 @@ say(insert('public.brands', ['id','slug','name','is_chicken','sector','is_publis
     q(SECTOR[s] || 'restaurant'), 'false']), '(slug)'));
 
 /* brand_operators: the foreign key replacing build.js fuzzy string matching. */
+/* Exact match only. An earlier fuzzy version mapped "Taco Bell" to El Pollo Loco -
+   precisely the failure mode the foreign key exists to remove, so substring matching
+   is deliberately absent. A name that does not resolve is reported, never guessed. */
 const resolveBrand = (name) => {
   const lower = name.toLowerCase();
-  const hit = data.brands.find((x) => x.name.toLowerCase() === lower)
-    || data.brands.find((x) => x.name.toLowerCase().includes(lower) || lower.includes(x.name.split(' ')[0].toLowerCase()));
+  const hit = data.brands.find((x) => x.name.toLowerCase() === lower);
   if (hit) return hit.slug;
-  const s = slugify(name);
-  return others.has(s) ? s : null;
+  const sl = slugify(name);
+  if (others.has(sl)) return sl;
+  const near = data.brands.find((x) => slugify(x.name) === sl);
+  return near ? near.slug : null;
 };
 const bo = [];
 for (const o of data.operators) {
@@ -135,10 +140,11 @@ for (const o of data.operators) {
     if (!s) { warn.push(`brand_operators: could not resolve "${bn}" for ${o.slug}`); continue; }
     const isChicken = (o.chickenBrands || []).some((c) => c.toLowerCase() === bn.toLowerCase());
     bo.push([q(id('bo', `${o.slug}:${s}`)), q(brandId(s)), q(coId(o.slug)),
-             isChicken && o.chickenUnits != null ? qn(o.chickenUnits) : 'null', 'true']);
+             isChicken && o.chickenUnits != null ? qn(o.chickenUnits) : 'null', 'true', q(bn)]);
   }
 }
-say('\n' + insert('public.brand_operators', ['id','brand_id','company_id','unit_count','is_current'], bo));
+say('\n' + insert('public.brand_operators',
+  ['id','brand_id','company_id','unit_count','is_current','brand_label'], bo));
 
 /* ---------------------------------------------------------------- markets */
 section('markets');
@@ -307,7 +313,7 @@ for (const ev of movement) {
   moveRows.push([q(id('move', key)), q(brandId(ev.brand)), q(ev.dir), q(ev.date),
     p.start && p.start === p.end ? q(p.start) : 'null', p.start ? q(p.start) : 'null',
     p.end ? q(p.end) : 'null', qn(ev.count), q(ev.location), q(ev.detail),
-    pid ? q(pid) : 'null', srcq(ev.src), String(ev.i)]);
+    pid ? q(pid) : 'null', srcq(ev.src), String(ev.i), q(ev.brandName)]);
 }
 say(insert('public.properties',
   ['id','address_line1','city','state','location_label','status','record_source',
@@ -316,7 +322,7 @@ say('\n' + insert('public.property_occupancies',
   ['id','property_id','brand_id','status','opened_on','closed_on','detail_md','date_label','source_id'], occRows));
 say('\n' + insert('public.system_movements',
   ['id','brand_id','direction','date_label','occurred_on','period_start','period_end',
-   'unit_count','location_label','detail_md','property_id','source_id','ordinal'], moveRows));
+   'unit_count','location_label','detail_md','property_id','source_id','ordinal','brand_label'], moveRows));
 
 /* ----------------------------------------------------------- transactions */
 section('transactions, the properties they convey, and listings');
@@ -331,7 +337,7 @@ data.transactions.property.forEach((t, i) => {
     const lid = id('listing', `tx:${i}`);
     listRows.push([q(lid), q(`${t.brand} — ${t.location}`), q(t.detail), `'active'`,
       qn(t.price), qn(t.capRate), 'true', srcq(t.src), q(t.date), q(t.location), q(t.term),
-      bslug ? q(brandId(bslug)) : 'null']);
+      bslug ? q(brandId(bslug)) : 'null', String(i), q(t.brand)]);
     return;
   }
   const tid = id('tx', `property:${i}`);
@@ -339,7 +345,7 @@ data.transactions.property.forEach((t, i) => {
   txRows.push([q(tid), q(TXK[t.type] || 'property_sale'), `'property'`, q(t.date),
     q(parsePeriod(t.date).start), qn(t.price), qb(t.price != null), qn(t.capRate), 'null',
     'null', bslug ? q(brandId(bslug)) : 'null', q(t.location), q(t.term), q(t.detail),
-    srcq(t.src), 'true', 'null', 'null']);
+    srcq(t.src), 'true', 'null', 'null', String(i), q(t.brand)]);
   if (specific) {
     const pid = id('property', `tx:${t.brand}:${t.location}`);
     propRows.push([q(pid), 'null', q(String(t.location).split(',').slice(-2, -1)[0] || t.location),
@@ -355,7 +361,7 @@ data.transactions.corporate.forEach((t, i) => {
   txRows.push([q(tid), q(TXK[t.type] || 'brand_acquisition'), `'company'`, q(t.date),
     q(parsePeriod(t.date).start), qn(t.value), qb(t.value != null), 'null', 'null',
     (target && !isBrand) ? q(coId(target.slug)) : 'null', isBrand ? q(brandId(target.slug)) : 'null',
-    'null', 'null', q(t.detail), srcq(t.src), 'true', q(t.target), q(t.acquirer)]);
+    'null', 'null', q(t.detail), srcq(t.src), 'true', q(t.target), q(t.acquirer), String(i), 'null']);
 });
 /* Emit the extra properties discovered above alongside the originals. */
 say(insert('public.properties',
@@ -364,18 +370,18 @@ say(insert('public.properties',
 say('\n' + insert('public.transactions',
   ['id','kind','subject','date_label','closed_on','price_usd','is_price_disclosed','cap_rate_pct',
    'noi_usd','buyer_company_id','brand_id','location_label','term_label','detail_md','source_id',
-   'is_published','target_label','acquirer_label'], txRows));
+   'is_published','target_label','acquirer_label','sort_index','brand_label'], txRows));
 say('\n' + insert('public.transaction_properties', ['transaction_id','property_id'], txPropRows,
   '(transaction_id, property_id)'));
 say('\n' + insert('public.listings',
   ['id','headline','summary_md','status','asking_price_usd','cap_rate_pct','authorization_on_file',
-   'source_id','date_label','location_label','term_label','brand_id'], listRows));
+   'source_id','date_label','location_label','term_label','brand_id','sort_index','brand_label'], listRows));
 
 /* ------------------------------------------------------------- expansion */
 section('expansion agreements');
 say(insert('public.expansion_agreements',
   ['id','brand_id','operator_company_id','operator_label','market_label','unit_count','units_label',
-   'announced_on','announced_label','timeline_note','source_id'],
+   'announced_on','announced_label','timeline_note','source_id','sort_index','brand_label'],
   data.expansion.map((e, i) => {
     /* The field is mixed: some values are operator slugs, some are descriptions
        ('Company', 'Multiple franchisees'). Resolve what resolves, keep the label always. */
@@ -384,7 +390,7 @@ say(insert('public.expansion_agreements',
       : null;
     return [q(id('exp', String(i))), q(brandId(e.brand)), op ? q(coId(op.slug)) : 'null',
       q(e.operator), q(e.market), qn(e.units), q(e.unitsLabel), q(parsePeriod(e.announced).start),
-      q(e.announced), q(e.timeline), srcq(e.src)];
+      q(e.announced), q(e.timeline), srcq(e.src), String(i), q(e.brandName)];
   })));
 
 /* -------------------------------------------------------------- articles */
@@ -419,21 +425,23 @@ say('\n' + insert('public.article_sources', ['article_id','source_id','ordinal']
 
 /* ---------------------------------------------------------------- charts */
 section('charts, published rankings and industry events');
-say(insert('public.chart_series', ['id','key','title','chart_kind','unit','note_md','sort_order'],
+say(insert('public.chart_series', ['id','key','title','chart_kind','unit','note_md','sort_order','unit_label'],
   data.datacenter.map((c, i) => [q(id('chart', c.id)), q(c.id), q(c.title), q(c.type),
-    q(c.unit === 'pct' ? 'pct' : c.unit === 'usd' ? 'usd' : 'count'), q(c.note), String(i)]), '(key)'));
+    q(c.unit === 'pct' ? 'pct' : /usd/i.test(c.unit) ? 'usd' : 'count'), q(c.note), String(i),
+    q(c.unit)]), '(key)'));
 say('\n' + insert('public.chart_points', ['series_id','ordinal','label','value','brand_id'],
   data.datacenter.flatMap((c) => c.series.map((s, i) => {
-    const b = data.brands.find((x) => x.name === s.label);
-    return [q(id('chart', c.id)), String(i), q(s.label), qn(s.value), b ? q(brandId(b.slug)) : 'null'];
+    return [q(id('chart', c.id)), String(i), q(s.label), qn(s.value),
+            s.slug ? q(brandId(s.slug)) : 'null'];
   })), '(series_id, ordinal)'));
 say('\n' + insert('public.chart_sources', ['series_id','source_id'],
   data.datacenter.flatMap((c) => (c.srcs || []).map((s) => [q(id('chart', c.id)), srcq(s)])),
   '(series_id, source_id)'));
 
-say('\n' + insert('public.published_rankings', ['id','title','source_id','method_md','sort_order'],
+say('\n' + insert('public.published_rankings',
+  ['id','title','source_id','method_md','sort_order','publisher_label'],
   data.consumer.publishedRankings.map((r, i) =>
-    [q(id('ranking', String(i))), q(r.title), srcq(r.src), q(r.method), String(i)])));
+    [q(id('ranking', String(i))), q(r.title), srcq(r.src), q(r.method), String(i), q(r.publisher)])));
 say('\n' + insert('public.published_ranking_items', ['ranking_id','ordinal','label','brand_id'],
   data.consumer.publishedRankings.flatMap((r, i) => r.items.map((it, j) => {
     const b = data.brands.find((x) => it.toLowerCase().startsWith(x.name.toLowerCase()));
@@ -441,9 +449,9 @@ say('\n' + insert('public.published_ranking_items', ['ranking_id','ordinal','lab
   })), '(ranking_id, ordinal)'));
 
 say('\n' + insert('public.industry_events',
-  ['id','slug','name','date_label','location_label','why_md','source_id','starts_on'],
+  ['id','slug','name','date_label','location_label','why_md','source_id','starts_on','sort_order'],
   data.events.map((e, i) => [q(id('event', slugify(e.name))), q(slugify(e.name)), q(e.name),
-    q(e.date), q(e.location), q(e.why), srcq(e.src), 'null']), '(slug)'));
+    q(e.date), q(e.location), q(e.why), srcq(e.src), 'null', String(i)]), '(slug)'));
 
 say('\ncommit;');
 console.log(out.join('\n'));

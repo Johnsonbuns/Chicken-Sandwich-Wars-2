@@ -3,17 +3,24 @@
 # Concatenates every migration into one file for pasting into the Supabase SQL Editor.
 # Generated on demand so it cannot drift from supabase/migrations/.
 #
-#   ./supabase/bundle.sh > csw-schema-all.sql
+#   ./supabase/bundle.sh              > all migrations
+#   ./supabase/bundle.sh 0012         > only 0012 and later, for a database already
+#                                       carrying the earlier ones
+#   ./supabase/bundle.sh 0012 seed    > those migrations plus the data seed
 #
 set -eu
+FROM="${1:-0000}"
+WITH_SEED="${2:-}"
 cd "$(dirname "$0")/.."
 
-cat <<'HDR'
+if [ "$FROM" = "0000" ]; then TITLE="complete schema"; else TITLE="migrations ${FROM} and later"; fi
+[ -n "$WITH_SEED" ] && TITLE="$TITLE, plus the data seed"
+
+cat <<HDR
 -- ============================================================================
--- Chicken Sandwich Wars - complete schema
+-- Chicken Sandwich Wars - ${TITLE}
 --
--- Every migration in supabase/migrations/, concatenated in order. Paste the
--- whole file into the Supabase SQL Editor and press Run once.
+-- Paste the whole file into the Supabase SQL Editor and press Run once.
 --
 -- Wrapped in a single transaction: if any statement fails, everything rolls
 -- back and the database is left exactly as it was. There is no half-applied
@@ -26,18 +33,31 @@ begin;
 HDR
 
 for f in supabase/migrations/*.sql; do
+  n=$(basename "$f" | cut -c1-4)
+  [ "$n" \< "$FROM" ] && continue
   printf '\n\n-- ==== %s %s\n\n' "$(basename "$f")" "$(printf '=%.0s' $(seq 1 $((58 - ${#f}))))"
   cat "$f"
 done
+
+if [ -n "$WITH_SEED" ]; then
+  printf '\n\n-- ==== data seed %s\n\n' "$(printf '=%.0s' $(seq 1 46))"
+  node scripts/db-import.js 2>/dev/null | grep -v -E '^(begin|commit);$'
+fi
 
 cat <<'FTR'
 
 
 commit;
 
--- Sanity check. Expect: 38 public tables, 4 intake, 1 audit.
-select table_schema, count(*) as tables
+-- Sanity check. Expect 41 public tables, 4 intake, 1 audit - and, once the seed has
+-- been applied, 108 sources, 33 brands, 16 companies and 184 facts.
+select 'tables' as what, table_schema as detail, count(*)::text as n
 from information_schema.tables
 where table_schema in ('public','intake','audit') and table_type = 'BASE TABLE'
-group by table_schema order by table_schema;
+group by table_schema
+union all select 'rows', 'sources', count(*)::text from public.sources
+union all select 'rows', 'brands', count(*)::text from public.brands
+union all select 'rows', 'companies', count(*)::text from public.companies
+union all select 'rows', 'facts', count(*)::text from public.facts
+order by 1 desc, 2;
 FTR
