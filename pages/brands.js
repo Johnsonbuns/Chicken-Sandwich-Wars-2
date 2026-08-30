@@ -57,7 +57,7 @@ module.exports = function brands(ctx) {
   </div>
 
   ${C.table({
-    cols: ['Brand', { label: 'U.S. units', num: true }, { label: 'Systemwide sales', num: true }, { label: 'AUV', num: true }, { label: 'Unit growth', num: true }, 'Read', { label: 'CSW Score', num: true }],
+    cols: ['Brand', { label: 'U.S. units', num: true }, { label: 'Systemwide sales', num: true, hideSmall: true }, { label: 'AUV', num: true }, { label: 'Unit growth', num: true }, { label: 'Read', hideSmall: true }, { label: 'CSW Score', num: true }],
     rows,
     cls: 'sortable'
   }).replace('<table>', '<table data-sortable>')}
@@ -128,12 +128,12 @@ module.exports = function brands(ctx) {
 <section class="section" style="padding-bottom:20px"><div class="wrap">
   <div class="eyebrow">Brand profile</div>
   <div style="display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap">
-    <div style="flex:1;min-width:280px">
+    <div style="flex:1;min-width:min(280px,100%)">
       <h1 style="margin-bottom:10px">${esc(b.name)}</h1>
       <div class="tags" style="margin-bottom:14px">${C.momentumBadge(b.momentum)}${b.tags.map((t) => C.badge(t)).join('')}</div>
       <p class="dek">${esc(b.franchiseModel)}</p>
     </div>
-    ${sc && sc.rated ? `<div class="panel" style="min-width:320px;flex:0 1 380px">
+    ${sc && sc.rated ? `<div class="panel" style="min-width:min(320px,100%);flex:0 1 380px">
       <div class="panel-head"><h3>CSW Score</h3><a class="more" style="margin-left:auto;font-size:12px" href="../methodology/">Methodology →</a></div>
       <div class="panel-body">
         <div class="scorebox" style="margin-bottom:14px">
@@ -142,7 +142,7 @@ module.exports = function brands(ctx) {
         </div>
         ${C.scoreBars(sc.parts)}
       </div>
-    </div>` : `<div class="panel" style="min-width:280px;flex:0 1 340px"><div class="panel-head"><h3>CSW Score</h3></div><div class="panel-body"><p class="note" style="margin:0">Unrated. Fewer than three of the five scoring components have been published for this brand. CSW does not fill that gap with an estimate.</p></div></div>`}
+    </div>` : `<div class="panel" style="min-width:min(280px,100%);flex:0 1 340px"><div class="panel-head"><h3>CSW Score</h3></div><div class="panel-body"><p class="note" style="margin:0">Unrated. Fewer than three of the five scoring components have been published for this brand. CSW does not fill that gap with an estimate.</p></div></div>`}
   </div>
 
   <div class="stats" style="margin-top:26px">
@@ -174,17 +174,17 @@ module.exports = function brands(ctx) {
       </div></div>
 
       ${brandProps.length ? `<h3 style="margin-top:26px">Verified transactions</h3>
-      ${C.table({ cols: ['Date', 'Location', { label: 'Price', num: true }, { label: 'Cap', num: true }, 'Terms'], rows: brandProps.map((t) => [
+      ${C.table({ cols: ['Date', { label: 'Location', id: true }, { label: 'Price', num: true }, { label: 'Cap', num: true }, 'Terms'], rows: brandProps.map((t) => [
         esc(t.date), esc(t.location) + R2.ref(t.src), usd(t.price), t.capRate ? t.capRate.toFixed(2) + '%' : '—', esc(t.term || '—')
       ]) })}` : ''}
 
       ${brandExp.length ? `<h3 style="margin-top:26px">Development pipeline</h3>
-      ${C.table({ cols: ['Announced', 'Market', 'Commitment', 'Timeline'], rows: brandExp.map((e) => [
+      ${C.table({ cols: ['Announced', { label: 'Market', id: true }, 'Commitment', 'Timeline'], rows: brandExp.map((e) => [
         esc(e.announced), esc(e.market) + R2.ref(e.src), esc(e.unitsLabel), esc(e.timeline || '—')
       ]) })}` : ''}
 
       ${(brandOpen.length || brandClose.length) ? `<h3 style="margin-top:26px">Unit movement</h3>
-      ${C.table({ cols: ['Date', 'Type', 'Detail'], rows: [
+      ${C.table({ cols: ['Date', 'Type', { label: 'Detail', id: true }], rows: [
         ...brandOpen.map((m) => [esc(m.date), C.badge('Opening', 'good'), `<b>${esc(m.location)}</b> — ${esc(m.detail)}${R2.ref(m.src)}`]),
         ...brandClose.map((m) => [esc(m.date), C.badge('Closure', 'bad'), `<b>${esc(m.location)}</b>${m.count ? ` (${num(m.count)})` : ''} — ${esc(m.detail)}${R2.ref(m.src)}`])
       ] })}` : ''}

@@ -39,7 +39,7 @@ module.exports = function operators(ctx) {
   </div>
 
   ${C.table({
-    cols: ['Operator', 'Chicken brands', { label: 'Chicken units', num: true }, { label: 'Total units', num: true }, 'Geography', 'Status'],
+    cols: ['Operator', 'Chicken brands', { label: 'Chicken units', num: true }, { label: 'Total units', num: true, hideSmall: true }, { label: 'Geography', hideSmall: true }, 'Status'],
     rows
   }).replace('<table>', '<table data-sortable>')}
 
@@ -119,7 +119,7 @@ module.exports = function operators(ctx) {
       ]) })}` : ''}
 
       ${deals.length ? `<h3 style="margin-top:28px">Transactions</h3>
-      ${C.table({ cols: ['Date', 'Type', 'Detail', { label: 'Value', num: true }], rows: deals.map((t) => [
+      ${C.table({ cols: ['Date', 'Type', { label: 'Detail', id: true }, { label: 'Value', num: true }], rows: deals.map((t) => [
         esc(t.date), esc(t.type), `<b>${esc(t.target)}</b><div class="note">${esc(t.detail)}${R2.ref(t.src)}</div>`, t.value ? usd(t.value) : '—'
       ]) })}` : ''}
     </div>

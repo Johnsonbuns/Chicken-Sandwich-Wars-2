@@ -5,10 +5,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm test          # build, then scripts/check.js — run this before every push
-npm run build     # data/ -> docs/  (77 pages)
-npm run serve     # build, then preview at http://localhost:4173
-npm run clean     # rm -rf docs
+npm test              # build, check.js, then mobile-check.js — run before every push
+npm run build         # data/ -> docs/  (77 pages)
+npm run serve         # build, then preview at http://localhost:4173
+npm run check:mobile  # layout check at 393px; pass a width to use another
+npm run clean         # rm -rf docs
 ```
 
 `npm test` is not a unit-test suite; it is six integrity checks over the generated site,
@@ -18,9 +19,20 @@ links, footnote superscripts with no matching anchor, near-empty pages, `undefin
 from `sources.json`, and a sitemap that has drifted from the page count. It exits
 non-zero, so it is safe to chain.
 
+`scripts/mobile-check.js` is the seventh check and the only one that needs a browser,
+so it skips with a notice rather than failing when there is no Chromium (Vercel's build
+box has none). It asserts two things at a phone width: that no page scrolls horizontally,
+and that no table hides content without showing something that says so. Both are
+failures the site has actually shipped, and neither is visible to a static check — they
+only exist once a viewport has a width.
+
 For anything visual, render a page in the Chromium binary at
 `/opt/pw-browsers/chromium-*/chrome-linux/chrome` with `--headless --screenshot`.
-Playwright is not installed; the browser is.
+Playwright is not installed; the browser is. Note that headless clamps `--window-size`
+at around 500px, well above any phone: to render at a real phone width, drive the
+browser over the DevTools protocol and set the viewport with `Browser.setWindowBounds`.
+`scripts/mobile-check.js` does exactly that in about 40 lines with no dependencies, and
+is the shortest thing to copy from.
 
 **Dependencies.** The build has none and should keep none — `node build.js` runs on
 stock Node (>=18). An attempt to add `@vercel/analytics` was reverted because all of its
@@ -79,6 +91,47 @@ in two places (chart bar links and news brand badges) — those components assum
 **`ctx`** carries `data`, `sources`, `ranking`, `scoreBySlug`, `brandBySlug` and
 `operatorsByBrand` (the last is built by fuzzy-matching operator `chickenBrands` strings
 against brand names, so a renamed brand can silently drop its operator list).
+
+## Mobile
+
+Desktop is the base stylesheet; every mobile rule lives inside a media query, so the
+desktop cascade never sees it. Renders at 1280px are pixel-identical to the pre-mobile
+build, and that is worth keeping true — check it with a screenshot diff rather than by
+eye, and ignore the top 35px, where the ticker's animation phase differs between runs.
+
+Four bands, largest first:
+
+- **≤920px** — the table edge fade. Any table that scrolls shows it, at every width
+  below the desktop layout.
+- **761–920px** — an iPad in portrait is 810 or 820pt. The full masthead needs 903px, so
+  this band tightens the logo and nav to fit rather than dropping to the drawer; a
+  900px-wide laptop window should not grow a hamburger.
+- **≤760px** — the phone layout: drawer instead of the primary nav, 44px tap targets,
+  16px form inputs, single-column grids.
+- **≤640px** — columns marked `hideSmall` step aside, with a checkbox to restore them.
+
+Three things that will look like over-engineering and are not:
+
+**`site.js` is `async`, not `defer`.** A classic script waits for every pending
+stylesheet, `defer` included, and this page fetches one from `fonts.googleapis.com`.
+With `defer` the menu, search, filters, polls and form handling were all held until a
+third party answered. `async` is not blocked by stylesheets; the script guards on DOM
+readiness itself. Do not "fix" it back to `defer`.
+
+**Nothing clips the overflow.** No `overflow-x:hidden` backstop on `body`, because it
+would hide exactly what `check:mobile` exists to catch. Fix the cause instead — it is
+almost always a flex or grid item at its default `min-width:auto`.
+
+**Inline `min-width` has to be responsive at source.** An inline style outranks any
+media query, so a hard `min-width:320px` in a page module cannot be overridden later.
+Write `min-width:min(320px,100%)`; it is a no-op wherever the original value fits.
+
+`C.table()` takes `{ label, num, hideSmall, id }` per column. `id` marks the identity
+column — the one carrying the subject of the row — which gets a width floor on small
+screens; without it the numeric columns hold their nowrap width and the name column
+absorbs the entire shortfall, a word per line. The fallback picks the first column that
+is not numeric, not `hideSmall` and not `#`, which is wrong whenever a table leads with
+a date, so mark those explicitly.
 
 ## Footnotes
 

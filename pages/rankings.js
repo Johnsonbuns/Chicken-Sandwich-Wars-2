@@ -38,7 +38,7 @@ module.exports = function rankings(ctx) {
   </div>
 
   ${C.table({
-    cols: ['#', 'Brand', { label: 'CSW Score', num: true }, { label: 'Demand', num: true }, { label: 'Economics', num: true }, { label: 'Expansion', num: true }, { label: 'Real estate', num: true }, { label: 'Momentum', num: true }],
+    cols: ['#', 'Brand', { label: 'CSW Score', num: true }, { label: 'Demand', num: true, hideSmall: true }, { label: 'Economics', num: true, hideSmall: true }, { label: 'Expansion', num: true, hideSmall: true }, { label: 'Real estate', num: true, hideSmall: true }, { label: 'Momentum', num: true, hideSmall: true }],
     rows: ranking.rated.map((s) => {
       const by = Object.fromEntries(s.parts.map((p) => [p.key, p.value]));
       const cell = (k) => (by[k] == null ? '<span class="note">—</span>' : by[k]);

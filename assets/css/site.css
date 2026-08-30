@@ -55,6 +55,12 @@ nav.primary a:hover,nav.primary a.on{color:var(--ink);border-bottom-color:var(--
 .subnav a.on{color:var(--accent)}
 .menutoggle{display:none;background:none;border:1px solid var(--line);color:var(--ink);border-radius:3px;padding:6px 10px;cursor:pointer}
 
+/* ---------- mobile drawer ----------
+   Off entirely outside the mobile breakpoint: every rule that gives these
+   elements a box lives in the max-width:760px block near the bottom of this
+   file, so desktop renders the markup as nothing. */
+.drawer,.drawer-scrim{display:none}
+
 /* ---------- type ---------- */
 h1,h2,h3,h4{font-family:var(--display);font-weight:800;letter-spacing:-.02em;line-height:1.12;margin:0 0 .5em}
 h1{font-size:clamp(30px,4.4vw,50px)}
@@ -104,6 +110,13 @@ a.card:hover h3{color:var(--accent)}
 .pad{padding:16px 18px}
 
 /* ---------- tables ---------- */
+/* .tablescroll stacks the scroller, an edge fade and a hint line. Both extras
+   are display:none here, so on desktop this is the plain bordered box it has
+   always been -- the grid just gives the fade somewhere to sit without
+   absolute positioning or height arithmetic. */
+.tablescroll{display:grid;grid-template-columns:minmax(0,1fr)}
+.tablescroll > .tablewrap{grid-row:1;grid-column:1}
+.tablescroll > .tablefade,.tablescroll > .tablehint{display:none}
 .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
 table{border-collapse:collapse;width:100%;font-size:14px}
 th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:500;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--bg-2);position:sticky;top:0}
@@ -244,17 +257,167 @@ footer.site .fine{margin-top:32px;padding-top:20px;border-top:1px solid var(--li
   .sticky{position:static}
   footer.site .cols{grid-template-columns:repeat(2,1fr)}
 }
+/* Table scroll was invisible everywhere below the desktop layout: mobile and
+   tablet browsers hide scrollbars, so 36 of 52 tables cut their content off
+   with nothing to say so -- the brands index showed 351px of an 893px table.
+   The fade covers every width where a table can scroll, not only phones; the
+   worded hints further down are phone-specific. */
+@media(max-width:920px){
+  .tablescroll > .tablefade{grid-row:1;grid-column:1;justify-self:end;align-self:stretch;
+    width:56px;margin:1px 1px 1px 0;pointer-events:none;
+    border-radius:0 var(--radius) var(--radius) 0;
+    background:linear-gradient(to left,var(--panel) 18%,rgba(20,23,28,0));
+    opacity:0;transition:opacity .18s ease}
+  .tablescroll.is-scrollable > .tablefade{display:block;opacity:1}
+  .tablescroll.at-end > .tablefade{opacity:0}
+}
+
+/* 761-920px -- an iPad in portrait is 810 or 820pt, and lands here. The full
+   desktop masthead does not fit: logo, five nav items and a labelled search
+   button need 903px, so below that the page scrolled sideways exactly as
+   phones did -- 142px of overrun at 761px. This band keeps the horizontal nav
+   rather than dropping to the drawer, since a 900px-wide laptop window should
+   not suddenly grow a hamburger; it only tightens it enough to fit. */
+@media(min-width:761px) and (max-width:920px){
+  .masthead{gap:16px}
+  .logo{font-size:16px;gap:8px;min-width:0}
+  .logo .mark{width:23px;height:23px;font-size:13px}
+  nav.primary{gap:14px;font-size:12px;letter-spacing:.05em}
+  .searchbtn span{display:none}
+  .searchbtn{padding:7px 10px}
+  .subnav .wrap{gap:16px;font-size:12px}
+}
+
 @media(max-width:760px){
+  /* ---- header ----
+     The masthead used to measure 440px against a 393px viewport, which put the
+     menu button off-screen and made every page horizontally scrollable. Three
+     things caused that and all three are fixed here: the wordmark could not
+     shrink (min-width:auto on a flex item), it was set at a fixed 19px, and the
+     two buttons were sized by padding rather than to a tap target. */
+  .wrap{padding:0 16px}
+  .masthead{height:56px;gap:10px}
+  .logo{font-size:clamp(11.5px,3.7vw,17px);gap:7px;min-width:0}
+  .logo > span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .logo .mark{width:22px;height:22px;font-size:12px}
   nav.primary{display:none}
-  nav.primary.open{display:flex;position:absolute;top:64px;left:0;right:0;background:var(--bg-2);border-bottom:1px solid var(--line);flex-direction:column;gap:0;padding:8px 20px 14px;margin:0}
-  nav.primary.open a{padding:11px 0;border-bottom:1px solid var(--line)}
-  .menutoggle{display:block;margin-left:auto}
+  .searchbtn,.menutoggle{width:44px;height:44px;flex:none;padding:0;display:grid;place-items:center;font-size:17px;margin:0}
+  .searchbtn{margin-left:auto}
+  .searchbtn span{display:none}
+  .menutoggle{display:grid}
+  .subnav .wrap{height:44px;gap:18px}
+  .subnav a{padding:12px 0}
+
+  /* ---- drawer ----
+     Fixed, not absolute. The old panel was absolutely positioned at left:0
+     right:0, so it was only ever as wide as the viewport and sat at document
+     x=0 -- once the page was scrolled sideways it stopped covering the content
+     beside it, which is what made body text appear to bleed through the menu.
+     A fixed panel is positioned against the viewport and cannot come apart
+     from it. It also clears the subnav, which used to overlap the first item. */
+  .drawer-scrim{display:block;position:fixed;inset:0;z-index:88;background:rgba(0,0,0,.62);
+    opacity:0;visibility:hidden;transition:opacity .22s ease,visibility .22s ease}
+  .drawer-scrim.open{opacity:1;visibility:visible}
+  .drawer{display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;z-index:89;
+    width:min(84vw,330px);background:var(--bg-2);border-left:1px solid var(--line-2);
+    box-shadow:-18px 0 40px rgba(0,0,0,.45);
+    transform:translateX(100%);visibility:hidden;transition:transform .24s ease,visibility .24s ease;
+    overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+    padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+  .drawer.open{transform:none;visibility:visible}
+  @media (prefers-reduced-motion:reduce){
+    .drawer,.drawer-scrim{transition:none}
+  }
+  .drawer-head{display:flex;align-items:center;height:56px;padding:0 8px 0 18px;
+    border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg-2);z-index:1}
+  .drawer-title{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+  .drawer-close{margin-left:auto;width:44px;height:44px;display:grid;place-items:center;
+    background:none;border:0;color:var(--ink-2);font-size:16px;cursor:pointer;font-family:var(--sans)}
+  .drawer-search{margin:14px 18px 4px;padding:11px 14px;background:var(--panel);border:1px solid var(--line);
+    border-radius:var(--radius);color:var(--ink-3);font-family:var(--sans);font-size:14.5px;text-align:left;cursor:pointer}
+  .drawer-nav{display:flex;flex-direction:column;padding:6px 18px 0}
+  .drawer-group{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-3);margin:18px 0 2px}
+  .drawer-nav a{display:flex;align-items:center;min-height:44px;padding:4px 0;
+    border-bottom:1px solid var(--line);color:var(--ink-2);font-size:15px}
+  .drawer-nav a.on{color:var(--accent);font-weight:600}
+
+  /* ---- layout ---- */
   .g2,.g3,.g4{grid-template-columns:1fr}
   .row2{grid-template-columns:1fr}
-  .chart .row{grid-template-columns:120px 1fr 70px;font-size:12px}
-  .bar{grid-template-columns:110px 1fr 36px}
-  footer.site .cols{grid-template-columns:1fr 1fr}
-  .searchbtn span{display:none}
+  .section{padding:32px 0}
+  .hero{padding:34px 0 26px}
+  .hero-stats{grid-template-columns:1fr 1fr;margin-top:24px}
+  .hero-stats .cell{padding:14px}
+  .hero-stats .v{font-size:21px}
+  .hero-stats .l{font-size:11.5px}
+  .stats{grid-template-columns:1fr 1fr}
+  .chart .row{grid-template-columns:minmax(0,1fr) 90px 62px;font-size:12px}
+  .bar{grid-template-columns:96px minmax(0,1fr) 32px;gap:10px}
+  .scorebox{gap:14px}
+  .scorenum{font-size:42px}
+  footer.site{margin-top:40px;padding:34px 0 24px}
+  footer.site .cols{grid-template-columns:1fr 1fr;gap:22px}
+  footer.site .cols > *{min-width:0}
+  .cta{padding:18px}
+  .card{padding:16px}
+  .panel-body,.pad{padding:14px 16px}
+  /* A single non-wrapping flex row of title + badge + score is wider than a
+     phone once a brand name is long. */
+  .panel-head{flex-wrap:wrap;gap:8px 10px;padding:12px 16px}
+  .panel-head > *{min-width:0}
+  .prose h2{font-size:21px}
+
+  /* Anchors have to clear the sticky header, which is 56 + 44 here, not the
+     64 + 42 it is on desktop. */
+  [id^="src-"], .prose h2, section[id]{scroll-margin-top:112px}
+  .sticky{top:112px}
+
+  /* 16px is the threshold below which iOS Safari zooms the page in on focus and
+     leaves it zoomed -- which on its own made every form feel broken. */
+  input,select,textarea{font-size:16px}
+  .btn{padding:12px 20px}
+  .chip{min-height:36px;padding:6px 14px}
+  .filters .searchinput{max-width:none;flex:1 1 100%}
+
+  /* width:100% on a table narrower than its content crushes whichever columns
+     can wrap: the numeric ones held their nowrap width and the name column
+     absorbed the entire shortfall, so "Krispy Krunchy Chicken" came out over
+     three lines. A floor under the name column stops that. Long labels still
+     wrap rather than forcing the column open, and the extra scroll it can cost
+     is now signposted. */
+  .tablewrap .idcol{min-width:min(48vw,180px)}
+  /* When the first column is not the identity column it is a rank or a date --
+     always short, and nothing is gained by letting "2026-07" break in half. */
+  .tablewrap td:first-child:not(.idcol),.tablewrap th:first-child:not(.idcol){white-space:nowrap}
+  .tablehint{grid-row:2;grid-column:1;margin:8px 0 0;font-family:var(--mono);
+    font-size:11px;letter-spacing:.06em;line-height:1.5;color:var(--ink-3)}
+  .tablescroll.is-scrollable > [data-swipehint]{display:block}
+  .tablewrap th{position:static}
+
+  .overlay{padding:6vh 12px}
+  .searchpanel input{font-size:16px}
+  #searchResults{max-height:60vh}
+  #searchResults a{padding:13px 16px}
+}
+
+@media(max-width:640px){
+  /* Columns marked hideSmall step aside here rather than sitting off-screen.
+     Nothing is lost: the label below every such table restores the full set,
+     and it is a checkbox, so it works with JavaScript switched off. */
+  .hide-sm{display:none}
+  .tablescroll > label.tablehint{display:block;cursor:pointer;padding:9px 0 0;margin:0}
+  label.tablehint b{color:var(--accent);font-weight:500;text-decoration:underline;text-underline-offset:3px}
+  .tablehint .th-b{display:none}
+  .colstoggle:checked ~ .tablehint .th-a{display:none}
+  .colstoggle:checked ~ .tablehint .th-b{display:inline}
+  .colstoggle:checked ~ .tablewrap .hide-sm{display:table-cell}
+}
+
+@media(max-width:520px){
+  .hero-stats,.stats{grid-template-columns:1fr}
+  footer.site .cols{grid-template-columns:1fr}
+  .chart .row{grid-template-columns:minmax(0,1fr) 68px 56px}
 }
 
 /* ---------- grid overflow containment ----------
