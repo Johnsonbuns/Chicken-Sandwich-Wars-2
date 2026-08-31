@@ -2,10 +2,10 @@
   "name": "chickensandwichwars",
   "version": "1.0.0",
   "private": true,
-  "description": "ChickenSandwichWars.com \u2014 intelligence platform for the U.S. chicken restaurant industry",
+  "description": "ChickenSandwichWars.com — intelligence platform for the U.S. chicken restaurant industry",
   "scripts": {
     "build": "node build.js",
-    "test": "node build.js && node scripts/check.js && node scripts/mobile-check.js && node scripts/check-api.js && node scripts/check-admin.js",
+    "test": "node build.js && node scripts/check.js && node scripts/check-sparse.js && node scripts/mobile-check.js && node scripts/check-api.js && node scripts/check-admin.js",
     "serve": "node build.js && node scripts/serve.js",
     "clean": "rm -rf docs",
     "check:mobile": "node scripts/mobile-check.js",
@@ -15,7 +15,8 @@
     "check:api": "node scripts/check-api.js",
     "check:admin": "node scripts/check-admin.js",
     "db:validate": "./supabase/validate.sh",
-    "preview:admin": "node build.js && node scripts/admin-preview.js"
+    "preview:admin": "node build.js && node scripts/admin-preview.js",
+    "check:sparse": "node scripts/check-sparse.js"
   },
   "engines": {
     "node": ">=18"

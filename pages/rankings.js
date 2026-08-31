@@ -21,7 +21,9 @@ module.exports = function rankings(ctx) {
           <div>${C.scoreBars(s.parts)}
             <p class="note" style="margin:14px 0 0">${s.coverage} of 5 components published${s.penalty ? ` · ${s.penalty}-point net-closure adjustment applied` : ''} · <a href="../brands/${b.slug}.html">Full brand profile →</a></p>
           </div>
-          <div><p class="note" style="margin:0">${esc(b.analysis.split('. ').slice(0, 2).join('. ') + '.')}</p></div>
+          <div>${b.analysis
+            ? `<p class="note" style="margin:0">${esc(b.analysis.split('. ').slice(0, 2).join('. ') + '.')}</p>`
+            : ''}</div>
         </div>
       </div>
     </div>`;
