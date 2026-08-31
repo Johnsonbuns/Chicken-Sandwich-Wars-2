@@ -31,7 +31,7 @@
   const el = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
 
   const TITLE = { pending: 'Waiting for you', needs_verification: 'Needs verification',
-                  applied: 'Approved & live', rejected: 'Rejected', duplicate: 'Marked duplicate',
+                  applied: 'Approved', rejected: 'Rejected', duplicate: 'Marked duplicate',
                   withdrawn: 'Withdrawn', approved: 'Approved' };
   const statusLabel = (s) => TITLE[s] || s;
 
@@ -387,7 +387,7 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
         ${tile(stats.open_matches, 'Possible duplicates', 'flagged, not merged', '#/queue', true)}
       </div>
       <div class="grid g4" style="margin-bottom:var(--sp-6)">
-        ${tile(stats.applied_7d, 'Approved this week', 'now live', '#/queue?status=applied')}
+        ${tile(stats.applied_7d, 'Approved this week', 'written to the database', '#/queue?status=applied')}
         ${tile(stats.agent_runs_7d, 'Agent runs this week', 'research submitted', '#/runs')}
         ${tile(stats.unverified_sources, 'Sources to check', `of ${stats.sources_total} against the primary document`, '#/data?table=public.sources')}
         ${tile(stats.internal_records, 'Internal records', 'held back from the site', '#/data')}
@@ -404,7 +404,7 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
   };
 
   views.queue = async (params) => {
-    setHead('Review queue', 'Nothing here has touched the site yet');
+    setHead('Review queue', 'Nothing here has touched the database yet');
     const status = params.get('status') || state.filters.status;
     state.filters.status = status;
     const { items } = await api('queue', {
@@ -573,7 +573,11 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
       b.disabled = true;
       try {
         await api('decide', { id: item.id, decision: act, note, force });
-        toast(act === 'approve' ? 'Approved — it is live.' : `Marked ${statusLabel(act).toLowerCase()}.`);
+        /* Not "it is live". Approving writes canonical data; the site is a static build
+           from data/*.json and does not read the database, so saying "live" here was
+           a promise the system does not keep. */
+        toast(act === 'approve' ? 'Approved and written to the database.'
+                                : `Marked ${statusLabel(act).toLowerCase()}.`);
         advance(item.id);
       } catch (e) { toast(e.message, true); b.disabled = false; }
     }));
