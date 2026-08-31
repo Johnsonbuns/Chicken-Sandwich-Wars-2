@@ -61,7 +61,11 @@ if (!CHROME) skip('no Chromium found (set CHROME_PATH to run it)');
 function walk(dir, acc = []) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) { if (e.name !== 'assets') walk(p, acc); }
+    /* assets holds no pages; admin is the signed-in dashboard, and everything a
+       crawl of it can reach is the sign-in box, so measuring it proves nothing
+       about the screens people actually use. Its stylesheet carries its own
+       narrow-viewport rules. */
+    if (e.isDirectory()) { if (e.name !== 'assets' && e.name !== 'admin') walk(p, acc); }
     else if (e.name.endsWith('.html')) acc.push(path.relative(OUT, p));
   }
   return acc;

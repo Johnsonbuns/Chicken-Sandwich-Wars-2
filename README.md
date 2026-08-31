@@ -3,13 +3,17 @@
 An independent intelligence platform tracking the brands, operators, real estate and
 consumer trends shaping America's chicken restaurant industry.
 
-The site is a static build generated from a sourced dataset. There is no database, no
-CMS and no runtime dependency — `node build.js` turns `data/` into `docs/`.
+The site is a static build generated from a sourced dataset — `node build.js` turns
+`data/` into `docs/` with no dependencies and no CMS. Behind it sits a Postgres database
+on Supabase, and `/admin/` — an internal intelligence desk where new data is entered,
+research from AI agents is reviewed, and nothing reaches the site without a person
+approving it.
 
 ```bash
-npm test          # build, then check integrity — run before pushing
-npm run build     # data/ -> docs/  (76 pages, no dependencies)
-npm run serve     # build, then preview at http://localhost:4173
+npm test            # build, then the five checks — run before pushing
+npm run build       # data/ -> docs/  (76 pages, no dependencies)
+npm run serve       # build, then preview at http://localhost:4173
+npm run preview:admin  # the intelligence desk on fixtures — no database needed
 ```
 
 ## The sourcing standard
@@ -63,6 +67,10 @@ lib/
   util.js        formatting
 
 pages/           one module per site section, each returning page descriptors
+admin/           the intelligence desk — copied to docs/admin/, not a site page
+api/             serverless functions: form intake, the desk, the agent door
+supabase/        migrations, and the tests that hold the review queue to its promises
+db/              SCHEMA.md, ADMIN.md, AGENT_INTAKE.md, PROVISIONING.md
 build.js         orchestrates everything, writes docs/ + search index + sitemap
 docs/            generated output — git-ignored, rebuilt by Vercel on every deploy
 ```
@@ -86,7 +94,41 @@ system in net unit decline carries a four-point penalty, applied identically to 
 brand that qualifies. The full methodology, including known limitations, is published
 on `/methodology/`.
 
+## The intelligence desk
+
+`/admin/` is where data is added and reviewed. Human entry and AI research go into the
+same queue and get the same treatment:
+
+```
+human entry ─┐
+             ├─→ review queue ─→ approve / edit / reject / needs verification ─→ database ─→ site, if public
+agent run ───┘
+```
+
+Nothing published skips that queue — not an editor's own entry, and certainly not an
+agent's. A proposal carries its citation, its confidence, who made it and why; the
+reviewer sees the current value beside the proposed one, any record that looks like a
+duplicate, and the sentence the figure was read from.
+
+It also holds intelligence the site will never show. Every record carries a visibility of
+public, internal or confidential, and a database constraint makes publishing a non-public
+one impossible rather than merely discouraged — so a rent roll shared in confidence can
+inform the analysis without any risk of appearing in it.
+
+Research agents submit through `POST /api/agent` with a key minted in the dashboard. That
+door reaches four functions, all of which write to the review tables; **no agent can write
+to canonical data, approve anything, or read a lead.** `db/AGENT_INTAKE.md` is the
+contract, `db/ADMIN.md` is the guide, and `npm run preview:admin` shows the whole thing
+running on fixtures without a database.
+
 ## Adding or correcting data
+
+Through the desk: `/admin/` → **+ Add Intelligence**, or *Propose an edit* on any existing
+record. Cite the source as you go — a URL and a publisher is enough, and the source record
+is created when the proposal is approved.
+
+`data/` is still the build's source of truth until the database becomes upstream of it, so
+a direct edit works too:
 
 1. Edit the relevant file in `data/`.
 2. If you are citing something new, add it to `data/sources.json` first and reference

@@ -49,8 +49,10 @@ cat <<'FTR'
 
 commit;
 
--- Sanity check. Expect 41 public tables, 4 intake, 1 audit - and, once the seed has
--- been applied, 108 sources, 33 brands, 16 companies and 184 facts.
+-- Sanity check. For the complete schema, expect 48 public tables, 4 intake and 1 audit
+-- - and, once the seed has been applied, 108 sources, 33 brands, 16 companies and 184
+-- facts. A partial bundle (./bundle.sh 0016) adds the seven review tables to whatever
+-- was already there, so expect 41 to become 48 and the row counts to be unchanged.
 select 'tables' as what, table_schema as detail, count(*)::text as n
 from information_schema.tables
 where table_schema in ('public','intake','audit') and table_type = 'BASE TABLE'
