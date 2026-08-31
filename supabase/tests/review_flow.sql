@@ -447,3 +447,26 @@ begin
   perform refuses($q$ select public.grant_staff('x@example.com', 'admin') $q$,
     'and cannot grant themselves more');
 end $$;
+
+do $$ begin perform test_as(null); end $$;
+do $$
+declare j jsonb; b uuid;
+begin
+raise notice '  research runs';
+  update public.agent_keys set revoked_at = null where key_prefix = 'csw_ag_test';
+  j := public.review_submit(jsonb_build_object('agent_key', 'csw_ag_test_secret',
+    'batch', jsonb_build_object('ref', 'closing-run', 'title', 'Closing run'),
+    'items', jsonb_build_array(jsonb_build_object(
+      'target_table', 'public.markets', 'title', 'Tampa',
+      'payload', jsonb_build_object('slug', 'tampa', 'name', 'Tampa')))));
+  b := (j ->> 'batch_id')::uuid;
+  j := public.review_finish_batch('csw_ag_test_secret', b, 'One market proposed.');
+  perform ok((j ->> 'status') = 'submitted', 'an agent can close the run it started');
+  perform ok((j ->> 'items')::int = 1, 'and the run reports what it produced');
+  -- A second key that CAN submit, so this tests ownership rather than scope.
+  insert into public.agent_keys (name, key_prefix, key_hash)
+    values ('Other agent', 'csw_ag_other',
+            encode(sha256(convert_to('csw_ag_other_secret', 'utf8')), 'hex'));
+  perform refuses(format($q$ select public.review_finish_batch('csw_ag_other_secret', %L::uuid) $q$, b),
+                  'but not a run another key started');
+end $$;

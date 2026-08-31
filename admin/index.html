@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CSW Intelligence Desk</title>
+<!-- Never indexed, never linked from the site. The desk is not a page. -->
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="same-origin">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%23F2A413'/><text y='72' x='50' font-size='62' text-anchor='middle'>🍗</text></svg>">
+<link rel="stylesheet" href="admin.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- async for the same reason site.js is: a deferred script waits on every pending
+     stylesheet, and one of them comes from fonts.googleapis.com. The app guards on DOM
+     readiness itself. -->
+<script async src="app.js"></script>
+</head>
+<body>
+
+<!-- Sign in. Rendered first and replaced once a session is established, so a page load
+     with no session never flashes the desk. -->
+<div class="signin" id="signin" hidden>
+  <div class="box">
+    <div class="brand">
+      <span class="mark">🍗</span>
+      <span>CSW Intelligence Desk<small>Internal</small></span>
+    </div>
+    <div id="signinBody"></div>
+  </div>
+</div>
+
+<div class="app" id="app" hidden>
+  <aside class="rail" id="rail">
+    <div class="brand">
+      <span class="mark">🍗</span>
+      <span>CSW Intelligence<small>Desk</small></span>
+    </div>
+    <nav class="railnav" id="railnav"></nav>
+    <div class="railfoot">
+      <b id="whoami">—</b>
+      <span id="whorole"></span> ·
+      <a href="#" id="signout">Sign out</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="btn btn-ghost btn-sm railtoggle" id="railtoggle" aria-label="Menu">☰</button>
+      <div>
+        <h1 id="viewTitle">Overview</h1>
+        <div class="sub" id="viewSub"></div>
+      </div>
+      <div class="spacer"></div>
+      <a class="btn btn-primary" href="#/add">+ Add<span class="hide-sm">&nbsp;Intelligence</span></a>
+    </header>
+    <main class="view" id="view">
+      <div class="loading"><span class="spin"></span></div>
+    </main>
+  </div>
+</div>
+
+<noscript>
+  <div style="padding:32px;font-family:system-ui;color:#EDEFF2;background:#0A0B0D">
+    The intelligence desk needs JavaScript.
+  </div>
+</noscript>
+</body>
+</html>

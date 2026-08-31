@@ -491,6 +491,38 @@ begin
   return jsonb_build_object('batch_id', b_id, 'items', out_items);
 end $$;
 
+-- Closing a run. Bookkeeping, but the kind that decides whether the dashboard can say
+-- "this run is still going" or only "this run has produced nothing yet". A key may only
+-- close a run it started.
+create or replace function public.review_finish_batch(
+  p_agent_key text, p_batch_id uuid, p_summary text default null)
+returns jsonb language plpgsql security definer set search_path = public, extensions as $$
+declare a public.agent_keys; b public.review_batches;
+begin
+  select * into b from public.review_batches where id = p_batch_id;
+  if not found then raise exception 'no such research run' using errcode = '02000'; end if;
+
+  if p_agent_key is not null then
+    a := public.agent_for_key(p_agent_key, 'submit');
+    if b.agent_key_id is distinct from a.id then
+      raise exception 'that research run belongs to another key' using errcode = '42501';
+    end if;
+  elsif not public.is_staff() then
+    raise exception 'not authorised' using errcode = '42501';
+  end if;
+
+  update public.review_batches
+     set status = 'submitted', finished_at = now(),
+         summary_md = coalesce(p_summary, summary_md)
+   where id = p_batch_id;
+
+  insert into public.review_events (batch_id, action, actor, actor_label, note)
+  values (p_batch_id, 'run finished', auth.uid(), coalesce(a.name, b.agent_name), p_summary);
+
+  return jsonb_build_object('batch_id', p_batch_id, 'status', 'submitted',
+    'items', (select count(*) from public.review_items where batch_id = p_batch_id));
+end $$;
+
 comment on function public.review_submit(jsonb) is
   'The single entry point to the queue, for the dashboard and for research agents.
    Never writes canonical data - only review_* tables.';

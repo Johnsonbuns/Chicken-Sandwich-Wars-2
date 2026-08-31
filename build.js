@@ -113,6 +113,14 @@ function copyDir(src, dest) {
 }
 copyDir(path.join(ROOT, 'assets'), path.join(OUT, 'assets'));
 
+/* The internal dashboard. Copied verbatim rather than run through the page pipeline:
+   it is an application shell, not a page. It has no layout, no ticker, no footer and
+   nothing to put in the sitemap, and it is excluded from the page checks in
+   scripts/check.js for the same reason — everything a crawler can see of it is a
+   sign-in box. robots.txt disallows it below, and the shell carries a noindex tag of
+   its own so it stays out of search even if something links to it. */
+copyDir(path.join(ROOT, 'admin'), path.join(OUT, 'admin'));
+
 /* search index */
 const index = pages.filter((p) => p.index).map((p) => p.index);
 writeFile('assets/search-index.json', JSON.stringify(index));
@@ -144,11 +152,11 @@ writeFile('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 ${pages.map((p) => `  <url><loc>${base}${p.canonicalPath ?? p.path}</loc></url>`).join('\n')}
 </urlset>\n`);
 writeFile('robots.txt', IS_PRODUCTION
-  ? `User-agent: *\nAllow: /\nSitemap: ${base}sitemap.xml\n`
+  ? `User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: ${base}sitemap.xml\n`
   : 'User-agent: *\nDisallow: /\n');
 writeFile('.nojekyll', '');
 
-console.log(`Built ${pages.length} pages → docs/`);
+console.log(`Built ${pages.length} pages → docs/ (plus the /admin/ desk)`);
 console.log(`  origin ${SITE_ORIGIN}${IS_PRODUCTION ? '' : ' (preview build — noindex)'}`);
 console.log(`  brands ${data.brands.length} · operators ${data.operators.length} · news ${data.news.length} · markets ${data.markets.length} · research ${data.research.length} · charts ${data.datacenter.length}`);
 console.log(`  rated brands ${ranking.rated.length} · unrated ${ranking.unrated.length} · sources ${Object.keys(sources).length}`);
