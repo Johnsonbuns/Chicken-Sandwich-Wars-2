@@ -5,7 +5,7 @@ and one door for research agents.
 
 ```
 human entry ─┐
-             ├─→ review queue ─→ approve / edit / reject / needs verification ─→ canonical data ─→ site, if public
+             ├─→ review queue ─→ approve / edit / reject ─→ canonical data ─→ Publish ─→ site, if public
 agent run ───┘
 ```
 
@@ -117,7 +117,7 @@ Pressing it runs `scripts/export-data.js` against the database, validates the re
 commits only the files that actually changed, and lets Vercel deploy from that commit.
 Usually a minute or two end to end.
 
-Four things it does deliberately:
+Five things it does deliberately:
 
 - **One commit, not thirteen.** The site never builds from a half-updated dataset.
 - **Only changed files.** Change detection is git's own object id, computed locally, so
@@ -129,6 +129,12 @@ Four things it does deliberately:
 - **Rows marked internal or confidential never reach a file.** The filter is in
   `scripts/lib/csw-db.js`, at the client rather than per query, so adding a table cannot
   forget it.
+- **It refuses to gut the site.** Publishing overwrites `data/` from the database, so a
+  database that is incomplete — a half-applied seed, a migration run against the wrong
+  project — would publish as deletion, and every other check here passes happily on a
+  file with three brands in it. A file that loses more than a tenth of its records stops
+  the publish and says which file and by how much. Deleting records is legitimate, so it
+  can be overridden; it takes a second, deliberate click.
 
 The git history *is* the publication record: what the site said, when, and which files
 changed. There is no separate log to keep honest.

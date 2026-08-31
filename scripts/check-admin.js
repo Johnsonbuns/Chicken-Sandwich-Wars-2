@@ -184,6 +184,27 @@ const sentServiceRole = (cs) => cs.some((c) =>
     console.log(`  ${ok ? 'ok  ' : 'FAIL'} the git blob hash matches git's own`);
     if (!ok) all = false;
   }
+  /* The shrink guard counts records per file. Both file shapes have to count: an array
+     of records, and an object of named groups — movement.json is openings and closures,
+     sources.json is one object per key. Counting an object as "1" would make the guard
+     silently useless on exactly the files that hold the most. */
+  {
+    const fs = require('fs');
+    const path = require('path');
+    const D = path.join(__dirname, '..', 'data');
+    const n = (f) => publish.recordCount(fs.readFileSync(path.join(D, f), 'utf8'));
+    const brands = n('brands.json');
+    const sources = n('sources.json');
+    const movement = n('movement.json');
+    /* movement.json is { openings: [...], closures: [...] } and holds 17 records
+       between them — the number to beat is 2, which is what counting an object as one
+       entry per key would give. */
+    const ok = brands === 21 && sources === 108 && movement === 17
+      && publish.recordCount('not json') === null;
+    console.log(`  ${ok ? 'ok  ' : 'FAIL'} record counts read both file shapes`
+      + `  -> brands ${brands}, sources ${sources}, movement ${movement}`);
+    if (!ok) all = false;
+  }
   await run(publish, 'GET is rejected', mkReq('GET', {}), (r) => r.code === 405);
   await run(publish, 'no token is a 401',
     mkReq('POST', { op: 'status' }), (r) => r.code === 401);

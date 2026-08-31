@@ -1075,16 +1075,25 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
 
     const btn = $('#pubBtn');
     if (!btn || !state.me.can_edit) return;
-    btn.addEventListener('click', async () => {
+
+    /* Record counts, before and after, per file. The reason to show them is the reason
+       the guard exists: this overwrites data/ from the database, so "brands 33 → 34" is
+       reassuring and "brands 33 → 6" is the only warning you would ever get. */
+    const countsHtml = (counts) => (counts || []).length
+      ? `<div class="note mono" style="margin-top:8px">${counts.map((c) =>
+          `${h(c.name)} ${c.before === null ? 'new' : `${c.before} → ${c.after}`}`).join(' · ')}</div>`
+      : '';
+
+    const doPublish = async (force) => {
       btn.disabled = true;
       btn.innerHTML = '<span class="spin"></span> Exporting and committing…';
       try {
-        const r = await publishApi('publish');
+        const r = await publishApi('publish', force ? { force: true } : undefined);
         $('#pubResult').innerHTML = r.published
           ? `<div class="msg ok" style="margin-top:var(--sp-4)">
                <b>Published ${r.changed.length} file${r.changed.length === 1 ? '' : 's'}</b>
                ${h(r.message)}
-               <div class="note mono" style="margin-top:8px">${r.changed.map(h).join(' · ')}</div>
+               ${countsHtml(r.counts)}
                <div style="margin-top:8px"><a href="${h(r.commit.url)}" target="_blank"
                  rel="noopener noreferrer">commit ${h(r.commit.sha)}</a></div></div>`
           : `<div class="msg info" style="margin-top:var(--sp-4)">
@@ -1092,11 +1101,24 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
         toast(r.published ? 'Committed. Vercel is rebuilding the site.' : 'Already up to date.');
         btn.disabled = false; btn.textContent = 'Publish again';
       } catch (e) {
-        $('#pubResult').innerHTML =
-          `<div class="msg err" style="margin-top:var(--sp-4)"><b>Nothing was published</b>${h(e.message)}</div>`;
+        /* 409 is the shrink guard, and it is the one error worth offering a way past —
+           after reading what it says, which is why the override is a second click. */
+        const guarded = e.status === 409;
+        $('#pubResult').innerHTML = `
+          <div class="msg ${guarded ? 'warn' : 'err'}" style="margin-top:var(--sp-4)">
+            <b>Nothing was published</b>${h(e.message)}
+            ${guarded ? `<div style="margin-top:10px">
+              <button class="btn-danger btn-sm" id="pubForce">Publish anyway</button></div>` : ''}
+          </div>`;
         btn.disabled = false; btn.textContent = 'Try again';
+        const f = $('#pubForce');
+        if (f) f.addEventListener('click', () => {
+          if (confirm('This removes records from the live site. Publish anyway?')) doPublish(true);
+        });
       }
-    });
+    };
+
+    btn.addEventListener('click', () => doPublish(false));
   };
 
   /* ---------- research runs ---------- */
