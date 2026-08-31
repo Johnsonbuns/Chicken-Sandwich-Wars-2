@@ -93,15 +93,20 @@ The dashboard needs migrations `0016`–`0020` and an account. Nothing else.
    migrations `0016` and later in one transaction — and press Run. If any statement
    fails, the whole thing rolls back and there is nothing to clean up.
 
-2. **Authentication → Users → Add user.** Use your own email. Tick *Auto Confirm User* so
-   there is no invitation email to wait for.
+2. **Authentication → Users → Add user.** Use your own email, **set a password**, and
+   tick *Auto Confirm User* so there is no invitation email to wait for.
+
+   The password is how you sign in. The desk also offers an emailed six-digit code, but
+   that needs `{{ .Token }}` in the Magic Link email template and Supabase only allows
+   editing templates once custom SMTP is configured — so on the built-in mailer the
+   email sends a link and the code never arrives. The password needs no mail at all.
 
    The desk's sign-in form sends `create_user: false`, so this is the only way an account
    comes into existence — someone who finds the URL cannot sign themselves up. Under
    **Authentication → Providers → Email**, confirm *Enable email signups* is off as well:
    that closes the same door at the project level.
 
-3. **Open `https://<your-site>/admin/`** and sign in. The code arrives by email.
+3. **Open `https://<your-site>/admin/`** and sign in with that email and password.
 
 4. You will be told you have no desk access, and shown one line of SQL with your own user
    id already in it. Paste it into the SQL editor. Reload. You are an admin.
