@@ -257,9 +257,17 @@ same approval.
 
 ```
 human entry ─┐
-             ├─→ review_items ─→ review_decide() ─→ review_apply() ─→ canonical tables ─→ site
-agent run ───┘
+             ├─→ review_items ─→ review_decide() ─→ review_apply() ─→ canonical tables
+agent run ───┘                                                              │
+                                    api/publish.js ─→ data/*.json ─→ commit ┘─→ Vercel ─→ site
 ```
+
+**Approving does not publish.** The build reads `data/*.json` and never touches the
+database, so canonical data reaches the site only when someone presses **Publish to site**
+— which re-exports every data file through `buildDataFiles()` (the same function the
+Phase 2 round-trip gate exercises, imported rather than reimplemented) and commits the
+ones that changed. Anything in the desk that implies otherwise is a bug; one shipped, and
+sent the owner looking for a brand on a page that could not have had it.
 
 `db/ADMIN.md` is the guide. `db/AGENT_INTAKE.md` is the contract to hand an agent — read
 it before submitting research; it is written for you.
@@ -364,7 +372,8 @@ too; it needs a local Postgres on port 5433 and it is the only thing that will t
 `security definer` function no longer does what its comment says.
 
 **Adding data now means adding it through the queue**, not by editing `data/*.json` by
-hand — either at `/admin/` or, for an agent, through `POST /api/agent`. `data/` is still
-the build's source of truth until Phase 4 flips the direction, so a change approved in the
-desk reaches the site when the exporter runs. Do not hand-edit a figure into `data/` and a
-proposal into the queue for the same number.
+hand — either at `/admin/` or, for an agent, through `POST /api/agent`. Approving writes
+to Postgres; the desk's **Publish to site** button then re-exports `data/` and commits it,
+which is what reaches the build. `data/*.json` is therefore generated now: a hand edit
+survives only until the next publish overwrites it. Never hand-edit a figure into `data/`
+and put a proposal for the same number in the queue.
