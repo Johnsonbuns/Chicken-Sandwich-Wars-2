@@ -46,6 +46,12 @@ global.fetch = async (url, init = {}) => {
   if (url.includes('/rpc/review_decide')) return json({ id: 'i-1', status: 'applied' });
   if (url.includes('/rpc/')) return json({});
   if (url.includes('/rest/v1/agent_keys')) return json([{ id: 'k-1', key_prefix: 'csw_ag_xxxx' }]);
+  /* One proposal, so the item detail can be exercised. Only for a by-id lookup — the
+     queue listing tests assert on an empty list. */
+  if (url.includes('v_review_queue') && url.includes('id=eq.')) {
+    return json([{ id: 'i-1', target_table: 'public.facts', target_id: 'f-1',
+                   title: 'test', status: 'pending', payload: {} }]);
+  }
   return json([]);
 };
 
@@ -139,6 +145,16 @@ const sentServiceRole = (cs) => cs.some((c) =>
     (r, c) => {
       const u = decodeURIComponent(c.find((x) => x.url.includes('v_review_queue')).url);
       return u.includes('status=in.(pending)') && !u.includes('evil');
+    });
+  /* review_item_sources points at sources twice — source_id for a citation already in
+     the registry, created_source_id for the one approval writes. PostgREST refuses an
+     embed it cannot disambiguate, and the failure only appears when a proposal is
+     opened, which is the moment the desk is least useful broken. */
+  await run(admin, 'the sources embed names which foreign key it means',
+    mkReq('POST', { op: 'item', id: 'i-1' }, AUTH),
+    (r, c) => {
+      const u = decodeURIComponent(c.find((x) => x.url.includes('review_item_sources')).url);
+      return u.includes('sources!review_item_sources_source_id_fkey');
     });
   await run(admin, 'the leads inbox goes through the function, not the intake schema',
     mkReq('POST', { op: 'leads' }, AUTH),

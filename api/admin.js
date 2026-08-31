@@ -46,7 +46,13 @@ async function itemDetail(id, token) {
   const [item] = await select(`v_review_queue?id=eq.${enc(id)}&limit=1`, token);
   if (!item) throw new RestError('That proposal no longer exists.', 404);
   const [sources, matches, events, validation] = await Promise.all([
-    select(`review_item_sources?item_id=eq.${enc(id)}&order=ordinal&select=*,source:sources(id,key,publisher,title,url,date_label)`, token),
+    /* The embed names its foreign key explicitly. review_item_sources has two columns
+       pointing at sources — source_id for a citation already in the registry, and
+       created_source_id for the record approval creates — and PostgREST refuses to
+       guess which one an unqualified embed means. */
+    select(`review_item_sources?item_id=eq.${enc(id)}&order=ordinal`
+      + '&select=*,source:sources!review_item_sources_source_id_fkey'
+      + '(id,key,publisher,title,url,date_label)', token),
     select(`review_item_matches?item_id=eq.${enc(id)}&order=similarity.desc`, token),
     select(`review_events?item_id=eq.${enc(id)}&order=at.desc&limit=50`, token),
     rpc('review_validate', { p_item_id: id }, token)
