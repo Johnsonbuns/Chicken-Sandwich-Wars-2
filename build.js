@@ -13,9 +13,13 @@ const { rankBrands } = require('./lib/score');
 const { pct, usd, num } = require('./lib/util');
 
 const ROOT = __dirname;
-const OUT = path.join(ROOT, 'docs');
+/* Overridable so scripts/check-sparse.js can build a doctored copy of the dataset into a
+   throwaway directory. Unset — which is every real build, local and on Vercel — these are
+   exactly what they always were. */
+const DATA = process.env.CSW_DATA_DIR || path.join(ROOT, 'data');
+const OUT = process.env.CSW_OUT_DIR || path.join(ROOT, 'docs');
 
-const readJSON = (f) => JSON.parse(fs.readFileSync(path.join(ROOT, 'data', f), 'utf8'));
+const readJSON = (f) => JSON.parse(fs.readFileSync(path.join(DATA, f), 'utf8'));
 
 const data = {
   brands: readJSON('brands.json'),
@@ -32,6 +36,42 @@ const data = {
   events: readJSON('events.json')
 };
 const sources = readJSON('sources.json');
+
+/* ---------- sparse records ----------
+ *
+ * data/*.json is generated from the database now, and the database has no opinion about
+ * which optional fields a record happens to have. A brand added through the desk with
+ * nothing but a name and a slug exports as {slug, name, stats:{}, metrics:{}} — no tags,
+ * no analysis — and six page modules called .join(), .map() or .split() straight on those
+ * fields. The first brand anyone added through the desk failed the deploy.
+ *
+ * Defaulting them once here rather than guarding six call sites is what keeps the
+ * seventh from being written. It cannot change the existing records: every one of them
+ * already has these fields, so this only fills in what is genuinely absent. */
+for (const b of data.brands) {
+  b.tags = b.tags || [];
+  b.pipeline = b.pipeline || [];
+  b.stats = b.stats || {};
+  b.metrics = b.metrics || {};
+  b.realEstate = b.realEstate || {};
+  b.analysis = b.analysis || '';
+  b.franchiseModel = b.franchiseModel || '';
+}
+for (const o of data.operators) {
+  o.brands = o.brands || [];
+  o.chickenBrands = o.chickenBrands || [];
+  o.facts = o.facts || [];
+  o.analysis = o.analysis || '';
+}
+/* Transactions match brands by name, so an undisclosed counterparty has to be an empty
+   string rather than absent: '' matches nothing, which is the right answer. Only kind,
+   subject, date and source are required of a transaction, so this is a shape the desk
+   produces the moment anyone records a deal without naming the brand. */
+for (const t of [...(data.transactions.property || []), ...(data.transactions.corporate || [])]) {
+  t.brand = t.brand || '';
+  t.location = t.location || '';
+  t.detail = t.detail || '';
+}
 
 /* ---------- derived context ---------- */
 const ranking = rankBrands(data.brands);

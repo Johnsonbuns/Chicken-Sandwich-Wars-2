@@ -131,7 +131,7 @@ module.exports = function brands(ctx) {
     <div style="flex:1;min-width:min(280px,100%)">
       <h1 style="margin-bottom:10px">${esc(b.name)}</h1>
       <div class="tags" style="margin-bottom:14px">${C.momentumBadge(b.momentum)}${b.tags.map((t) => C.badge(t)).join('')}</div>
-      <p class="dek">${esc(b.franchiseModel)}</p>
+      ${b.franchiseModel ? `<p class="dek">${esc(b.franchiseModel)}</p>` : ''}
     </div>
     ${sc && sc.rated ? `<div class="panel" style="min-width:min(320px,100%);flex:0 1 380px">
       <div class="panel-head"><h3>CSW Score</h3><a class="more" style="margin-left:auto;font-size:12px" href="../methodology/">Methodology →</a></div>
@@ -157,12 +157,12 @@ module.exports = function brands(ctx) {
   </div>
 </div></section>
 
-<section class="section"><div class="wrap">
+${b.analysis ? `<section class="section"><div class="wrap">
   <div class="analysis">
     <div class="kicker">CSW Analysis</div>
     <p style="margin:0;font-size:16.5px;color:var(--ink-2)">${esc(b.analysis)}</p>
   </div>
-</div></section>
+</div></section>` : ''}
 
 <section class="section"><div class="wrap">
   <div class="split">

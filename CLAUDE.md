@@ -5,11 +5,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm test              # build, then the five checks — run before every push
+npm test              # build, then the six checks — run before every push
 npm run build         # data/ -> docs/  (76 pages, plus the /admin/ desk)
 npm run serve         # build, then preview at http://localhost:4173
 npm run preview:admin # the intelligence desk on fixtures, no Supabase needed
 npm run check:mobile  # layout check at 393px; pass a width to use another
+npm run check:sparse  # does the build survive a record with almost nothing in it
 npm run db:validate   # migrations + supabase/tests/ against a throwaway Postgres
 npm run clean         # rm -rf docs
 ```
@@ -20,6 +21,14 @@ links, footnote superscripts with no matching anchor, near-empty pages, `undefin
 `NaN` / `[object Object]` leaking into the HTML, `src` ids in `data/` that are absent
 from `sources.json`, and a sitemap that has drifted from the page count. It exits
 non-zero, so it is safe to chain.
+
+**Sparse records break page modules, and `data/` is generated now.** The database has
+no opinion about which optional fields a record has: a brand added through the desk with a
+name and a slug exports as `{slug, name, stats:{}, metrics:{}}`, and six page modules
+called `.join()` or `.split()` straight on fields that are not there. The first brand
+anyone added failed the deploy. Defaults are applied once in `build.js` rather than at
+each call site, and `scripts/check-sparse.js` builds the whole site against a minimal
+record of each kind so the next page module cannot reintroduce it.
 
 `scripts/check-admin.js` is the ninth check, covering `api/admin.js` and `api/agent.js`.
 It asserts the two properties that no amount of reading the code proves: that neither
