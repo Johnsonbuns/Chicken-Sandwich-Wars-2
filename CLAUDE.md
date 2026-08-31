@@ -5,10 +5,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm test              # build, check.js, then mobile-check.js — run before every push
-npm run build         # data/ -> docs/  (76 pages)
+npm test              # build, then the five checks — run before every push
+npm run build         # data/ -> docs/  (76 pages, plus the /admin/ desk)
 npm run serve         # build, then preview at http://localhost:4173
+npm run preview:admin # the intelligence desk on fixtures, no Supabase needed
 npm run check:mobile  # layout check at 393px; pass a width to use another
+npm run db:validate   # migrations + supabase/tests/ against a throwaway Postgres
 npm run clean         # rm -rf docs
 ```
 
@@ -18,6 +20,18 @@ links, footnote superscripts with no matching anchor, near-empty pages, `undefin
 `NaN` / `[object Object]` leaking into the HTML, `src` ids in `data/` that are absent
 from `sources.json`, and a sitemap that has drifted from the page count. It exits
 non-zero, so it is safe to chain.
+
+`scripts/check-admin.js` is the ninth check, covering `api/admin.js` and `api/agent.js`.
+It asserts the two properties that no amount of reading the code proves: that neither
+endpoint ever sends the service-role key and that the dashboard forwards the signed-in
+user's own token, and that the agent endpoint can reach nothing but four review RPCs. It
+enumerates every request those handlers can be made to issue, so an edit that adds a table
+read to the agent path fails it.
+
+`./supabase/validate.sh` applies every migration to a throwaway local Postgres and then
+runs `supabase/tests/*.sql` against the result — 80 assertions over the review queue,
+confidentiality and the role model. It is not part of `npm test` because it needs a
+Postgres server, but it is what to run after touching a migration.
 
 `scripts/check-api.js` is the eighth check. It stubs `fetch` and exercises
 `api/submit.js` without credentials, covering the things that are expensive to get wrong:
@@ -76,6 +90,10 @@ publicly. New data added from now on should be read off the primary source.
 `data/` is the single source of truth. `build.js` loads it, derives a shared `ctx`, runs
 each module in `pages/`, wraps the result in `lib/layout.js`, and writes `docs/`
 (git-ignored — Vercel rebuilds it on every deploy, so never commit it).
+
+`admin/` is copied verbatim into `docs/admin/` rather than run through the page pipeline —
+it is an application shell, not a page, and it is excluded from `check.js`, `mobile-check.js`
+and the sitemap for that reason. `robots.txt` disallows it and the shell carries `noindex`.
 
 **Page modules** (`pages/*.js`) each export `(ctx) => [pageDescriptor]`. A descriptor is:
 
@@ -230,6 +248,69 @@ request gets a preview. GitHub Pages served the site briefly and has been retire
 you find a reference to it anywhere, it is stale. (`docs/.nojekyll` is still written, but
 only so the output stays servable by any plain static host.)
 
+## The intelligence desk
+
+`/admin/` is the internal dashboard, and since it exists **nothing writes to canonical
+data except one database function**. A person filling in a form and a Claude research run
+reporting a finding produce the same kind of row in the same queue, and both wait for the
+same approval.
+
+```
+human entry ─┐
+             ├─→ review_items ─→ review_decide() ─→ review_apply() ─→ canonical tables ─→ site
+agent run ───┘
+```
+
+`db/ADMIN.md` is the guide. `db/AGENT_INTAKE.md` is the contract to hand an agent — read
+it before submitting research; it is written for you.
+
+Five things about it that will look like over-engineering and are not:
+
+**`public.review_targets` is a security boundary, not configuration.** `review_apply()`
+builds dynamic SQL, so without a whitelist of tables and columns a proposal setting
+`staff_profiles.role` would be indistinguishable from one setting a cap rate. Migration
+`0019` seeds eighteen targets and asserts at migration time that every column it names
+exists.
+
+**Neither `api/admin.js` nor `api/agent.js` holds a privileged key.** The dashboard
+forwards the signed-in user's own JWT, so Postgres evaluates `is_staff()`, `can_edit()`
+and every RLS policy against the real person; the agent's key is checked *inside* the
+database by `agent_for_key()`, so a request that reached PostgREST directly is refused by
+the same code. The service-role key stays in `api/submit.js` and nowhere else. Do not
+"simplify" either endpoint by giving it the service-role key and checking roles in
+JavaScript — that turns every operation added later into a place to forget one.
+
+**Corrections to `facts` supersede rather than update.** `review_targets.update_strategy`
+carries this per table. Approving a corrected AUV closes the old observation and writes a
+new one, and the old row must be closed *before* the new one is inserted — `facts_current_uniq`
+is a partial unique index over rows where `superseded_at is null`.
+
+**A proposal stores a baseline.** The record can move while a proposal waits, and applying
+against a value the reviewer never saw is worse than not reviewing at all. `review_apply()`
+refuses a stale proposal unless it is forced.
+
+**Reference tokens, not uuids.** A payload says `"brand_id": "@brand:popeyes"` and
+`"source_id": "@source:1"`, resolved at approval time. That is what lets an agent propose a
+figure and the source record it cites in the same submission, and it keeps the diff a
+reviewer reads legible.
+
+## Public, internal, confidential
+
+Seventeen tables carry `visibility` (`public` / `internal` / `confidential`), and a check
+constraint means **a record that is not public cannot be flagged published**. Publishing
+confidential intelligence is a database error rather than a thing to remember.
+
+Two consequences worth knowing:
+
+- `scripts/lib/csw-db.js` filters non-public rows out of every export read. RLS does not
+  apply to psql or to the service-role key, and Phase 4 makes `data/*.json` generated by
+  that path — without the filter the first confidential lease abstract would be committed
+  and published.
+- `v_current_facts` is now `security_invoker = true`. A view runs as its owner, so the RLS
+  policy on `facts` never saw a query that arrived through the view; anonymous readers
+  could read unpublished figures that way. That was a leak before `0016` and would have
+  been a worse one after it. **Any new view over a table with RLS needs the same setting.**
+
 ## Known gaps
 
 These are understood and deliberate-for-now, not oversights. Do not "fix" them by
@@ -244,7 +325,20 @@ rather than a cheerful 200 when credentials are missing.
 
 `api/` has no dependencies and must keep none — `vercel.json` sets `installCommand` to a
 no-op, so `node_modules` does not exist at runtime. Supabase is reached over PostgREST
-with global `fetch`.
+with global `fetch`. `lib/supabase-rest.js` is shared by `api/admin.js` and `api/agent.js`
+and lives outside `api/` on purpose: every `.js` file directly under `api/` becomes its own
+serverless function, and Vercel's file tracing pulls this one in from either.
+
+**An open question about `intake`.** `api/submit.js` reaches the form tables by sending
+`Accept-Profile: intake`, and PostgREST only honours that header for a schema listed under
+*Settings → API → Exposed schemas* — which contradicts the line below, and `0010`'s comment,
+saying the schema is not exposed. Either it is exposed and those comments are wrong, or
+every form submission has been failing and falling back to `mailto:` since Phase 3, which
+looks like nothing being wrong. `db/PROVISIONING.md` §5 has the two ways to tell. Exposure
+is not itself a risk: `0010` revokes every privilege on that schema from `anon` and
+`authenticated`, so the service-role key remains the only thing that can read it. The desk
+does not depend on the answer — it reads leads through a `security definer` function in
+`public`.
 
 The service-role key bypasses every RLS policy. It is read from the environment inside the
 function and must never reach a browser, a build artifact or a commit. The `intake` schema
@@ -252,7 +346,9 @@ is not exposed to PostgREST, so this endpoint is the only door to it.
 
 Submissions are stored but **nobody is notified unless `RESEND_API_KEY` and
 `CSW_NOTIFY_EMAIL` are set**. A database nobody reads is worse than the `mailto:` it
-replaced, so treat those two variables as part of shipping, not as a nice-to-have.
+replaced, so treat those two variables as part of shipping, not as a nice-to-have. The
+desk's Leads screen is the other half of that: `db/SCHEMA.md` §12.4 offered an email
+notification *or* an auth-gated view over `intake.submissions`, and this is the second one.
 
 **Data freshness.** Figures are current to August 2026. Quarterly results from Popeyes,
 Wingstop, KFC and El Pollo Loco move the rankings; stale rankings on a site whose product
@@ -263,4 +359,12 @@ is accuracy are worse than none.
 Develop on a branch, open a pull request against `main`, and let Vercel's preview build
 be part of the review. Keep `docs/` out of commits (it is git-ignored). Run `npm test`
 before pushing — a broken footnote anchor or an unresolvable source id is invisible in
-review but obvious to the script.
+review but obvious to the script. If you touched a migration, run `npm run db:validate`
+too; it needs a local Postgres on port 5433 and it is the only thing that will tell you a
+`security definer` function no longer does what its comment says.
+
+**Adding data now means adding it through the queue**, not by editing `data/*.json` by
+hand — either at `/admin/` or, for an agent, through `POST /api/agent`. `data/` is still
+the build's source of truth until Phase 4 flips the direction, so a change approved in the
+desk reaches the site when the exporter runs. Do not hand-edit a figure into `data/` and a
+proposal into the queue for the same number.

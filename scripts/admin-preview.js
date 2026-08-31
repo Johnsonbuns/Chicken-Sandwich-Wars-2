@@ -298,7 +298,31 @@ http.createServer((req, res) => {
       json(res, 200, { ok: true, ...out });
     });
   }
-  if (url === '/api/agent') return json(res, 200, { ok: true, note: 'preview only' });
+  /* The agent door, faked to the same shape, so scripts/agent-submit.js and the curl in
+     db/AGENT_INTAKE.md can be exercised without a key or a database. */
+  if (url === '/api/agent') {
+    let raw = ''; req.on('data', (c) => { raw += c; });
+    return req.on('end', () => {
+      const b = JSON.parse(raw || '{}');
+      const key = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+      if (!/^csw_ag_/.test(key)) {
+        return json(res, 401, { ok: false, error: 'Send an agent key as "Authorization: Bearer csw_ag_...".' });
+      }
+      if (b.op === 'schema') return json(res, 200, { ok: true, targets: TARGETS });
+      if (b.op === 'lookup') {
+        const list = LOOKUPS[b.kind] || [];
+        const q = (b.q || '').toLowerCase();
+        return json(res, 200, { ok: true, results: list.filter((r) => (r.label + r.ref).toLowerCase().includes(q)) });
+      }
+      if (b.op === 'finish') return json(res, 200, { ok: true, batch_id: b.batch_id, status: 'submitted' });
+      const items = (b.items || []).map((it, i) => ({
+        id: `preview-${i + 1}`, title: it.title, accepted: true,
+        status: (it.sources || []).length ? 'pending' : 'needs_verification',
+        matches: 0, errors: [], warnings: (it.sources || []).length ? [] : ['no source cited'] }));
+      return json(res, 200, { ok: true, batch_id: 'preview-run', accepted: items.length,
+        rejected: 0, items, note: 'Nothing here is published. Every item waits for a human decision.' });
+    });
+  }
 
   let file = path.join(OUT, url);
   if (url.endsWith('/')) file = path.join(file, 'index.html');
