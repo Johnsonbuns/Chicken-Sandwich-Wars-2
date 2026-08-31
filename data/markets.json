@@ -1,82 +1,200 @@
 [
-{
-  "slug":"houston-tx","name":"Houston, TX","state":"Texas",
-  "thesis":"The most contested chicken development market in America right now — a Texas metro where a national brand, a regional franchisor and a homegrown hot chicken concept are all committing capital simultaneously.",
-  "activity":[
-    {"text":"Korpal Group signed a 13-unit Golden Chick development agreement covering 10 units in greater Houston over four years plus three in Beaumont","src":"ft-korpal"},
-    {"text":"Houston TX Hot Chicken is headquartered here and closed 2024 with 25 locations, with 15–20 openings planned for 2026 and an ambition of 50–60 per year thereafter","src":"nrn-houstontx"},
-    {"text":"Golden Chick operates 240+ locations across Texas and neighboring states and set an all-time record with 23 openings in 2025","src":"qsr-golden-250"}
-  ],
-  "watch":["Whether the Korpal Houston pipeline secures ten sites inside four years","Second-generation Popeyes and KFC inventory reaching the market as national closures accelerate","Whether Dave's Hot Chicken density pushes Houston TX Hot Chicken into secondary trade areas"]
-},
-{
-  "slug":"dallas-fort-worth-tx","name":"Dallas–Fort Worth, TX","state":"Texas",
-  "thesis":"The corporate capital of American chicken. Four significant chicken organizations now run their U.S. operations from the DFW metroplex.",
-  "activity":[
-    {"text":"KFC is relocating its U.S. corporate headquarters from Louisville, KY to Plano, TX — roughly 100 corporate roles over six months and 90 remote roles over 18 months","src":"nrn-kfc-hq"},
-    {"text":"Raising Cane's is headquartered in Plano; Wingstop in Addison; Golden Chick in Richardson","src":"nrn-kfc-hq"},
-    {"text":"Ampex Brands, a ~600-unit multi-brand franchisee with KFC exposure and roughly $500M of revenue, is based in Richardson","src":"franchising-mb50-2026"}
-  ],
-  "watch":["Whether KFC's U.S. team relocation accelerates franchisee consolidation in Texas","Executive talent flow between four headquartered chicken organizations in one metro","Development competition for the same suburban pad sites among Cane's, Golden Chick and Dave's"]
-},
-{
-  "slug":"new-york-ny","name":"New York City, NY","state":"New York",
-  "thesis":"The last major American metro where the Southeast chicken brands had no presence — and the first real test of whether their unit economics survive a small-format, high-rent, no-drive-thru box.",
-  "activity":[
-    {"text":"Zaxby's opened its first NYC restaurant in the Bronx on June 29, 2026, followed by an Upper East Side location at 1267 First Avenue","src":"rd-zaxbys-nyc"},
-    {"text":"The Manhattan unit spans more than 2,800 SF with 16 dine-in seats and self-order kiosks — materially smaller than the brand's suburban prototype","src":"co-zaxbys-nyc"},
-    {"text":"Houston TX Hot Chicken committed to five New York units as part of a 26-unit multi-market announcement","src":"rn-houstontx"}
-  ],
-  "watch":["Whether Zaxby's small-format NYC volumes approach the $2.71M system AUV","Wingstop's urban trade-area weakness — over 55% of its system sits in urban markets and digital visits there fell 9%","Whether other Southeast brands follow Zaxby's into the Northeast in 2027"]
-},
-{
-  "slug":"south-florida","name":"South Florida (Miami / West Palm Beach)","state":"Florida",
-  "thesis":"The epicenter of Popeyes franchisee distress — and the market where the franchisor itself paid the highest price per restaurant to take units back.",
-  "activity":[
-    {"text":"Popeyes corporate acquired 16 Miami-area restaurants out of the Sailormen bankruptcy for $9.6M — roughly $600,000 per restaurant","src":"qsr-sailormen-97"},
-    {"text":"61 Biscuits LLC acquired three West Palm Beach-area restaurants for $1.11M — about $370,000 per restaurant","src":"qsr-sailormen-97"},
-    {"text":"Popeyes' brand headquarters is in Miami; Sailormen, the bankrupt 136-unit franchisee, was also Miami-based","src":"rbo-sailormen-bk"}
-  ],
-  "watch":["When and to whom Popeyes refranchises the 16 corporate-held Miami restaurants","Where the roughly 33 rejected Sailormen leases re-tenant","Whether South Florida Popeyes volumes support the premium the franchisor paid"]
-},
-{
-  "slug":"tampa-north-florida","name":"Tampa & North Florida","state":"Florida",
-  "thesis":"A 50-restaurant Popeyes platform was just recapitalized here at roughly $54,000 per store. That basis will define competitive behavior in these trade areas for years.",
-  "activity":[
-    {"text":"Pulse Restaurant Group — established by Sailormen CEO David Damato — acquired 50 Popeyes restaurants across Tampa, Tallahassee, Pensacola and Jacksonville for $2.69M","src":"qsr-sailormen-97"},
-    {"text":"SBH Foods PLK LLC acquired five Savannah-area restaurants for $650,000","src":"qsr-sailormen-97"},
-    {"text":"Hooters closures in June 2025 removed large-format casual dining pads across Florida","src":"rd-hooters"}
-  ],
-  "watch":["Whether a debt-free 50-unit operator becomes an acquirer of additional Florida chicken assets","Landlord outcomes on Sailormen leases that were assumed versus rejected","Second-generation demand for the vacated Hooters pads"]
-},
-{
-  "slug":"orlando","name":"Orlando, FL","state":"Florida",
-  "thesis":"A 23-unit Popeyes portfolio changed hands out of bankruptcy in the same metro where a fast-growing tender brand is headquartered.",
-  "activity":[
-    {"text":"RFI Ventures LLC acquired 23 Orlando-area Popeyes restaurants out of the Sailormen bankruptcy for $2.5M","src":"qsr-sailormen-97"},
-    {"text":"Huey Magoo's is headquartered in Orlando and grew from 43 units in early 2023 to 85 at the end of 2025, tracking toward 100 in 2026","src":"rd-huey"}
-  ],
-  "watch":["Whether concentrated single-metro Popeyes ownership improves unit economics versus the prior statewide operator","Huey Magoo's new lower-cost drive-thru prototype rollout in its home market"]
-},
-{
-  "slug":"ohio","name":"Ohio (Columbus / Cincinnati)","state":"Ohio",
-  "thesis":"The clearest test market for Southeast brand portability — two brands with no Ohio history are committing to meaningful unit counts here at the same time.",
-  "activity":[
-    {"text":"Eyas Capital, now Bojangles' largest franchisee after acquiring 120-unit BOJ of WNC, agreed to grow Bojangles in Cincinnati and Columbus to more than 40 locations","src":"rd-eyas-boj"},
-    {"text":"Slim Chickens named Ohio among its priority national expansion markets","src":"qsr-slim-2026"},
-    {"text":"Zaxby's is expanding across the Midwest and Northeast with 60+ openings targeted in 2026","src":"rd-zaxbys-nyc"}
-  ],
-  "watch":["Whether out-of-region Bojangles units clear the $2.35M system AUV","Breakfast daypart performance for a Carolina brand in Midwest commuter patterns","Site competition among three Southeast brands entering the same metros simultaneously"]
-},
-{
-  "slug":"atlanta","name":"Atlanta, GA","state":"Georgia",
-  "thesis":"More chicken brand headquarters sit in metro Atlanta than anywhere else in the country — including the largest and one of the smallest by unit volume.",
-  "activity":[
-    {"text":"Chick-fil-A is headquartered in Atlanta and closed 2025 with $23.9B in systemwide sales on a $9.16M average unit volume","src":"qsr50-2026-chicken"},
-    {"text":"Church's Texas Chicken is headquartered in Atlanta with 885 U.S. stores and a $1.138M AUV","src":"ft-church-2025"},
-    {"text":"Zaxby's is headquartered in Athens, GA and surpassed 1,000 locations in February 2026","src":"ifa-zaxbys-1000"},
-    {"text":"Chicken Salad Chick is headquartered in Atlanta and passed 300 locations in 2025","src":"rd-csc-300"}
-  ],
-  "watch":["Executive and franchise-development talent movement among four headquartered brands","Whether Church's Atlanta-based turnaround holds a second consecutive year of unit growth"]
-}
+  {
+    "slug": "houston-tx",
+    "name": "Houston, TX",
+    "state": "Texas",
+    "thesis": "The most contested chicken development market in America right now — a Texas metro where a national brand, a regional franchisor and a homegrown hot chicken concept are all committing capital simultaneously.",
+    "activity": [
+      {
+        "text": "Korpal Group signed a 13-unit Golden Chick development agreement covering 10 units in greater Houston over four years plus three in Beaumont",
+        "src": "ft-korpal"
+      },
+      {
+        "text": "Houston TX Hot Chicken is headquartered here and closed 2024 with 25 locations, with 15–20 openings planned for 2026 and an ambition of 50–60 per year thereafter",
+        "src": "nrn-houstontx"
+      },
+      {
+        "text": "Golden Chick operates 240+ locations across Texas and neighboring states and set an all-time record with 23 openings in 2025",
+        "src": "qsr-golden-250"
+      }
+    ],
+    "watch": [
+      "Whether the Korpal Houston pipeline secures ten sites inside four years",
+      "Second-generation Popeyes and KFC inventory reaching the market as national closures accelerate",
+      "Whether Dave's Hot Chicken density pushes Houston TX Hot Chicken into secondary trade areas"
+    ]
+  },
+  {
+    "slug": "dallas-fort-worth-tx",
+    "name": "Dallas–Fort Worth, TX",
+    "state": "Texas",
+    "thesis": "The corporate capital of American chicken. Four significant chicken organizations now run their U.S. operations from the DFW metroplex.",
+    "activity": [
+      {
+        "text": "KFC is relocating its U.S. corporate headquarters from Louisville, KY to Plano, TX — roughly 100 corporate roles over six months and 90 remote roles over 18 months",
+        "src": "nrn-kfc-hq"
+      },
+      {
+        "text": "Raising Cane's is headquartered in Plano; Wingstop in Addison; Golden Chick in Richardson",
+        "src": "nrn-kfc-hq"
+      },
+      {
+        "text": "Ampex Brands, a ~600-unit multi-brand franchisee with KFC exposure and roughly $500M of revenue, is based in Richardson",
+        "src": "franchising-mb50-2026"
+      }
+    ],
+    "watch": [
+      "Whether KFC's U.S. team relocation accelerates franchisee consolidation in Texas",
+      "Executive talent flow between four headquartered chicken organizations in one metro",
+      "Development competition for the same suburban pad sites among Cane's, Golden Chick and Dave's"
+    ]
+  },
+  {
+    "slug": "new-york-ny",
+    "name": "New York City, NY",
+    "state": "New York",
+    "thesis": "The last major American metro where the Southeast chicken brands had no presence — and the first real test of whether their unit economics survive a small-format, high-rent, no-drive-thru box.",
+    "activity": [
+      {
+        "text": "Zaxby's opened its first NYC restaurant in the Bronx on June 29, 2026, followed by an Upper East Side location at 1267 First Avenue",
+        "src": "rd-zaxbys-nyc"
+      },
+      {
+        "text": "The Manhattan unit spans more than 2,800 SF with 16 dine-in seats and self-order kiosks — materially smaller than the brand's suburban prototype",
+        "src": "co-zaxbys-nyc"
+      },
+      {
+        "text": "Houston TX Hot Chicken committed to five New York units as part of a 26-unit multi-market announcement",
+        "src": "rn-houstontx"
+      }
+    ],
+    "watch": [
+      "Whether Zaxby's small-format NYC volumes approach the $2.71M system AUV",
+      "Wingstop's urban trade-area weakness — over 55% of its system sits in urban markets and digital visits there fell 9%",
+      "Whether other Southeast brands follow Zaxby's into the Northeast in 2027"
+    ]
+  },
+  {
+    "slug": "south-florida",
+    "name": "South Florida (Miami / West Palm Beach)",
+    "state": "Florida",
+    "thesis": "The epicenter of Popeyes franchisee distress — and the market where the franchisor itself paid the highest price per restaurant to take units back.",
+    "activity": [
+      {
+        "text": "Popeyes corporate acquired 16 Miami-area restaurants out of the Sailormen bankruptcy for $9.6M — roughly $600,000 per restaurant",
+        "src": "qsr-sailormen-97"
+      },
+      {
+        "text": "61 Biscuits LLC acquired three West Palm Beach-area restaurants for $1.11M — about $370,000 per restaurant",
+        "src": "qsr-sailormen-97"
+      },
+      {
+        "text": "Popeyes' brand headquarters is in Miami; Sailormen, the bankrupt 136-unit franchisee, was also Miami-based",
+        "src": "rbo-sailormen-bk"
+      }
+    ],
+    "watch": [
+      "When and to whom Popeyes refranchises the 16 corporate-held Miami restaurants",
+      "Where the roughly 33 rejected Sailormen leases re-tenant",
+      "Whether South Florida Popeyes volumes support the premium the franchisor paid"
+    ]
+  },
+  {
+    "slug": "tampa-north-florida",
+    "name": "Tampa & North Florida",
+    "state": "Florida",
+    "thesis": "A 50-restaurant Popeyes platform was just recapitalized here at roughly $54,000 per store. That basis will define competitive behavior in these trade areas for years.",
+    "activity": [
+      {
+        "text": "Pulse Restaurant Group — established by Sailormen CEO David Damato — acquired 50 Popeyes restaurants across Tampa, Tallahassee, Pensacola and Jacksonville for $2.69M",
+        "src": "qsr-sailormen-97"
+      },
+      {
+        "text": "SBH Foods PLK LLC acquired five Savannah-area restaurants for $650,000",
+        "src": "qsr-sailormen-97"
+      },
+      {
+        "text": "Hooters closures in June 2025 removed large-format casual dining pads across Florida",
+        "src": "rd-hooters"
+      }
+    ],
+    "watch": [
+      "Whether a debt-free 50-unit operator becomes an acquirer of additional Florida chicken assets",
+      "Landlord outcomes on Sailormen leases that were assumed versus rejected",
+      "Second-generation demand for the vacated Hooters pads"
+    ]
+  },
+  {
+    "slug": "orlando",
+    "name": "Orlando, FL",
+    "state": "Florida",
+    "thesis": "A 23-unit Popeyes portfolio changed hands out of bankruptcy in the same metro where a fast-growing tender brand is headquartered.",
+    "activity": [
+      {
+        "text": "RFI Ventures LLC acquired 23 Orlando-area Popeyes restaurants out of the Sailormen bankruptcy for $2.5M",
+        "src": "qsr-sailormen-97"
+      },
+      {
+        "text": "Huey Magoo's is headquartered in Orlando and grew from 43 units in early 2023 to 85 at the end of 2025, tracking toward 100 in 2026",
+        "src": "rd-huey"
+      }
+    ],
+    "watch": [
+      "Whether concentrated single-metro Popeyes ownership improves unit economics versus the prior statewide operator",
+      "Huey Magoo's new lower-cost drive-thru prototype rollout in its home market"
+    ]
+  },
+  {
+    "slug": "ohio",
+    "name": "Ohio (Columbus / Cincinnati)",
+    "state": "Ohio",
+    "thesis": "The clearest test market for Southeast brand portability — two brands with no Ohio history are committing to meaningful unit counts here at the same time.",
+    "activity": [
+      {
+        "text": "Eyas Capital, now Bojangles' largest franchisee after acquiring 120-unit BOJ of WNC, agreed to grow Bojangles in Cincinnati and Columbus to more than 40 locations",
+        "src": "rd-eyas-boj"
+      },
+      {
+        "text": "Slim Chickens named Ohio among its priority national expansion markets",
+        "src": "qsr-slim-2026"
+      },
+      {
+        "text": "Zaxby's is expanding across the Midwest and Northeast with 60+ openings targeted in 2026",
+        "src": "rd-zaxbys-nyc"
+      }
+    ],
+    "watch": [
+      "Whether out-of-region Bojangles units clear the $2.35M system AUV",
+      "Breakfast daypart performance for a Carolina brand in Midwest commuter patterns",
+      "Site competition among three Southeast brands entering the same metros simultaneously"
+    ]
+  },
+  {
+    "slug": "atlanta",
+    "name": "Atlanta, GA",
+    "state": "Georgia",
+    "thesis": "More chicken brand headquarters sit in metro Atlanta than anywhere else in the country — including the largest and one of the smallest by unit volume.",
+    "activity": [
+      {
+        "text": "Chick-fil-A is headquartered in Atlanta and closed 2025 with $23.9B in systemwide sales on a $9.16M average unit volume",
+        "src": "qsr50-2026-chicken"
+      },
+      {
+        "text": "Church's Texas Chicken is headquartered in Atlanta with 885 U.S. stores and a $1.138M AUV",
+        "src": "ft-church-2025"
+      },
+      {
+        "text": "Zaxby's is headquartered in Athens, GA and surpassed 1,000 locations in February 2026",
+        "src": "ifa-zaxbys-1000"
+      },
+      {
+        "text": "Chicken Salad Chick is headquartered in Atlanta and passed 300 locations in 2025",
+        "src": "rd-csc-300"
+      }
+    ],
+    "watch": [
+      "Executive and franchise-development talent movement among four headquartered brands",
+      "Whether Church's Atlanta-based turnaround holds a second consecutive year of unit growth"
+    ]
+  }
 ]

@@ -54,8 +54,8 @@
       "salesGrowthPct": 5.2,
       "auvUsd": 9161000,
       "capRateMid": 4.35,
-      "capRateBasis": "brand-specific asking range (Boulder Group)",
-      "netClosures": false
+      "netClosures": false,
+      "capRateBasis": "brand-specific asking range (Boulder Group)"
     },
     "realEstate": {
       "capRate": "4.20%–4.50% asking on 15-year ground leases; ~4.45% asking in Q2 2026",
@@ -129,8 +129,8 @@
       "salesGrowthPct": 10.6,
       "auvUsd": 6300000,
       "capRateMid": 4.85,
-      "capRateBasis": "brand-specific asking range (Boulder Group)",
-      "netClosures": false
+      "netClosures": false,
+      "capRateBasis": "brand-specific asking range (Boulder Group)"
     },
     "realEstate": {
       "capRate": "4.70%–5.00% on 15-year ground leases (~5.00% asking, Q1 2026)",
@@ -218,11 +218,11 @@
     "metrics": {
       "unitGrowthPct": 19.2,
       "salesGrowthPct": 12.1,
-      "compsPct": -7.5,
       "auvUsd": 2000000,
       "capRateMid": 6.85,
-      "capRateBasis": "franchisee QSR benchmark",
-      "netClosures": false
+      "compsPct": -7.5,
+      "netClosures": false,
+      "capRateBasis": "franchisee QSR benchmark"
     },
     "realEstate": {
       "capRate": "Franchisee-guaranteed QSR pricing — Boulder Group's franchisee QSR benchmark was 6.85% in Q2 2026",
@@ -301,12 +301,12 @@
       }
     },
     "metrics": {
-      "compsPct": -5.2,
-      "capRateMid": 5.8,
-      "capRateBasis": "marketed average asking cap rate",
-      "netClosures": true,
       "salesGrowthPct": -3.3,
-      "salesGrowthNote": "Popeyes system-wide sales growth, Q2 2026"
+      "capRateMid": 5.8,
+      "compsPct": -5.2,
+      "netClosures": true,
+      "salesGrowthNote": "Popeyes system-wide sales growth, Q2 2026",
+      "capRateBasis": "marketed average asking cap rate"
     },
     "realEstate": {
       "capRate": "5.10%–6.80% marketed range; ~5.80% average asking",
@@ -389,10 +389,10 @@
       "unitGrowthPct": -4,
       "unitGrowthDerived": true,
       "salesGrowthPct": -3,
-      "compsPct": 2,
       "capRateMid": 6.85,
-      "capRateBasis": "franchisee QSR benchmark",
-      "netClosures": true
+      "compsPct": 2,
+      "netClosures": true,
+      "capRateBasis": "franchisee QSR benchmark"
     },
     "realEstate": {
       "capRate": "Franchisee QSR benchmark 6.85% (Q2 2026); older, shorter-term KFC assets trade wider",
@@ -463,8 +463,8 @@
       "salesGrowthPct": 4.6,
       "auvUsd": 2710000,
       "capRateMid": 6.85,
-      "capRateBasis": "franchisee QSR benchmark",
-      "netClosures": false
+      "netClosures": false,
+      "capRateBasis": "franchisee QSR benchmark"
     },
     "realEstate": {
       "capRate": "Marketed franchisee product in the high-6% to mid-7% range — a Midwest City, OK asset was offered at a 7.42% cap ($2.11M)",
@@ -541,8 +541,8 @@
       "unitGrowthDerived": true,
       "auvUsd": 2351000,
       "capRateMid": 6.85,
-      "capRateBasis": "franchisee QSR benchmark",
-      "netClosures": false
+      "netClosures": false,
+      "capRateBasis": "franchisee QSR benchmark"
     },
     "realEstate": {
       "capRate": "Franchisee QSR pricing; benchmark 6.85% (Q2 2026)",
@@ -617,8 +617,8 @@
       "salesGrowthDerived": true,
       "auvUsd": 1138000,
       "capRateMid": 6.85,
-      "capRateBasis": "franchisee QSR benchmark",
-      "netClosures": false
+      "netClosures": false,
+      "capRateBasis": "franchisee QSR benchmark"
     },
     "realEstate": {
       "capRate": "Wide of the category — small-box, value-positioned franchisee credit trades at the high end of the franchisee QSR band (6.85%+ benchmark)",
@@ -700,10 +700,10 @@
       "unitGrowthPct": 52.3,
       "salesGrowthPct": 51,
       "auvUsd": 3000000,
-      "auvNote": "franchisee-reported",
       "capRateMid": 6.85,
-      "capRateBasis": "franchisee QSR benchmark",
-      "netClosures": false
+      "netClosures": false,
+      "auvNote": "franchisee-reported",
+      "capRateBasis": "franchisee QSR benchmark"
     },
     "realEstate": {
       "capRate": "Trades tight for a young franchisee credit; brand-record cap rates have been set on new-construction drive-thru prototypes",
@@ -778,8 +778,8 @@
       "salesGrowthPct": 23.4,
       "auvUsd": 2440000,
       "capRateMid": 6.85,
-      "capRateBasis": "franchisee QSR benchmark",
-      "netClosures": false
+      "netClosures": false,
+      "capRateBasis": "franchisee QSR benchmark"
     },
     "realEstate": {
       "capRate": "Franchisee QSR pricing (6.85% benchmark, Q2 2026); new-construction drive-thru product prices inside that",
@@ -861,11 +861,11 @@
     "metrics": {
       "unitGrowthPct": 1.8,
       "unitGrowthDerived": true,
-      "compsPct": 2.1,
       "auvUsd": 2300000,
       "capRateMid": 5.85,
-      "capRateBasis": "corporate QSR benchmark",
-      "netClosures": false
+      "compsPct": 2.1,
+      "netClosures": false,
+      "capRateBasis": "corporate QSR benchmark"
     },
     "realEstate": {
       "capRate": "Public-company corporate credit on company-operated sites; franchisee sites price at franchisee QSR levels",
@@ -928,8 +928,8 @@
       "unitGrowthPct": 13,
       "auvUsd": 1480000,
       "capRateMid": 6.85,
-      "capRateBasis": "franchisee QSR benchmark",
-      "netClosures": false
+      "netClosures": false,
+      "capRateBasis": "franchisee QSR benchmark"
     },
     "realEstate": {
       "capRate": "Franchisee credit, inline and endcap product; prices wide of freestanding drive-thru chicken",
@@ -980,8 +980,8 @@
       "unitGrowthPct": 9.2,
       "unitGrowthDerived": true,
       "capRateMid": 6.85,
-      "capRateBasis": "franchisee QSR benchmark",
-      "netClosures": false
+      "netClosures": false,
+      "capRateBasis": "franchisee QSR benchmark"
     },
     "realEstate": {
       "capRate": "Regional franchisee credit — prices at or wide of the 6.85% franchisee QSR benchmark",
@@ -1039,8 +1039,8 @@
     "metrics": {
       "salesGrowthPct": 24.3,
       "capRateMid": 6.85,
-      "capRateBasis": "franchisee QSR benchmark",
-      "netClosures": false
+      "netClosures": false,
+      "capRateBasis": "franchisee QSR benchmark"
     },
     "realEstate": {
       "capRate": "Emerging-brand franchisee credit — thin trading history, prices wide",
@@ -1098,8 +1098,8 @@
     "metrics": {
       "unitGrowthPct": 110,
       "capRateMid": 6.85,
-      "capRateBasis": "franchisee QSR benchmark",
-      "netClosures": false
+      "netClosures": false,
+      "capRateBasis": "franchisee QSR benchmark"
     },
     "realEstate": {
       "capRate": "Emerging-brand franchisee credit; effectively no institutional trading history",
@@ -1148,8 +1148,8 @@
       "unitGrowthPct": 18.6,
       "unitGrowthDerived": true,
       "capRateMid": 6.85,
-      "capRateBasis": "franchisee QSR benchmark",
-      "netClosures": false
+      "netClosures": false,
+      "capRateBasis": "franchisee QSR benchmark"
     },
     "realEstate": {
       "capRate": "Franchisee/corporate mix at franchisee QSR pricing",
@@ -1391,5 +1391,16 @@
     "pipeline": [],
     "momentum": "mixed",
     "analysis": "Jollibee's U.S. business remains a genuine chicken competitor in specific trade areas, but the group signal in 2026 was caution: more than 200 closures across the portfolio in the first half and a cut to the global opening target. When a growth-mode international operator trims its pipeline, it is usually reading consumer softness earlier than the domestic brands do."
+  },
+  {
+    "slug": "chicken-express",
+    "name": "Chicken Express",
+    "founded": 1988,
+    "ownership": "Private",
+    "franchiseModel": "Chicken Express operates under a franchise-focused, owner-operator model with a strong regional footprint. Unlike large multi-national chains that often sell territorial rights to institutional equity firms or passive investors, Chicken Express explicitly emphasizes an owner/operator philosophy.",
+    "stats": {},
+    "metrics": {},
+    "realEstate": {},
+    "pipeline": []
   }
 ]

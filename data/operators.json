@@ -1,266 +1,550 @@
 [
-{
-  "slug": "kbp-brands",
-  "name": "KBP Brands",
-  "hq": "Kansas",
-  "brands": ["KFC", "Taco Bell", "Arby's", "Sonic Drive-In"],
-  "chickenBrands": ["KFC"],
-  "chickenUnits": 831,
-  "totalUnits": 1224,
-  "geography": ["Midwest", "Southeast", "Mid-Atlantic", "Multi-region"],
-  "status": "Acquiring",
-  "facts": [
-    { "text": "The nation's largest KFC franchisee at 831 KFC locations", "asOf": "2026", "src": "franchising-mb50-2026" },
-    { "text": "1,224 total units in 2026, up from 1,119 in 2025", "asOf": "2026", "src": "franchising-mb50-2026" },
-    { "text": "Portfolio breakdown reported as 828 KFC, 119 Arby's, 85 Sonic and 56 Taco Bell", "asOf": "2025", "src": "franchising-mb50-2026" },
-    { "text": "Growth into Inspire Brands via 119 Arby's and 85 Sonic units — 167 Sonic units acquired across two rounds", "asOf": "2025-2026", "src": "franchising-mb50-2026" },
-    { "text": "Acquired 28 KFC restaurants in North Carolina and South Carolina from Scottish Food Systems", "asOf": "2024", "src": "ft-kbp-28" },
-    { "text": "Crossed 1,000 locations, extending beyond the Yum! Brands family", "asOf": "2025-09", "src": "franchising-kbp" }
-  ],
-  "analysis": "KBP is the single most important counterparty in U.S. KFC real estate. With 831 KFC units it controls roughly a quarter of the entire U.S. KFC system at a moment when the brand is closing more than 300 restaurants a year — which means KBP is simultaneously the biggest buyer of KFC assets and the biggest source of KFC dispositions. Any strategy involving KFC boxes, second-generation conversions or franchise transfers runs through this operator."
-},
-{
-  "slug": "sailormen",
-  "name": "Sailormen, Inc.",
-  "hq": "Miami, FL",
-  "brands": ["Popeyes"],
-  "chickenBrands": ["Popeyes"],
-  "chickenUnits": 0,
-  "totalUnits": 0,
-  "geography": ["Florida", "Georgia"],
-  "status": "Liquidated (Chapter 11)",
-  "facts": [
-    { "text": "Filed Chapter 11 in January 2026 operating 136 Popeyes restaurants in Florida and Georgia", "asOf": "2026-01", "src": "rbo-sailormen-bk" },
-    { "text": "Employed more than 3,300 people and generated approximately $233.5M in fiscal 2025", "asOf": "FY2025", "src": "qsr-sailormen-97" },
-    { "text": "Court approved the sale of 97 restaurants for $16.55M total to five buyers", "asOf": "2026", "src": "qsr-sailormen-97" },
-    { "text": "Rejected leases on roughly 33 locations it could not sell, forcing permanent closures", "asOf": "2026", "src": "qsr-sailormen-97" },
-    { "text": "Sale approved by Judge Robert A. Mark, U.S. Bankruptcy Court for the Southern District of Florida", "asOf": "2026", "src": "qsr-sailormen-97" }
-  ],
-  "analysis": "Sailormen is the case study every chicken lender and landlord should be reading. A 136-unit operator generating $233.5M of revenue filed Chapter 11 within twelve months of Popeyes franchisee restaurant-level profit falling to roughly $235,000 per store. The portfolio cleared at $16.55M for 97 restaurants — about $171,000 per operating restaurant for the business — and 33 locations went dark through lease rejection. Those dark boxes are now the most interesting second-generation chicken inventory in Florida and Georgia."
-},
-{
-  "slug": "pulse-restaurant-group",
-  "name": "Pulse Restaurant Group",
-  "hq": "Florida",
-  "brands": ["Popeyes"],
-  "chickenBrands": ["Popeyes"],
-  "chickenUnits": 50,
-  "totalUnits": 50,
-  "geography": ["Tampa", "Tallahassee", "Pensacola", "Jacksonville"],
-  "status": "Newly formed",
-  "facts": [
-    { "text": "Acquired 50 Popeyes restaurants in Tampa, Tallahassee, Pensacola and Jacksonville out of the Sailormen bankruptcy for $2.69M", "asOf": "2026", "src": "qsr-sailormen-97" },
-    { "text": "Established by Sailormen CEO David Damato", "asOf": "2026", "src": "qsr-sailormen-97" }
-  ],
-  "analysis": "A brand-new 50-unit Florida Popeyes platform created out of a bankruptcy at roughly $54,000 per restaurant. Whatever the operating challenges, the basis is extraordinary — and a newly recapitalized operator with 50 boxes and no legacy debt is exactly the profile that becomes an acquirer within 24 months."
-},
-{
-  "slug": "rfi-ventures",
-  "name": "RFI Ventures LLC",
-  "hq": "Not disclosed",
-  "brands": ["Popeyes"],
-  "chickenBrands": ["Popeyes"],
-  "chickenUnits": 23,
-  "totalUnits": 23,
-  "geography": ["Orlando, FL"],
-  "status": "Acquiring",
-  "facts": [
-    { "text": "Acquired 23 Orlando-area Popeyes restaurants out of the Sailormen bankruptcy for $2.5M", "asOf": "2026", "src": "qsr-sailormen-97" }
-  ],
-  "analysis": "A concentrated 23-unit Orlando Popeyes position bought at distressed pricing. Geographic density in a single high-growth metro is the most defensible franchisee structure there is."
-},
-{
-  "slug": "popeyes-corporate",
-  "name": "Popeyes (RBI corporate operations)",
-  "hq": "Miami, FL",
-  "brands": ["Popeyes"],
-  "chickenBrands": ["Popeyes"],
-  "chickenUnits": 16,
-  "totalUnits": 16,
-  "geography": ["Miami, FL"],
-  "status": "Refranchising candidate",
-  "facts": [
-    { "text": "Popeyes corporate acquired 16 Miami-area restaurants out of the Sailormen bankruptcy for $9.6M — the highest price paid per restaurant among the five buyers", "asOf": "2026", "src": "qsr-sailormen-97" }
-  ],
-  "analysis": "RBI paying $600,000 per restaurant for 16 Miami units — roughly eleven times what Pulse paid per store for the Tampa/North Florida package — is the clearest available signal of how the franchisor values dense, high-volume urban Popeyes trade areas versus the rest of the portfolio. Corporate-held restaurants acquired out of distress are almost always refranchised later; these are future transaction inventory."
-},
-{
-  "slug": "sbh-foods-plk",
-  "name": "SBH Foods PLK LLC",
-  "hq": "Not disclosed",
-  "brands": ["Popeyes"],
-  "chickenBrands": ["Popeyes"],
-  "chickenUnits": 5,
-  "totalUnits": 5,
-  "geography": ["Savannah, GA"],
-  "status": "Acquiring",
-  "facts": [
-    { "text": "Acquired five Savannah-area Popeyes restaurants out of the Sailormen bankruptcy for $650,000", "asOf": "2026", "src": "qsr-sailormen-97" }
-  ],
-  "analysis": "Small, geographically tight acquisition at $130,000 per restaurant. Sub-10-unit buyers taking single-market packages out of a larger bankruptcy is how new operator platforms typically start."
-},
-{
-  "slug": "61-biscuits",
-  "name": "61 Biscuits LLC",
-  "hq": "Not disclosed",
-  "brands": ["Popeyes"],
-  "chickenBrands": ["Popeyes"],
-  "chickenUnits": 3,
-  "totalUnits": 3,
-  "geography": ["West Palm Beach, FL"],
-  "status": "Acquiring",
-  "facts": [
-    { "text": "Acquired three West Palm Beach-area Popeyes restaurants out of the Sailormen bankruptcy for $1.11M", "asOf": "2026", "src": "qsr-sailormen-97" }
-  ],
-  "analysis": "$370,000 per restaurant for three South Florida units — the second-highest per-store price in the Sailormen auction after Popeyes corporate. Palm Beach County volumes clearly justified a premium that Tampa and Tallahassee did not."
-},
-{
-  "slug": "eyas-capital",
-  "name": "Eyas Capital",
-  "hq": "Not disclosed",
-  "brands": ["Bojangles", "Subway", "Burger King"],
-  "chickenBrands": ["Bojangles"],
-  "chickenUnits": 120,
-  "totalUnits": 350,
-  "geography": ["North Carolina", "Ohio", "Six-state Bojangles footprint"],
-  "status": "Actively developing",
-  "facts": [
-    { "text": "Acquired BOJ of WNC — Bojangles' largest franchise group — a portfolio of 120 locations across six states", "asOf": "2025", "src": "rd-eyas-boj" },
-    { "text": "The acquisition took Eyas Capital's total restaurant portfolio to more than 350 franchise units", "asOf": "2025", "src": "rd-eyas-boj" },
-    { "text": "Agreed to grow Bojangles in Cincinnati and Columbus to more than 40 locations", "asOf": "2025", "src": "rd-eyas-boj" },
-    { "text": "Founded 2013; CEO and managing partner Tim Foley, COO/president and partner John Kaufman", "asOf": "2025", "src": "rd-eyas-boj" }
-  ],
-  "analysis": "Eyas is what modern franchisee scale looks like: an investment platform, not a family operator, buying the largest franchise group in a regional brand and immediately committing to 40+ new units in a market (Ohio) where the brand has no history. For anyone selling development sites in Cincinnati or Columbus, this is a single phone call that represents dozens of transactions."
-},
-{
-  "slug": "boj-of-wnc",
-  "name": "BOJ of WNC",
-  "hq": "Western North Carolina",
-  "brands": ["Bojangles"],
-  "chickenBrands": ["Bojangles"],
-  "chickenUnits": 120,
-  "totalUnits": 120,
-  "geography": ["Western North Carolina", "Six states"],
-  "status": "Acquired by Eyas Capital",
-  "facts": [
-    { "text": "Was Bojangles' largest franchise group with 120 locations across six states before being acquired by Eyas Capital", "asOf": "2025", "src": "rd-eyas-boj" },
-    { "text": "Led by owner/operator Jeff Rigsby, who joined the Bojangles corporate team in 1994 and bought six Asheville, NC locations in 2001", "asOf": "2025", "src": "rd-eyas-boj" }
-  ],
-  "analysis": "Six restaurants in 2001 to the brand's largest franchisee by 2025, then an exit to institutional capital. This is the standard lifecycle of a successful regional chicken operator, and it is the reason the operator database matters more than the brand database — ownership of these units changed hands entirely without the brand's unit count moving at all."
-},
-{
-  "slug": "far-west-services",
-  "name": "Far West Services",
-  "hq": "California",
-  "brands": ["Wingstop"],
-  "chickenBrands": ["Wingstop"],
-  "chickenUnits": 127,
-  "totalUnits": 127,
-  "geography": ["California", "Nevada", "Washington", "Colorado", "Utah"],
-  "status": "Actively developing",
-  "facts": [
-    { "text": "Largest West Coast Wingstop franchisee, operating 127 locations with plans for 51 more within 18 months", "asOf": "2024-05", "src": "franchising-farwest-1500" },
-    { "text": "Founded 2003; CEO and president Jorge Ortiz, founder and chairman Danny Sonenshine", "asOf": "2024", "src": "franchising-farwest-1500" },
-    { "text": "Brentwood Associates and Sixth Street made a significant growth investment in partnership with existing management", "asOf": "2023-11", "src": "sixthstreet-farwest" }
-  ],
-  "analysis": "Far West is the largest concentrated Wingstop position on the West Coast and it is institutionally capitalized, which matters more in 2026 than it did in 2024: Wingstop domestic comps fell 7.5% in Q2 2026 with pressure concentrated in urban trade areas — precisely where a California-heavy portfolio sits. A private-equity-backed operator with a 51-unit development commitment into a negative-comp environment is the situation most likely to produce either aggressive site take-downs or a pipeline renegotiation."
-},
-{
-  "slug": "guernsey-holdings",
-  "name": "Guernsey Holdings",
-  "hq": "Not disclosed",
-  "brands": ["Zaxby's", "Sonic Drive-In", "Little Caesars", "7 Brew", "Meineke", "Take 5 Oil Change"],
-  "chickenBrands": ["Zaxby's"],
-  "chickenUnits": 20,
-  "totalUnits": null,
-  "geography": ["South Carolina"],
-  "status": "Acquiring",
-  "facts": [
-    { "text": "Acquired 20 Zaxby's restaurants in South Carolina", "asOf": "2025", "src": "rbo-guernsey-zaxbys" },
-    { "text": "Also operates Sonic Drive-In, Little Caesars and 7 Brew locations plus Meineke and Take 5 Oil Change automotive franchises", "asOf": "2025", "src": "rbo-guernsey-zaxbys" }
-  ],
-  "analysis": "A multi-brand, multi-sector franchisee adding chicken to a portfolio that already spans QSR, coffee and automotive services. This is the profile Zaxby's is recruiting as it moves into the Midwest and Northeast — operators who bring capital and infrastructure rather than brand familiarity."
-},
-{
-  "slug": "ampex-brands",
-  "name": "Ampex Brands",
-  "hq": "Richardson, TX",
-  "brands": ["KFC", "Pizza Hut", "Taco Bell", "7-Eleven", "Au Bon Pain"],
-  "chickenBrands": ["KFC"],
-  "chickenUnits": null,
-  "totalUnits": 600,
-  "geography": ["Texas", "Multi-state"],
-  "status": "Stable / diversifying",
-  "facts": [
-    { "text": "Approximately 600 locations with revenue close to $500M; ranked 14th among the nation's largest multi-brand franchisees", "asOf": "2026", "src": "franchising-mb50-2026" },
-    { "text": "Texas-based franchisee of KFC, Pizza Hut, Taco Bell and 7-Eleven; acquired Au Bon Pain from Panera in 2021", "asOf": "2021", "src": "cnbc-ampex" },
-    { "text": "President and CEO Tabbassum Mumtaz", "asOf": "2026", "src": "cnbc-ampex" }
-  ],
-  "analysis": "A 600-unit Texas platform with meaningful KFC exposure and a demonstrated willingness to move up the stack — Ampex bought a brand (Au Bon Pain) rather than just more units. Operators who cross from franchisee to franchisor are the ones most likely to be interested in acquiring a regional chicken concept outright."
-},
-{
-  "slug": "sxthree",
-  "name": "SXThree Restaurant Group",
-  "hq": "Central Texas",
-  "brands": ["Golden Chick"],
-  "chickenBrands": ["Golden Chick"],
-  "chickenUnits": 20,
-  "totalUnits": 20,
-  "geography": ["Central Texas", "Alabama", "Mississippi"],
-  "status": "Actively developing",
-  "facts": [
-    { "text": "Largest Golden Chick operator with 20 locations in central Texas", "asOf": "2025", "src": "qsr-golden-sxthree" },
-    { "text": "Targeting 100 Golden Chick restaurants by 2030", "asOf": "2025", "src": "ft-golden-sxthree" },
-    { "text": "Signed new development agreements in Alabama and Mississippi and extended prior deals in Texas and Alabama; expanded a Hattiesburg, MS commitment from three units to six", "asOf": "2025", "src": "ft-golden-sxthree" },
-    { "text": "Led by CEO Jim Stevens", "asOf": "2025", "src": "ft-golden-sxthree" }
-  ],
-  "analysis": "Twenty units today, a stated target of 100 by 2030, and signed agreements spanning three states. If SXThree executes even half of that plan, it will require roughly 40 new sites in Texas, Alabama and Mississippi over five years — one operator generating a decade of site-selection and development work."
-},
-{
-  "slug": "korpal-group",
-  "name": "Korpal Group",
-  "hq": "Southeast Texas",
-  "brands": ["Golden Chick", "Subway"],
-  "chickenBrands": ["Golden Chick"],
-  "chickenUnits": 13,
-  "chickenUnitsNote": "Committed under development agreement",
-  "totalUnits": null,
-  "geography": ["Greater Houston", "Beaumont", "Southeast Texas"],
-  "status": "Actively developing",
-  "facts": [
-    { "text": "Signed a 13-unit Golden Chick development agreement — 10 units in the greater Houston market over four years and three in Beaumont over ten years", "asOf": "2026", "src": "ft-korpal" },
-    { "text": "Led by brothers Karan and Raj Korpal, second-generation franchise operators whose parents ran 22 Subway franchises in Southeast Texas", "asOf": "2026", "src": "entrepreneur-korpal" }
-  ],
-  "analysis": "A textbook second-generation conversion: a family that built a 22-unit Subway business redeploying into a higher-AUV chicken concept with a 13-unit commitment across Houston and Beaumont. Ten Houston sites over four years is a real, dated pipeline — and it is the kind of commitment that gets made before the sites are secured."
-},
-{
-  "slug": "scottish-food-systems",
-  "name": "Scottish Food Systems",
-  "hq": "North Carolina",
-  "brands": ["KFC"],
-  "chickenBrands": ["KFC"],
-  "chickenUnits": null,
-  "totalUnits": null,
-  "geography": ["North Carolina", "South Carolina"],
-  "status": "Divesting",
-  "facts": [
-    { "text": "Sold 28 KFC restaurants in North Carolina and South Carolina to KBP Brands", "asOf": "2024", "src": "ft-kbp-28" }
-  ],
-  "analysis": "A legacy Carolinas KFC operator selling a 28-unit package to the system's largest franchisee. This is the consolidation pattern running through the entire KFC franchisee base — legacy families exiting, KBP and a small number of platforms absorbing."
-},
-{
-  "slug": "sun-holdings",
-  "name": "Sun Holdings",
-  "hq": "Texas",
-  "brands": [],
-  "chickenBrands": [],
-  "chickenUnits": null,
-  "totalUnits": 1680,
-  "geography": ["Texas", "Multi-state"],
-  "status": "Acquiring",
-  "facts": [
-    { "text": "1,680 units — among the largest multi-brand franchisee portfolios in the U.S.", "asOf": "2026", "src": "franchising-mb50-2026" }
-  ],
-  "analysis": "One of the two largest multi-brand franchisee platforms in the country by unit count. Included here as a scale reference point for what the top of the operator market looks like; CSW is tracking its chicken-brand exposure and will publish it when independently confirmed."
-}
+  {
+    "slug": "kbp-brands",
+    "name": "KBP Brands",
+    "hq": "Kansas",
+    "brands": [
+      "KFC",
+      "Taco Bell",
+      "Arby's",
+      "Sonic Drive-In"
+    ],
+    "chickenBrands": [
+      "KFC"
+    ],
+    "chickenUnits": 831,
+    "totalUnits": 1224,
+    "geography": [
+      "Midwest",
+      "Southeast",
+      "Mid-Atlantic",
+      "Multi-region"
+    ],
+    "status": "Acquiring",
+    "facts": [
+      {
+        "text": "The nation's largest KFC franchisee at 831 KFC locations",
+        "asOf": "2026",
+        "src": "franchising-mb50-2026"
+      },
+      {
+        "text": "1,224 total units in 2026, up from 1,119 in 2025",
+        "asOf": "2026",
+        "src": "franchising-mb50-2026"
+      },
+      {
+        "text": "Portfolio breakdown reported as 828 KFC, 119 Arby's, 85 Sonic and 56 Taco Bell",
+        "asOf": "2025",
+        "src": "franchising-mb50-2026"
+      },
+      {
+        "text": "Growth into Inspire Brands via 119 Arby's and 85 Sonic units — 167 Sonic units acquired across two rounds",
+        "asOf": "2025-2026",
+        "src": "franchising-mb50-2026"
+      },
+      {
+        "text": "Acquired 28 KFC restaurants in North Carolina and South Carolina from Scottish Food Systems",
+        "asOf": "2024",
+        "src": "ft-kbp-28"
+      },
+      {
+        "text": "Crossed 1,000 locations, extending beyond the Yum! Brands family",
+        "asOf": "2025-09",
+        "src": "franchising-kbp"
+      }
+    ],
+    "analysis": "KBP is the single most important counterparty in U.S. KFC real estate. With 831 KFC units it controls roughly a quarter of the entire U.S. KFC system at a moment when the brand is closing more than 300 restaurants a year — which means KBP is simultaneously the biggest buyer of KFC assets and the biggest source of KFC dispositions. Any strategy involving KFC boxes, second-generation conversions or franchise transfers runs through this operator."
+  },
+  {
+    "slug": "sailormen",
+    "name": "Sailormen, Inc.",
+    "hq": "Miami, FL",
+    "brands": [
+      "Popeyes"
+    ],
+    "chickenBrands": [
+      "Popeyes"
+    ],
+    "chickenUnits": 0,
+    "totalUnits": 0,
+    "geography": [
+      "Florida",
+      "Georgia"
+    ],
+    "status": "Liquidated (Chapter 11)",
+    "facts": [
+      {
+        "text": "Filed Chapter 11 in January 2026 operating 136 Popeyes restaurants in Florida and Georgia",
+        "asOf": "2026-01",
+        "src": "rbo-sailormen-bk"
+      },
+      {
+        "text": "Employed more than 3,300 people and generated approximately $233.5M in fiscal 2025",
+        "asOf": "FY2025",
+        "src": "qsr-sailormen-97"
+      },
+      {
+        "text": "Court approved the sale of 97 restaurants for $16.55M total to five buyers",
+        "asOf": "2026",
+        "src": "qsr-sailormen-97"
+      },
+      {
+        "text": "Rejected leases on roughly 33 locations it could not sell, forcing permanent closures",
+        "asOf": "2026",
+        "src": "qsr-sailormen-97"
+      },
+      {
+        "text": "Sale approved by Judge Robert A. Mark, U.S. Bankruptcy Court for the Southern District of Florida",
+        "asOf": "2026",
+        "src": "qsr-sailormen-97"
+      }
+    ],
+    "analysis": "Sailormen is the case study every chicken lender and landlord should be reading. A 136-unit operator generating $233.5M of revenue filed Chapter 11 within twelve months of Popeyes franchisee restaurant-level profit falling to roughly $235,000 per store. The portfolio cleared at $16.55M for 97 restaurants — about $171,000 per operating restaurant for the business — and 33 locations went dark through lease rejection. Those dark boxes are now the most interesting second-generation chicken inventory in Florida and Georgia."
+  },
+  {
+    "slug": "pulse-restaurant-group",
+    "name": "Pulse Restaurant Group",
+    "hq": "Florida",
+    "brands": [
+      "Popeyes"
+    ],
+    "chickenBrands": [
+      "Popeyes"
+    ],
+    "chickenUnits": 50,
+    "totalUnits": 50,
+    "geography": [
+      "Tampa",
+      "Tallahassee",
+      "Pensacola",
+      "Jacksonville"
+    ],
+    "status": "Newly formed",
+    "facts": [
+      {
+        "text": "Acquired 50 Popeyes restaurants in Tampa, Tallahassee, Pensacola and Jacksonville out of the Sailormen bankruptcy for $2.69M",
+        "asOf": "2026",
+        "src": "qsr-sailormen-97"
+      },
+      {
+        "text": "Established by Sailormen CEO David Damato",
+        "asOf": "2026",
+        "src": "qsr-sailormen-97"
+      }
+    ],
+    "analysis": "A brand-new 50-unit Florida Popeyes platform created out of a bankruptcy at roughly $54,000 per restaurant. Whatever the operating challenges, the basis is extraordinary — and a newly recapitalized operator with 50 boxes and no legacy debt is exactly the profile that becomes an acquirer within 24 months."
+  },
+  {
+    "slug": "rfi-ventures",
+    "name": "RFI Ventures LLC",
+    "hq": "Not disclosed",
+    "brands": [
+      "Popeyes"
+    ],
+    "chickenBrands": [
+      "Popeyes"
+    ],
+    "chickenUnits": 23,
+    "totalUnits": 23,
+    "geography": [
+      "Orlando, FL"
+    ],
+    "status": "Acquiring",
+    "facts": [
+      {
+        "text": "Acquired 23 Orlando-area Popeyes restaurants out of the Sailormen bankruptcy for $2.5M",
+        "asOf": "2026",
+        "src": "qsr-sailormen-97"
+      }
+    ],
+    "analysis": "A concentrated 23-unit Orlando Popeyes position bought at distressed pricing. Geographic density in a single high-growth metro is the most defensible franchisee structure there is."
+  },
+  {
+    "slug": "popeyes-corporate",
+    "name": "Popeyes (RBI corporate operations)",
+    "hq": "Miami, FL",
+    "brands": [
+      "Popeyes"
+    ],
+    "chickenBrands": [
+      "Popeyes"
+    ],
+    "chickenUnits": 16,
+    "totalUnits": 16,
+    "geography": [
+      "Miami, FL"
+    ],
+    "status": "Refranchising candidate",
+    "facts": [
+      {
+        "text": "Popeyes corporate acquired 16 Miami-area restaurants out of the Sailormen bankruptcy for $9.6M — the highest price paid per restaurant among the five buyers",
+        "asOf": "2026",
+        "src": "qsr-sailormen-97"
+      }
+    ],
+    "analysis": "RBI paying $600,000 per restaurant for 16 Miami units — roughly eleven times what Pulse paid per store for the Tampa/North Florida package — is the clearest available signal of how the franchisor values dense, high-volume urban Popeyes trade areas versus the rest of the portfolio. Corporate-held restaurants acquired out of distress are almost always refranchised later; these are future transaction inventory."
+  },
+  {
+    "slug": "sbh-foods-plk",
+    "name": "SBH Foods PLK LLC",
+    "hq": "Not disclosed",
+    "brands": [
+      "Popeyes"
+    ],
+    "chickenBrands": [
+      "Popeyes"
+    ],
+    "chickenUnits": 5,
+    "totalUnits": 5,
+    "geography": [
+      "Savannah, GA"
+    ],
+    "status": "Acquiring",
+    "facts": [
+      {
+        "text": "Acquired five Savannah-area Popeyes restaurants out of the Sailormen bankruptcy for $650,000",
+        "asOf": "2026",
+        "src": "qsr-sailormen-97"
+      }
+    ],
+    "analysis": "Small, geographically tight acquisition at $130,000 per restaurant. Sub-10-unit buyers taking single-market packages out of a larger bankruptcy is how new operator platforms typically start."
+  },
+  {
+    "slug": "61-biscuits",
+    "name": "61 Biscuits LLC",
+    "hq": "Not disclosed",
+    "brands": [
+      "Popeyes"
+    ],
+    "chickenBrands": [
+      "Popeyes"
+    ],
+    "chickenUnits": 3,
+    "totalUnits": 3,
+    "geography": [
+      "West Palm Beach, FL"
+    ],
+    "status": "Acquiring",
+    "facts": [
+      {
+        "text": "Acquired three West Palm Beach-area Popeyes restaurants out of the Sailormen bankruptcy for $1.11M",
+        "asOf": "2026",
+        "src": "qsr-sailormen-97"
+      }
+    ],
+    "analysis": "$370,000 per restaurant for three South Florida units — the second-highest per-store price in the Sailormen auction after Popeyes corporate. Palm Beach County volumes clearly justified a premium that Tampa and Tallahassee did not."
+  },
+  {
+    "slug": "eyas-capital",
+    "name": "Eyas Capital",
+    "hq": "Not disclosed",
+    "brands": [
+      "Bojangles",
+      "Subway",
+      "Burger King"
+    ],
+    "chickenBrands": [
+      "Bojangles"
+    ],
+    "chickenUnits": 120,
+    "totalUnits": 350,
+    "geography": [
+      "North Carolina",
+      "Ohio",
+      "Six-state Bojangles footprint"
+    ],
+    "status": "Actively developing",
+    "facts": [
+      {
+        "text": "Acquired BOJ of WNC — Bojangles' largest franchise group — a portfolio of 120 locations across six states",
+        "asOf": "2025",
+        "src": "rd-eyas-boj"
+      },
+      {
+        "text": "The acquisition took Eyas Capital's total restaurant portfolio to more than 350 franchise units",
+        "asOf": "2025",
+        "src": "rd-eyas-boj"
+      },
+      {
+        "text": "Agreed to grow Bojangles in Cincinnati and Columbus to more than 40 locations",
+        "asOf": "2025",
+        "src": "rd-eyas-boj"
+      },
+      {
+        "text": "Founded 2013; CEO and managing partner Tim Foley, COO/president and partner John Kaufman",
+        "asOf": "2025",
+        "src": "rd-eyas-boj"
+      }
+    ],
+    "analysis": "Eyas is what modern franchisee scale looks like: an investment platform, not a family operator, buying the largest franchise group in a regional brand and immediately committing to 40+ new units in a market (Ohio) where the brand has no history. For anyone selling development sites in Cincinnati or Columbus, this is a single phone call that represents dozens of transactions."
+  },
+  {
+    "slug": "boj-of-wnc",
+    "name": "BOJ of WNC",
+    "hq": "Western North Carolina",
+    "brands": [
+      "Bojangles"
+    ],
+    "chickenBrands": [
+      "Bojangles"
+    ],
+    "chickenUnits": 120,
+    "totalUnits": 120,
+    "geography": [
+      "Western North Carolina",
+      "Six states"
+    ],
+    "status": "Acquired by Eyas Capital",
+    "facts": [
+      {
+        "text": "Was Bojangles' largest franchise group with 120 locations across six states before being acquired by Eyas Capital",
+        "asOf": "2025",
+        "src": "rd-eyas-boj"
+      },
+      {
+        "text": "Led by owner/operator Jeff Rigsby, who joined the Bojangles corporate team in 1994 and bought six Asheville, NC locations in 2001",
+        "asOf": "2025",
+        "src": "rd-eyas-boj"
+      }
+    ],
+    "analysis": "Six restaurants in 2001 to the brand's largest franchisee by 2025, then an exit to institutional capital. This is the standard lifecycle of a successful regional chicken operator, and it is the reason the operator database matters more than the brand database — ownership of these units changed hands entirely without the brand's unit count moving at all."
+  },
+  {
+    "slug": "far-west-services",
+    "name": "Far West Services",
+    "hq": "California",
+    "brands": [
+      "Wingstop"
+    ],
+    "chickenBrands": [
+      "Wingstop"
+    ],
+    "chickenUnits": 127,
+    "totalUnits": 127,
+    "geography": [
+      "California",
+      "Nevada",
+      "Washington",
+      "Colorado",
+      "Utah"
+    ],
+    "status": "Actively developing",
+    "facts": [
+      {
+        "text": "Largest West Coast Wingstop franchisee, operating 127 locations with plans for 51 more within 18 months",
+        "asOf": "2024-05",
+        "src": "franchising-farwest-1500"
+      },
+      {
+        "text": "Founded 2003; CEO and president Jorge Ortiz, founder and chairman Danny Sonenshine",
+        "asOf": "2024",
+        "src": "franchising-farwest-1500"
+      },
+      {
+        "text": "Brentwood Associates and Sixth Street made a significant growth investment in partnership with existing management",
+        "asOf": "2023-11",
+        "src": "sixthstreet-farwest"
+      }
+    ],
+    "analysis": "Far West is the largest concentrated Wingstop position on the West Coast and it is institutionally capitalized, which matters more in 2026 than it did in 2024: Wingstop domestic comps fell 7.5% in Q2 2026 with pressure concentrated in urban trade areas — precisely where a California-heavy portfolio sits. A private-equity-backed operator with a 51-unit development commitment into a negative-comp environment is the situation most likely to produce either aggressive site take-downs or a pipeline renegotiation."
+  },
+  {
+    "slug": "guernsey-holdings",
+    "name": "Guernsey Holdings",
+    "hq": "Not disclosed",
+    "brands": [
+      "Zaxby's",
+      "Sonic Drive-In",
+      "Little Caesars",
+      "7 Brew",
+      "Meineke",
+      "Take 5 Oil Change"
+    ],
+    "chickenBrands": [
+      "Zaxby's"
+    ],
+    "chickenUnits": 20,
+    "totalUnits": null,
+    "geography": [
+      "South Carolina"
+    ],
+    "status": "Acquiring",
+    "facts": [
+      {
+        "text": "Acquired 20 Zaxby's restaurants in South Carolina",
+        "asOf": "2025",
+        "src": "rbo-guernsey-zaxbys"
+      },
+      {
+        "text": "Also operates Sonic Drive-In, Little Caesars and 7 Brew locations plus Meineke and Take 5 Oil Change automotive franchises",
+        "asOf": "2025",
+        "src": "rbo-guernsey-zaxbys"
+      }
+    ],
+    "analysis": "A multi-brand, multi-sector franchisee adding chicken to a portfolio that already spans QSR, coffee and automotive services. This is the profile Zaxby's is recruiting as it moves into the Midwest and Northeast — operators who bring capital and infrastructure rather than brand familiarity."
+  },
+  {
+    "slug": "ampex-brands",
+    "name": "Ampex Brands",
+    "hq": "Richardson, TX",
+    "brands": [
+      "KFC",
+      "Pizza Hut",
+      "Taco Bell",
+      "7-Eleven",
+      "Au Bon Pain"
+    ],
+    "chickenBrands": [
+      "KFC"
+    ],
+    "chickenUnits": null,
+    "totalUnits": 600,
+    "geography": [
+      "Texas",
+      "Multi-state"
+    ],
+    "status": "Stable / diversifying",
+    "facts": [
+      {
+        "text": "Approximately 600 locations with revenue close to $500M; ranked 14th among the nation's largest multi-brand franchisees",
+        "asOf": "2026",
+        "src": "franchising-mb50-2026"
+      },
+      {
+        "text": "Texas-based franchisee of KFC, Pizza Hut, Taco Bell and 7-Eleven; acquired Au Bon Pain from Panera in 2021",
+        "asOf": "2021",
+        "src": "cnbc-ampex"
+      },
+      {
+        "text": "President and CEO Tabbassum Mumtaz",
+        "asOf": "2026",
+        "src": "cnbc-ampex"
+      }
+    ],
+    "analysis": "A 600-unit Texas platform with meaningful KFC exposure and a demonstrated willingness to move up the stack — Ampex bought a brand (Au Bon Pain) rather than just more units. Operators who cross from franchisee to franchisor are the ones most likely to be interested in acquiring a regional chicken concept outright."
+  },
+  {
+    "slug": "sxthree",
+    "name": "SXThree Restaurant Group",
+    "hq": "Central Texas",
+    "brands": [
+      "Golden Chick"
+    ],
+    "chickenBrands": [
+      "Golden Chick"
+    ],
+    "chickenUnits": 20,
+    "totalUnits": 20,
+    "geography": [
+      "Central Texas",
+      "Alabama",
+      "Mississippi"
+    ],
+    "status": "Actively developing",
+    "facts": [
+      {
+        "text": "Largest Golden Chick operator with 20 locations in central Texas",
+        "asOf": "2025",
+        "src": "qsr-golden-sxthree"
+      },
+      {
+        "text": "Targeting 100 Golden Chick restaurants by 2030",
+        "asOf": "2025",
+        "src": "ft-golden-sxthree"
+      },
+      {
+        "text": "Signed new development agreements in Alabama and Mississippi and extended prior deals in Texas and Alabama; expanded a Hattiesburg, MS commitment from three units to six",
+        "asOf": "2025",
+        "src": "ft-golden-sxthree"
+      },
+      {
+        "text": "Led by CEO Jim Stevens",
+        "asOf": "2025",
+        "src": "ft-golden-sxthree"
+      }
+    ],
+    "analysis": "Twenty units today, a stated target of 100 by 2030, and signed agreements spanning three states. If SXThree executes even half of that plan, it will require roughly 40 new sites in Texas, Alabama and Mississippi over five years — one operator generating a decade of site-selection and development work."
+  },
+  {
+    "slug": "korpal-group",
+    "name": "Korpal Group",
+    "hq": "Southeast Texas",
+    "brands": [
+      "Golden Chick",
+      "Subway"
+    ],
+    "chickenBrands": [
+      "Golden Chick"
+    ],
+    "chickenUnits": 13,
+    "chickenUnitsNote": "Committed under development agreement",
+    "totalUnits": null,
+    "geography": [
+      "Greater Houston",
+      "Beaumont",
+      "Southeast Texas"
+    ],
+    "status": "Actively developing",
+    "facts": [
+      {
+        "text": "Signed a 13-unit Golden Chick development agreement — 10 units in the greater Houston market over four years and three in Beaumont over ten years",
+        "asOf": "2026",
+        "src": "ft-korpal"
+      },
+      {
+        "text": "Led by brothers Karan and Raj Korpal, second-generation franchise operators whose parents ran 22 Subway franchises in Southeast Texas",
+        "asOf": "2026",
+        "src": "entrepreneur-korpal"
+      }
+    ],
+    "analysis": "A textbook second-generation conversion: a family that built a 22-unit Subway business redeploying into a higher-AUV chicken concept with a 13-unit commitment across Houston and Beaumont. Ten Houston sites over four years is a real, dated pipeline — and it is the kind of commitment that gets made before the sites are secured."
+  },
+  {
+    "slug": "scottish-food-systems",
+    "name": "Scottish Food Systems",
+    "hq": "North Carolina",
+    "brands": [
+      "KFC"
+    ],
+    "chickenBrands": [
+      "KFC"
+    ],
+    "chickenUnits": null,
+    "totalUnits": null,
+    "geography": [
+      "North Carolina",
+      "South Carolina"
+    ],
+    "status": "Divesting",
+    "facts": [
+      {
+        "text": "Sold 28 KFC restaurants in North Carolina and South Carolina to KBP Brands",
+        "asOf": "2024",
+        "src": "ft-kbp-28"
+      }
+    ],
+    "analysis": "A legacy Carolinas KFC operator selling a 28-unit package to the system's largest franchisee. This is the consolidation pattern running through the entire KFC franchisee base — legacy families exiting, KBP and a small number of platforms absorbing."
+  },
+  {
+    "slug": "sun-holdings",
+    "name": "Sun Holdings",
+    "hq": "Texas",
+    "brands": [],
+    "chickenBrands": [],
+    "chickenUnits": null,
+    "totalUnits": 1680,
+    "geography": [
+      "Texas",
+      "Multi-state"
+    ],
+    "status": "Acquiring",
+    "facts": [
+      {
+        "text": "1,680 units — among the largest multi-brand franchisee portfolios in the U.S.",
+        "asOf": "2026",
+        "src": "franchising-mb50-2026"
+      }
+    ],
+    "analysis": "One of the two largest multi-brand franchisee platforms in the country by unit count. Included here as a scale reference point for what the top of the operator market looks like; CSW is tracking its chicken-brand exposure and will publish it when independently confirmed."
+  }
 ]
