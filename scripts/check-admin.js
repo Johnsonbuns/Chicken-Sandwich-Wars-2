@@ -128,6 +128,18 @@ const sentServiceRole = (cs) => cs.some((c) =>
         && /^[0-9a-f]{64}$/.test(row.key_hash)
         && !JSON.stringify(post.body).includes(r.payload.secret);
     });
+  await run(admin, 'a search term cannot smuggle a filter into the PostgREST query',
+    mkReq('POST', { op: 'queue', q: 'x,status.eq.applied)' }, AUTH),
+    (r, c) => {
+      const u = c.find((x) => x.url.includes('v_review_queue')).url;
+      return r.code === 200 && !/status\.eq/.test(decodeURIComponent(u));
+    });
+  await run(admin, 'and an unrecognised status is dropped rather than passed through',
+    mkReq('POST', { op: 'queue', status: 'pending,evil)' }, AUTH),
+    (r, c) => {
+      const u = decodeURIComponent(c.find((x) => x.url.includes('v_review_queue')).url);
+      return u.includes('status=in.(pending)') && !u.includes('evil');
+    });
   await run(admin, 'the leads inbox goes through the function, not the intake schema',
     mkReq('POST', { op: 'leads' }, AUTH),
     (r, c) => c.some((x) => x.url.includes('/rpc/lead_list'))

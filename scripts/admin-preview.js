@@ -255,7 +255,10 @@ function handleApi(op, args) {
     case 'batches': return { batches: BATCHES };
     case 'batch': return { batch: BATCHES.find((b) => b.id === args.id),
                            items: ITEMS.filter((i) => i.batch_id === args.id) };
-    case 'records': return { records: RECORDS[args.table] || [] };
+    case 'records': {
+      const list = RECORDS[args.table] || [];
+      return { records: args.id ? list.filter((r) => r.id === args.id) : list };
+    }
     case 'history': return { history: [{ id: 1, operation: 'UPDATE', changed_at: at(100), changed_by_name: 'Desk' }] };
     case 'leads': return { leads: args.status ? LEADS.filter((l) => l.status === args.status) : LEADS };
     case 'leadUpdate': return { lead: { id: args.id, status: args.status } };

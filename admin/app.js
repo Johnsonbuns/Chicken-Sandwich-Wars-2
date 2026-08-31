@@ -56,7 +56,8 @@
     const s = String(v);
     /* Numeric columns arrive as '2450000.0000'. Nobody reads that. */
     if (/^-?\d+\.0+$/.test(s)) return Number(s).toLocaleString();
-    if (/^-?\d{4,}(\.\d+)?$/.test(s)) return Number(s).toLocaleString();
+    /* Five digits, not four: 2026 is a year, and "2,026" is not an improvement. */
+    if (/^-?\d{5,}(\.\d+)?$/.test(s)) return Number(s).toLocaleString();
     return s;
   };
 
@@ -616,8 +617,16 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
     if (!target) return renderTargetPicker();
     let current = null;
     if (params.get('id')) {
-      current = (await api('records', { table, limit: 200 })).records
-        .find((r) => r.id === params.get('id'));
+      current = (await api('records', { table, id: params.get('id'), limit: 1 })).records[0];
+      if (!current) {
+        /* Falling through to a blank form here would quietly turn an edit into a second
+           copy of the record — the one failure mode this whole queue exists to avoid. */
+        setHead(`Edit ${target.label.toLowerCase()}`, '');
+        $('#view').innerHTML = `<div class="msg err"><b>That record could not be loaded</b>
+          It may have been removed, or it may be confidential and above your role.</div>
+          <a class="btn" href="#/data?table=${encodeURIComponent(table)}">← Back</a>`;
+        return;
+      }
     }
     renderAddForm(target, current);
   };
@@ -873,6 +882,7 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
     const btn = $('#addForm button[type=submit]');
     btn.disabled = true; btn.textContent = 'Sending…';
 
+    const before = existing ? existing.row : {};
     const payload = {};
     $('#addForm').querySelectorAll('[data-col]').forEach((f) => {
       const col = f.dataset.col; const kind = f.dataset.kind;
@@ -880,6 +890,15 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
       if (kind === 'ref') v = f.dataset.value || '';
       else if (kind === 'bool') v = f.checked;
       else v = f.value;
+      /* An edit proposes only what it changes. Sending every field back would make the
+         diff a wall of unchanged rows, and would make the proposal go stale the moment
+         anyone touched any other column of the record. */
+      if (existing) {
+        const was = before[col];
+        const same = kind === 'bool' ? (was === v)
+          : String(was == null ? '' : was) === String(v == null ? '' : v);
+        if (same) return;
+      }
       if (kind === 'bool') { payload[col] = v; return; }
       if (v === '' || v == null) return;
       if (kind === 'num') { const n = Number(v); if (!isNaN(n)) payload[col] = n; return; }
@@ -903,7 +922,14 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
     const hasSourceCol = target.columns.some((c) => c.name === 'source_id');
     if (hasSourceCol && !payload.source_id && sources.length) payload.source_id = '@source:1';
 
-    const entity = payload.name || payload.title || payload.headline || existing && existing.label;
+    if (existing && !Object.keys(payload).length) {
+      toast('Nothing changed — there is no proposal to make.', true);
+      btn.disabled = false; btn.textContent = 'Send to review queue';
+      return;
+    }
+
+    const entity = payload.name || payload.title || payload.headline
+      || (existing && existing.label);
     const item = {
       target_table: target.table_name,
       operation: existing ? 'update' : 'insert',
@@ -917,7 +943,13 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
     };
 
     try {
-      const { result } = await api('submit', { batch: { title: 'Desk entry' }, items: [item] });
+      /* One run per person per day, rather than a new one-item "run" for every save:
+         the Research runs screen is meant to show work, not clutter. */
+      const day = new Date().toISOString().slice(0, 10);
+      const who = (state.me.email || 'desk').split('@')[0].replace(/[^a-z0-9]+/gi, '-');
+      const { result } = await api('submit', {
+        batch: { ref: `desk-${day}-${who}`, title: `Desk entry — ${day}` }, items: [item]
+      });
       const r = (result.items || [])[0] || {};
       if (!r.accepted) throw new Error((r.errors || ['That could not be queued.']).join('; '));
       const problems = [].concat(r.errors || [], r.warnings || []);

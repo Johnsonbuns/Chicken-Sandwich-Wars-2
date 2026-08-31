@@ -37,8 +37,16 @@ create policy admin_update_staff on public.staff_profiles for update to authenti
 
 create or replace function public.staff_guard()
 returns trigger language plpgsql security definer set search_path = '' as $$
+declare losing_admin boolean;
 begin
-  if (tg_op = 'DELETE' or new.role <> 'admin') and old.role = 'admin'
+  -- NEW is unassigned in a DELETE trigger and referencing it raises, so the two cases
+  -- are separated rather than folded into one short-circuiting condition: PostgreSQL
+  -- does not promise to evaluate OR left to right.
+  if tg_op = 'DELETE' then losing_admin := true;
+  else losing_admin := (new.role <> 'admin');
+  end if;
+
+  if losing_admin and old.role = 'admin'
      and (select count(*) from public.staff_profiles where role = 'admin') <= 1 then
     raise exception 'the last admin cannot be removed' using errcode = '23514';
   end if;
@@ -89,10 +97,29 @@ end $$;
 -- way to read it from the dashboard that promise is only theoretical.
 -- ---------------------------------------------------------------------------
 create or replace function public.record_history(p_table text, p_id uuid, p_limit int default 25)
-returns jsonb language plpgsql stable security definer set search_path = '' as $$
-declare out_j jsonb;
+returns jsonb language plpgsql stable security definer set search_path = public, extensions as $$
+declare out_j jsonb; vis text;
 begin
   if not public.is_staff() then raise exception 'not authorised' using errcode = '42501'; end if;
+
+  -- A change log is a copy of the values that changed, so it inherits the sensitivity of
+  -- the record it describes. Whole-table history is admin and editor surface for the same
+  -- reason: it would otherwise be a way around the visibility rule.
+  if not public.can_see_confidential() then
+    if p_id is null then
+      raise exception 'not authorised to read history across a whole table' using errcode = '42501';
+    end if;
+    if exists (select 1 from pg_catalog.pg_attribute a
+                where a.attrelid = p_table::regclass and a.attname = 'visibility'
+                  and a.attnum > 0 and not a.attisdropped) then
+      execute format('select t.visibility::text from %I.%I t where t.id = $1',
+                     split_part(p_table, '.', 1), split_part(p_table, '.', 2))
+        into vis using p_id;
+      if vis = 'confidential' then
+        raise exception 'not authorised' using errcode = '42501';
+      end if;
+    end if;
+  end if;
   select coalesce(jsonb_agg(x order by x.changed_at desc), '[]'::jsonb) into out_j from (
     select c.id, c.operation, c.diff, c.changed_at, c.changed_by,
            p.full_name as changed_by_name
@@ -149,7 +176,8 @@ comment on function public.desk_stats() is
 -- so the dashboard cannot read a table the queue cannot write - one list, not two.
 -- ---------------------------------------------------------------------------
 create or replace function public.desk_records(
-  p_table text, p_q text default null, p_limit int default 50, p_offset int default 0)
+  p_table text, p_q text default null, p_limit int default 50, p_offset int default 0,
+  p_id uuid default null)
 returns jsonb language plpgsql stable security definer set search_path = public, extensions as $$
 declare tgt public.review_targets; out_j jsonb; where_sql text := 'true'; label_col text;
 begin
@@ -168,6 +196,12 @@ begin
   if p_q is not null and length(p_q) > 0 then
     label_col := coalesce(tgt.identity_columns[1], 'id');
     where_sql := where_sql || format(' and (%s) ilike %L', tgt.label_expression, '%' || p_q || '%');
+  end if;
+
+  -- One record by id. The dashboard's "propose an edit" needs the row itself, and
+  -- finding it by paging through a list works right up until the record is on page four.
+  if p_id is not null then
+    where_sql := where_sql || format(' and t.id = %L', p_id);
   end if;
 
   execute format(

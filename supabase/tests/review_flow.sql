@@ -470,3 +470,79 @@ raise notice '  research runs';
   perform refuses(format($q$ select public.review_finish_batch('csw_ag_other_secret', %L::uuid) $q$, b),
                   'but not a run another key started');
 end $$;
+
+-- ---------------------------------------------------------------------------
+-- 15. The places a confidential record could leak sideways.
+-- ---------------------------------------------------------------------------
+do $$ begin perform test_as('11111111-1111-1111-1111-111111111111'); end $$;
+do $$
+declare pid uuid; j jsonb;
+begin
+raise notice '  confidentiality, sideways';
+  select id into pid from public.properties where address_line1 = '1 Confidential Way';
+  update public.properties set visibility = 'confidential' where id = pid;
+  perform ok((public.review_row_json('public.properties', pid) ->> 'city') = 'Tampa',
+             'an admin reads a confidential record');
+  perform ok(jsonb_array_length(public.desk_records('public.properties', null, 50, 0)) >= 1,
+             'and sees it in the browser');
+  perform ok(jsonb_array_length(public.desk_records('public.properties', null, 50, 0, pid)) = 1,
+             'a single record can be fetched by id, however deep in the list it is');
+end $$;
+
+do $$ begin perform test_as('22222222-2222-2222-2222-222222222222'); end $$;
+do $$
+declare pid uuid;
+begin
+  select id into pid from public.properties where address_line1 = '1 Confidential Way';
+  perform ok((public.review_row_json('public.properties', pid) ->> 'city') is null,
+             'an analyst reading the same record through a proposal gets nothing back');
+  perform ok((public.review_row_json('public.properties', pid) ->> 'withheld') is not null,
+             'and is told why rather than shown an empty panel');
+  perform ok(not exists (select 1 from jsonb_array_elements(
+               public.desk_records('public.properties', null, 50, 0)) x
+               where (x -> 'row' ->> 'visibility') = 'confidential'),
+             'and it is absent from the record browser');
+  perform refuses(format($q$ select public.record_history('public.properties', %L::uuid) $q$, pid),
+                  'and its change history is closed too');
+  perform refuses($q$ select public.record_history('public.properties', null) $q$,
+                  'as is history across a whole table');
+end $$;
+
+do $$ begin perform test_as('11111111-1111-1111-1111-111111111111'); end $$;
+do $$
+begin
+raise notice '  the last admin';
+  perform refuses($q$ delete from public.staff_profiles
+                      where user_id = '11111111-1111-1111-1111-111111111111' $q$,
+                  'the last admin cannot be deleted either');
+  perform public.grant_staff('outsider@example.com', 'admin');
+  perform ok(true, 'a second admin can be appointed');
+  delete from public.staff_profiles where user_id = '11111111-1111-1111-1111-111111111111';
+  perform ok((select count(*) from public.staff_profiles where role = 'admin') = 1,
+             'and then the first one can step down');
+end $$;
+
+-- ---------------------------------------------------------------------------
+-- 16. Edit and approve. The reviewer's correction has to survive as the record of what
+--     was approved, not be lost behind what was proposed.
+-- ---------------------------------------------------------------------------
+do $$ begin perform test_as('22222222-2222-2222-2222-222222222222'); end $$;  -- now the admin
+do $$
+declare r jsonb; v_item uuid; rec uuid;
+begin
+raise notice '  edit and approve';
+  r := public.review_submit(jsonb_build_object('items', jsonb_build_array(jsonb_build_object(
+         'target_table', 'public.markets', 'title', 'Tampa Bay',
+         'payload', jsonb_build_object('slug', 'tampa-bay', 'name', 'Tampa Bey')))));
+  v_item := ((r -> 'items' -> 0) ->> 'id')::uuid;
+  rec := (public.review_decide(v_item, 'approve', 'Fixed the spelling.',
+            jsonb_build_object('name', 'Tampa Bay')) ->> 'record_id')::uuid;
+  perform ok((select name from public.markets where id = rec) = 'Tampa Bay',
+             'the reviewer''s correction is what lands');
+  perform ok((select payload ->> 'name' from public.review_items where id = v_item) = 'Tampa Bay',
+             'and the proposal records what was approved, not what was proposed');
+  perform ok(exists (select 1 from public.review_events
+                      where item_id = v_item and action = 'edited'
+                        and (detail -> 'before' ->> 'name') = 'Tampa Bey'),
+             'with the original kept in the history');
+end $$;

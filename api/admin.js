@@ -28,6 +28,19 @@ const int = (v, d, max) => {
 const str = (v, max = 400) => (v == null ? null : String(v).slice(0, max).trim() || null);
 const enc = encodeURIComponent;
 
+/* PostgREST parses its filters out of the query string AFTER url-decoding it, so an
+   encoded comma or bracket in a search term is not inert — it lands inside the filter
+   grammar. Values that go into a filter expression are therefore reduced to characters
+   that mean nothing to it, rather than escaped. */
+const term = (v) => (v == null ? null
+  : String(v).slice(0, 120).replace(/[^\p{L}\p{N}\s'&-]/gu, ' ').trim() || null);
+
+const STATUSES = new Set(['pending', 'needs_verification', 'approved', 'applied',
+                          'rejected', 'duplicate', 'withdrawn']);
+const KINDS = new Set(['human', 'agent', 'import']);
+const VISIBILITIES = new Set(['public', 'internal', 'confidential']);
+const uuid = (v) => (/^[0-9a-f-]{36}$/i.test(String(v || '')) ? String(v) : null);
+
 /* ---------- the queue, with its provenance and its warnings ---------- */
 async function itemDetail(id, token) {
   const [item] = await select(`v_review_queue?id=eq.${enc(id)}&limit=1`, token);
@@ -65,17 +78,20 @@ const OPS = {
   },
 
   async queue(a, token) {
-    const parts = ['select=*', `order=created_at.desc`, `limit=${int(a.limit, 50, 200)}`,
+    const parts = ['select=*', 'order=created_at.desc', `limit=${int(a.limit, 50, 200)}`,
                    `offset=${int(a.offset, 0, 100000)}`];
     if (a.status && a.status !== 'all') {
-      const list = String(a.status).split(',').map((s) => s.trim()).filter(Boolean);
-      parts.push(`status=in.(${list.map(enc).join(',')})`);
+      /* Checked against the enum rather than passed through: an unrecognised value is a
+         bug in the caller, and a value carrying a bracket is something else entirely. */
+      const list = String(a.status).split(',').map((x) => x.trim()).filter((x) => STATUSES.has(x));
+      if (list.length) parts.push(`status=in.(${list.join(',')})`);
     }
-    if (a.target) parts.push(`target_table=eq.${enc(a.target)}`);
-    if (a.submitter) parts.push(`submitter_kind=eq.${enc(a.submitter)}`);
-    if (a.batch) parts.push(`batch_id=eq.${enc(a.batch)}`);
-    if (a.visibility) parts.push(`visibility=eq.${enc(a.visibility)}`);
-    if (a.q) parts.push(`or=(title.ilike.*${enc(a.q)}*,entity_label.ilike.*${enc(a.q)}*)`);
+    if (a.target) parts.push(`target_table=eq.${enc(str(a.target, 80))}`);
+    if (KINDS.has(a.submitter)) parts.push(`submitter_kind=eq.${a.submitter}`);
+    if (uuid(a.batch)) parts.push(`batch_id=eq.${uuid(a.batch)}`);
+    if (VISIBILITIES.has(a.visibility)) parts.push(`visibility=eq.${a.visibility}`);
+    const q = term(a.q);
+    if (q) parts.push(`or=(title.ilike.*${enc(q)}*,entity_label.ilike.*${enc(q)}*)`);
     return { items: await select(`v_review_queue?${parts.join('&')}`, token) };
   },
 
@@ -154,7 +170,7 @@ const OPS = {
 
   records: async (a, token) => ({
     records: await rpc('desk_records', {
-      p_table: str(a.table, 80), p_q: str(a.q, 120),
+      p_table: str(a.table, 80), p_q: str(a.q, 120), p_id: uuid(a.id),
       p_limit: int(a.limit, 50, 200), p_offset: int(a.offset, 0, 100000)
     }, token)
   }),

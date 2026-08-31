@@ -59,9 +59,19 @@ end $$;
 
 create or replace function public.review_row_json(p_table text, p_id uuid)
 returns jsonb language plpgsql stable security definer set search_path = public, extensions as $$
+declare j jsonb;
 begin
   if not public.is_staff() then raise exception 'not authorised' using errcode = '42501'; end if;
-  return public.review_row_json_raw(p_table, p_id);
+  j := public.review_row_json_raw(p_table, p_id);
+  -- The raw form runs as the table owner and so does not see RLS. This is the wrapper the
+  -- dashboard calls, and it is reachable with a proposal id, so a public proposal editing
+  -- a confidential record must not become a way for an analyst to read it.
+  if j is not null and (j ->> 'visibility') = 'confidential'
+     and not public.can_see_confidential() then
+    return jsonb_build_object('visibility', 'confidential',
+                              'withheld', 'This record is confidential.');
+  end if;
+  return j;
 end $$;
 
 -- Reference tokens. A submitter - human or agent - writes @brand:popeyes, not a uuid.
