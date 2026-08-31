@@ -148,42 +148,76 @@
       return;
     }
 
+    /* Password first, emailed code second.
+     *
+     * The code was the original plan — nothing to remember, nothing to leak. It needs
+     * the six-digit token in the email body, and Supabase now gates editing that
+     * template behind custom SMTP, so on a project using the built-in mailer the
+     * default email sends a link and the code never arrives. A password is set on the
+     * account in the Supabase dashboard, works immediately, and depends on no mail at
+     * all. The code path is kept for whenever SMTP is configured. */
     box.innerHTML = `
       ${message ? `<div class="msg ${message.kind || 'err'}">${message.html}</div>` : ''}
-      <form id="emailForm">
+      <form id="pwForm">
         <div class="field">
           <label for="email">Work email</label>
-          <input id="email" type="email" autocomplete="email" required
+          <input id="email" type="email" autocomplete="username" required
                  placeholder="you@example.com" value="${h((loadSession() || {}).email || '')}">
-          <div class="hint">We email a six-digit code. There is no password to remember.</div>
         </div>
-        <button class="btn-primary" style="width:100%" type="submit">Email me a code</button>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" required>
+          <div class="hint">Set in Supabase under Authentication → Users.</div>
+        </div>
+        <button class="btn-primary" style="width:100%" type="submit">Sign in</button>
+        <button class="btn-ghost" style="width:100%;margin-top:8px" type="button" id="otpBtn">
+          Email me a code instead</button>
       </form>`;
 
-    $('#emailForm').addEventListener('submit', async (e) => {
+    const noAccount = `<b>No desk account for that address</b> An admin creates accounts in
+      Supabase under Authentication → Users, then grants access from the desk's Settings
+      screen.`;
+
+    $('#pwForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const btn = $('#pwForm button'); btn.disabled = true; btn.textContent = 'Signing in…';
+      try {
+        storeToken(await auth('token?grant_type=password', {
+          email: $('#email').value.trim().toLowerCase(), password: $('#password').value
+        }));
+        await boot();
+      } catch (err) {
+        btn.disabled = false; btn.textContent = 'Sign in';
+        toast(/invalid login/i.test(err.message)
+          ? 'That email and password do not match an account.' : err.message, true);
+      }
+    });
+
+    $('#otpBtn').addEventListener('click', async () => {
       const email = $('#email').value.trim().toLowerCase();
-      const btn = $('#emailForm button');
-      btn.disabled = true; btn.textContent = 'Sending…';
+      if (!email) return toast('Enter your email address first.', true);
+      const btn = $('#otpBtn'); btn.disabled = true; btn.textContent = 'Sending…';
       try {
         /* create_user:false matters: without it this endpoint is an open sign-up form
            for anyone who finds the URL. Desk accounts are created in the Supabase
-           dashboard, and access is granted from Settings once they have signed in. */
-        await auth('otp', { email, create_user: false });
+           dashboard, and access is granted from Settings once they have signed in.
+           redirect_to points a clicked magic link back at the desk rather than at the
+           site root, for projects where the email sends a link and not a code. */
+        await auth('otp', { email, create_user: false,
+                            redirect_to: location.origin + location.pathname });
         renderCodeForm(email);
       } catch (err) {
         const unknown = /signups not allowed|not found|invalid/i.test(err.message);
-        renderSignIn({ kind: 'err', html: unknown
-          ? `<b>No desk account for that address</b> An admin creates accounts in Supabase
-             under Authentication → Users, then grants access from the desk's Settings screen.`
-          : `<b>Could not send the code</b> ${h(err.message)}` });
+        renderSignIn({ kind: 'err',
+          html: unknown ? noAccount : `<b>Could not send the code</b> ${h(err.message)}` });
       }
     });
   }
 
   function renderCodeForm(email) {
     $('#signinBody').innerHTML = `
-      <div class="msg info"><b>Check ${h(email)}</b> The code is good for one hour.</div>
+      <div class="msg info"><b>Check ${h(email)}</b> The code is good for one hour. If the
+        email contains a link rather than a code, click it — it signs you in too.</div>
       <form id="codeForm">
         <div class="field">
           <label for="code">Six-digit code</label>
@@ -193,7 +227,7 @@
         </div>
         <button class="btn-primary" style="width:100%" type="submit">Sign in</button>
         <button class="btn-ghost" style="width:100%;margin-top:8px" type="button" id="backBtn">
-          Use a different address</button>
+          Back</button>
       </form>`;
     $('#code').focus();
     $('#backBtn').addEventListener('click', () => renderSignIn());

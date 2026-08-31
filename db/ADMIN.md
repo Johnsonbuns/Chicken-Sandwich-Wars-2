@@ -17,9 +17,15 @@ one sentence.
 
 ## Getting in
 
-**Sign-in is a six-digit code by email.** There is no password. The dashboard holds a
-normal Supabase user session and nothing more privileged; every request carries that
-token and Postgres decides what comes back.
+**Sign-in is email and password**, set on the account in the Supabase dashboard. The
+desk holds a normal Supabase user session and nothing more privileged; every request
+carries that token and Postgres decides what comes back.
+
+There is also an *Email me a code instead* option, which is what this was originally
+built around — nothing to remember, nothing to leak. It needs the six-digit token in the
+email body, and Supabase gates editing that template behind custom SMTP, so on a project
+using Supabase's built-in mailer the default email sends a link and no code ever arrives.
+Configure SMTP and the code path works; until then, use the password.
 
 Desk accounts are created in the Supabase dashboard under **Authentication → Users**, not
 by signing up — the sign-in form sends `create_user: false`, so an outsider who finds the
