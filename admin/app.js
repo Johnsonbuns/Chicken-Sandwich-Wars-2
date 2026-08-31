@@ -22,6 +22,7 @@
  */
 (function () {
   const API = '/api/admin';
+  const PUBLISH = '/api/publish';
   const SESSION_KEY = 'csw.desk.session';
 
   /* ---------- tiny helpers ---------- */
@@ -115,9 +116,9 @@
   }
 
   /* ---------- api ---------- */
-  async function api(op, args, retried) {
+  async function call(endpoint, op, args, retried) {
     if (state.session && state.session.expires_at - Date.now() < 60000) await refresh();
-    const r = await fetch(API, {
+    const r = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -126,7 +127,7 @@
       body: JSON.stringify({ op, ...(args || {}) })
     });
     const data = await r.json().catch(() => ({ ok: false, error: 'The server did not reply with JSON.' }));
-    if (r.status === 401 && !retried && await refresh()) return api(op, args, true);
+    if (r.status === 401 && !retried && await refresh()) return call(endpoint, op, args, true);
     if (!r.ok || !data.ok) {
       const e = new Error(data.error || `Request failed (${r.status})`);
       e.status = r.status;
@@ -134,6 +135,12 @@
     }
     return data;
   }
+
+  const api = (op, args) => call(API, op, args);
+  /* Publishing lives behind its own endpoint because it is the one operation that needs
+     the service-role key, and keeping it out of /api/admin is what lets that endpoint
+     hold nothing more privileged than the publishable key. */
+  const publishApi = (op, args) => call(PUBLISH, op, args);
 
   /* ---------- sign in ---------- */
   function renderSignIn(message) {
@@ -277,6 +284,7 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
     ['overview', 'Overview', '◈'],
     ['queue', 'Review queue', '⊙', 'pending'],
     ['add', 'Add intelligence', '＋'],
+    ['publish', 'Publish to site', '⇪'],
     ['runs', 'Research runs', '⚗'],
     ['data', 'Intelligence', '▤'],
     ['leads', 'Leads', '✉', 'new_leads'],
@@ -998,6 +1006,98 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
       btn.disabled = false; btn.textContent = 'Send to review queue';
     }
   }
+
+  /* ---------- publish ----------
+   * Approving writes to the database. This is the step that puts it on the site: the
+   * exporter rebuilds every data file from Postgres, the result is committed in one
+   * commit, and Vercel deploys from that. One commit rather than thirteen so the site
+   * never builds from a half-updated dataset, and a git history that is, for free, the
+   * publication record.
+   */
+  views.publish = async () => {
+    setHead('Publish to site', 'Approved changes reach the public site here');
+    let s;
+    try {
+      s = await publishApi('status');
+    } catch (e) {
+      $('#view').innerHTML = `<div class="msg err"><b>Could not check</b>${h(e.message)}</div>`;
+      return;
+    }
+
+    if (!s.configured) {
+      $('#view').innerHTML = `
+        <div class="msg warn"><b>Publishing is not set up yet</b>
+          The desk can write to the database but cannot push to the site. Missing:
+          <ul>${s.missing.map((m) => `<li><code>${h(m)}</code></li>`).join('')}</ul>
+          Add them in the Vercel project's environment variables and redeploy.</div>
+        <div class="card">
+          <h3>What this does when it is set up</h3>
+          <p class="note">Rebuilds every file in <code>data/</code> from the database,
+            commits them in one commit, and lets Vercel deploy from that. Until then,
+            approved changes sit in the database and the site keeps serving what is
+            already committed — nothing is lost, it just does not appear.</p>
+        </div>`;
+      return;
+    }
+
+    const pending = s.pending;
+    $('#view').innerHTML = `
+      <div class="grid g2" style="align-items:start">
+        <div class="card">
+          <h3>${pending === null ? 'Ready to publish'
+                : pending === 0 ? 'Nothing new to publish'
+                : `${pending} approved change${pending === 1 ? '' : 's'} not on the site yet`}</h3>
+          <p class="note" style="margin-bottom:var(--sp-5)">
+            This rebuilds every file in <code>data/</code> from the database and commits
+            the ones that changed to <code>${h(s.branch)}</code>. Vercel deploys from
+            that commit, so the site catches up a minute or two later.</p>
+          <button class="btn-primary" id="pubBtn" style="width:100%"
+            ${state.me.can_edit ? '' : 'disabled'}>
+            ${pending === 0 ? 'Publish anyway' : 'Publish to the site'}</button>
+          ${state.me.can_edit ? '' : '<div class="hint">Your role can propose but not publish.</div>'}
+          <div id="pubResult"></div>
+        </div>
+        <div class="card">
+          <h3>Last publish</h3>
+          ${s.last ? `<dl class="kv">
+              <dt>when</dt><dd>${h(ago(s.last.at))} · ${h(new Date(s.last.at).toLocaleString())}</dd>
+              <dt>commit</dt><dd><a href="${h(s.last.url)}" target="_blank" rel="noopener noreferrer">${h(s.last.sha.slice(0, 7))}</a></dd>
+              <dt>message</dt><dd>${h(s.last.message)}</dd>
+              <dt>repo</dt><dd class="mono">${h(s.repo)} · ${h(s.branch)}</dd>
+            </dl>`
+            : `<p class="note">No commit has touched <code>data/</code> on
+               <code>${h(s.branch)}</code> yet.</p>`}
+          <p class="note" style="margin-top:var(--sp-5)">
+            Every publish is an ordinary git commit, so the repository's history is the
+            record of what the site said and when — no separate log to trust.</p>
+        </div>
+      </div>`;
+
+    const btn = $('#pubBtn');
+    if (!btn || !state.me.can_edit) return;
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spin"></span> Exporting and committing…';
+      try {
+        const r = await publishApi('publish');
+        $('#pubResult').innerHTML = r.published
+          ? `<div class="msg ok" style="margin-top:var(--sp-4)">
+               <b>Published ${r.changed.length} file${r.changed.length === 1 ? '' : 's'}</b>
+               ${h(r.message)}
+               <div class="note mono" style="margin-top:8px">${r.changed.map(h).join(' · ')}</div>
+               <div style="margin-top:8px"><a href="${h(r.commit.url)}" target="_blank"
+                 rel="noopener noreferrer">commit ${h(r.commit.sha)}</a></div></div>`
+          : `<div class="msg info" style="margin-top:var(--sp-4)">
+               <b>Nothing to publish</b>${h(r.message)}</div>`;
+        toast(r.published ? 'Committed. Vercel is rebuilding the site.' : 'Already up to date.');
+        btn.disabled = false; btn.textContent = 'Publish again';
+      } catch (e) {
+        $('#pubResult').innerHTML =
+          `<div class="msg err" style="margin-top:var(--sp-4)"><b>Nothing was published</b>${h(e.message)}</div>`;
+        btn.disabled = false; btn.textContent = 'Try again';
+      }
+    });
+  };
 
   /* ---------- research runs ---------- */
   views.runs = async (params) => {

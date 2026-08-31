@@ -17,9 +17,16 @@
 process.env.SUPABASE_URL = 'https://example.supabase.co';
 process.env.SUPABASE_ANON_KEY = 'anon-key-abc';
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'SERVICE-ROLE-MUST-NEVER-APPEAR';
+/* CI runners and this container often carry a GITHUB_TOKEN of their own, and
+   api/publish.js falls back to it. Clearing them keeps "what is missing" deterministic. */
+delete process.env.GITHUB_TOKEN;
+delete process.env.CSW_GITHUB_TOKEN;
+delete process.env.VERCEL_GIT_REPO_OWNER;
+delete process.env.VERCEL_GIT_REPO_SLUG;
 
 const admin = require('../api/admin.js');
 const agent = require('../api/agent.js');
+const publish = require('../api/publish.js');
 
 const USER = { id: 'u-1', email: 'desk@example.com' };
 let calls = [];
@@ -30,7 +37,8 @@ let authOk = true;
 global.fetch = async (url, init = {}) => {
   const body = init.body ? JSON.parse(init.body) : null;
   calls.push({ url, method: init.method || 'GET', body, headers: init.headers || {} });
-  const json = (v, status = 200) => ({ ok: status < 400, status, text: async () => JSON.stringify(v) });
+  const json = (v, status = 200) => ({ ok: status < 400, status,
+    text: async () => JSON.stringify(v), json: async () => v });
 
   if (url.includes('/auth/v1/user')) {
     return authOk ? json(USER) : json({ message: 'invalid token' }, 401);
@@ -161,6 +169,53 @@ const sentServiceRole = (cs) => cs.some((c) =>
     (r, c) => c.some((x) => x.url.includes('/rpc/lead_list'))
       && !c.some((x) => JSON.stringify(x.headers).includes('intake')));
 
+  /* api/publish.js is the one endpoint that holds the service-role key, because the
+     exporter has to read rows the site's anonymous reader cannot. What has to stay true
+     is that the key goes to Supabase and nowhere else — least of all to GitHub, which
+     is a third party this endpoint also talks to. */
+  console.log('\n  api/publish.js');
+  /* Change detection is a git object id computed locally, so a file that has not
+     changed costs nothing. Getting it wrong fails in the worst direction: changed files
+     would look unchanged and never publish, which looks exactly like the desk being
+     broken. These are git's own well-known hashes for the empty blob and "hello\n". */
+  {
+    const ok = publish.blobSha('') === 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
+      && publish.blobSha('hello\n') === 'ce013625030ba8dba906f756967f9e9ca394464a';
+    console.log(`  ${ok ? 'ok  ' : 'FAIL'} the git blob hash matches git's own`);
+    if (!ok) all = false;
+  }
+  await run(publish, 'GET is rejected', mkReq('GET', {}), (r) => r.code === 405);
+  await run(publish, 'no token is a 401',
+    mkReq('POST', { op: 'status' }), (r) => r.code === 401);
+
+  deskMe = { ...deskMe, role: 'analyst', can_edit: false, is_admin: false };
+  await run(publish, 'an analyst cannot publish to the public site',
+    mkReq('POST', { op: 'publish' }, AUTH),
+    (r, c) => r.code === 403 && !c.some((x) => x.url.includes('github')));
+  deskMe = { ...deskMe, role: 'admin', can_edit: true, is_admin: true };
+
+  await run(publish, 'unconfigured, it says exactly which variables are missing',
+    mkReq('POST', { op: 'status' }, AUTH),
+    (r) => r.payload.configured === false
+      && r.payload.missing.includes('CSW_GITHUB_TOKEN'));
+
+  process.env.CSW_GITHUB_TOKEN = 'gh-token-xyz';
+  process.env.CSW_PUBLISH_OWNER = 'owner';
+  process.env.CSW_PUBLISH_REPO = 'repo';
+  await run(publish, 'the service-role key reaches Supabase and never GitHub',
+    mkReq('POST', { op: 'publish' }, AUTH),
+    (r, c) => {
+      const leaked = c.some((x) => x.url.includes('api.github.com')
+        && JSON.stringify([x.headers, x.body]).includes('SERVICE-ROLE'));
+      const toSupabase = c.some((x) => x.url.includes('example.supabase.co'));
+      return !leaked && toSupabase
+        && !JSON.stringify(r.payload).includes('SERVICE-ROLE')
+        && !JSON.stringify(r.payload).includes('gh-token-xyz');
+    });
+  delete process.env.CSW_GITHUB_TOKEN;
+  delete process.env.CSW_PUBLISH_OWNER;
+  delete process.env.CSW_PUBLISH_REPO;
+
   console.log('\n  api/agent.js');
   const AGENT = { authorization: 'Bearer csw_ag_secret_key_value_long_enough' };
   await run(agent, 'GET is rejected', mkReq('GET', {}), (r) => r.code === 405);
@@ -216,6 +271,7 @@ const sentServiceRole = (cs) => cs.some((c) =>
   if (usedServiceRole) all = false;
 
   if (!all) { console.error('\n  SOME HANDLER TESTS FAILED'); process.exit(1); }
-  console.log('\n✓ api/admin.js + api/agent.js · the user\'s own token does the authorising · '
-    + 'no service-role key · agents cannot reach canonical data');
+  console.log('\n✓ api/admin.js + api/agent.js + api/publish.js · the user\'s own token does the '
+    + 'authorising · agents cannot reach canonical data · the service-role key reaches '
+    + 'Supabase and nothing else');
 })();

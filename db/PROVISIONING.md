@@ -123,7 +123,43 @@ Nothing else needs an environment variable. The desk uses `SUPABASE_URL` and
 `api/submit.js` never read the anon key, so if it was skipped the forms would have kept
 working and you would not have known.
 
-## 5. One thing worth checking: is `intake` exposed?
+## 5. Publishing to the site
+
+Approving a proposal writes canonical data. Getting it onto the site is a second step —
+the site is a static build from `data/*.json` and does not read the database — and the
+desk's **Publish to site** button does it: it rebuilds every data file from Supabase,
+commits the ones that changed in a single commit, and Vercel deploys from that.
+
+It needs a GitHub token, because it commits to the repository.
+
+1. <https://github.com/settings/personal-access-tokens/new> — a **fine-grained** token.
+   - **Repository access** → *Only select repositories* → this one.
+   - **Permissions** → **Repository permissions** → **Contents** → **Read and write**.
+     That is the only permission it needs. Nothing else, and no organisation permissions.
+   - Expiry: whatever you are willing to rotate. The desk tells you plainly when the
+     token stops working, so a short one is not a trap.
+
+2. Vercel → **Settings** → **Environment Variables**, add:
+
+| Name | Value |
+|---|---|
+| `CSW_GITHUB_TOKEN` | the token — mark it **Sensitive** |
+| `CSW_PUBLISH_BRANCH` | optional; `main` unless you publish somewhere else |
+
+   `CSW_PUBLISH_OWNER` and `CSW_PUBLISH_REPO` are read from Vercel's own
+   `VERCEL_GIT_REPO_OWNER` / `VERCEL_GIT_REPO_SLUG` when *Enable access to System
+   Environment Variables* is ticked, which it is by default. Set them explicitly only if
+   you publish to a different repository than the one deploying.
+
+3. Redeploy, then open **Publish to site** in the desk. It tells you what is missing if
+   anything still is, and what it would commit if you pressed the button.
+
+**What it can do, and what it cannot.** The token can write files to that one repository
+and nothing else — it cannot read your other repositories, act on your behalf elsewhere,
+or touch anything but `data/`. The endpoint only ever writes the thirteen data files, and
+refuses to commit at all if the export fails its checks.
+
+## 6. One thing worth checking: is `intake` exposed?
 
 `api/submit.js` reaches the form-submission tables by sending PostgREST an
 `Accept-Profile: intake` header. That header only works if `intake` is listed under

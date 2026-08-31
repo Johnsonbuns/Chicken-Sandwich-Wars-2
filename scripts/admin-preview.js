@@ -303,6 +303,25 @@ http.createServer((req, res) => {
   }
   /* The agent door, faked to the same shape, so scripts/agent-submit.js and the curl in
      db/AGENT_INTAKE.md can be exercised without a key or a database. */
+  /* Publishing, faked. It never touches git — pressing the button here reports what a
+     real publish would have committed. */
+  if (url === '/api/publish') {
+    let raw = ''; req.on('data', (c) => { raw += c; });
+    return req.on('end', () => {
+      const b = JSON.parse(raw || '{}');
+      if (b.op === 'publish') {
+        return json(res, 200, { ok: true, published: true,
+          changed: ['brands.json', 'transactions.json'],
+          commit: { sha: 'a1b2c3d', url: 'https://github.com/example/repo/commit/a1b2c3d' },
+          message: 'Committed to main. Vercel rebuilds the site from it — usually a minute or two.' });
+      }
+      return json(res, 200, { ok: true, configured: true, missing: [], pending: 4,
+        repo: 'example/chicken-sandwich-wars', branch: 'main',
+        last: { sha: '9f8e7d6c5b4a', at: at(30), url: 'https://github.com/example/repo/commit/9f8e7d6',
+                message: 'Publish 3 data files from the desk' } });
+    });
+  }
+
   if (url === '/api/agent') {
     let raw = ''; req.on('data', (c) => { raw += c; });
     return req.on('end', () => {

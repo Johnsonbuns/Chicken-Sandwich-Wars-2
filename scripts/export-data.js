@@ -9,13 +9,16 @@
  *
  * Reads through scripts/lib/csw-db.js, which speaks either psql (local, CI) or
  * PostgREST over global fetch (Supabase). No dependencies either way.
+ *
+ * buildDataFiles(db) returns { 'brands.json': '…', … } in memory rather than writing;
+ * the CLI below writes them, and api/publish.js commits them to the repository. One
+ * implementation, because two would drift and the round-trip gate would only catch it
+ * on whichever path happened to be tested.
  */
 const fs = require('fs');
 const path = require('path');
 const { makeClient } = require('./lib/csw-db');
 
-const outDir = process.argv[2] || path.join(__dirname, '..', 'data');
-const db = makeClient();
 
 /* Drop keys whose value is undefined, so an absent field stays absent rather than
    becoming an explicit null. "Not published" is meaningful here. */
@@ -27,7 +30,8 @@ const clean = (o) => {
 const byOrd = (a, b) => (a.ordinal ?? 0) - (b.ordinal ?? 0);
 const num = (v) => (v === null || v === undefined ? undefined : Number(v));
 
-async function main() {
+async function buildDataFiles(db) {
+  const files = {};
   const [sources, brands, tags, companies, bOps, capRates, capSrcs, markets, facts, notes,
          noteSrcs, metrics, props, occ, moves, txs, txProps, listings, expansion,
          articles, artEnt, artSrc, charts, points, chartSrcs, rankings, rankItems, events] =
@@ -76,10 +80,7 @@ async function main() {
       `  ${JSON.stringify(k)}: [\n${arr.map((r) => '    ' + line(r)).join(',\n')}\n  ]`)
       .join(',\n') + '\n}';
   };
-  const write = (f, v) => {
-    fs.mkdirSync(outDir, { recursive: true });
-    fs.writeFileSync(path.join(outDir, f), fmt(f, v) + '\n');
-  };
+  const write = (f, v) => { files[f] = fmt(f, v) + '\n'; };
 
   /* ---------------------------------------------------------------- sources */
   const srcOut = {};
@@ -304,6 +305,22 @@ async function main() {
     name: e.name, date: e.date_label, location: e.location_label, why: e.why_md, src: K(e.source_id)
   })));
 
-  console.error(`exported 13 files -> ${outDir}`);
+  return files;
 }
-main().catch((e) => { console.error(e.message); process.exit(1); });
+
+module.exports = { buildDataFiles };
+
+/* CLI. Only when run directly — api/publish.js requires this file for buildDataFiles
+   and must not have it try to write to a read-only filesystem on import. */
+if (require.main === module) {
+  const outDir = process.argv[2] || path.join(__dirname, '..', 'data');
+  buildDataFiles(makeClient())
+    .then((files) => {
+      fs.mkdirSync(outDir, { recursive: true });
+      for (const [name, body] of Object.entries(files)) {
+        fs.writeFileSync(path.join(outDir, name), body);
+      }
+      console.error(`exported ${Object.keys(files).length} files -> ${outDir}`);
+    })
+    .catch((e) => { console.error(e.message); process.exit(1); });
+}
