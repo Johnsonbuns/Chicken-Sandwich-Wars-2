@@ -1,0 +1,203 @@
+{
+  "batch": {
+    "ref": "2026-09-freshness-and-unrated",
+    "title": "September 2026 freshness sweep + two unrated brands closed",
+    "model": "claude-opus-5",
+    "task_prompt": "Refresh the scoring inputs the new freshness check flags as overdue or undated, and find the missing component for the unrated brands that are one figure short of a CSW Score.",
+    "summary": "Six proposals. One closes the live staleness the check found (El Pollo Loco comps, still showing Q4 2025 while Q1 and Q2 2026 have both been reported). Two would move Huey Magoo's and Layne's from unrated to ranked by supplying their missing third component. One refreshes a 20-month-old AUV. Two are supporting figures that give an existing number a period label it does not have. EVERY figure here came from a search-result summary of the cited document, not from reading the document: direct page fetches are blocked by this environment's egress proxy, so sec.gov, ir.wingstop.com, prnewswire.com and every other primary host were unreachable. Nothing is submitted above 'medium' confidence for that reason, and no item claims 'confirmed', which the contract reserves for a primary document actually read. Zaxby's, Bojangles and Slim Chickens were researched and produced nothing publishable — their latest AUVs are not out, or are published only as a range — so they are deliberately absent rather than filled in."
+  },
+  "items": [
+    {
+      "target_table": "public.facts",
+      "title": "El Pollo Loco system-wide comparable restaurant sales, Q2 2026",
+      "entity_label": "El Pollo Loco",
+      "operation": "insert",
+      "confidence": "medium",
+      "dedupe_key": "el-pollo-loco-comps-q2-2026",
+      "rationale": "This is the live staleness finding. The site scores El Pollo Loco on a comp published for Q4 2025; the company has reported Q1 and Q2 2026 since, and the figure on file is eight months old against a metric its publisher restates every quarter. Q2 2026 system-wide comparable restaurant sales were +3.9%. Company-operated comps were +3.0% over the same quarter — the site's existing series is the system-wide one, so this proposal keeps that basis; a reviewer switching basis should change the whole series, not one observation. Read from a search-result summary of the earnings release, not from the release itself (egress blocked), so the value wants confirming against the 8-K before it decides a rank — it moves El Pollo Loco's Consumer Demand component and therefore its position.",
+      "payload": {
+        "subject_type": "brand",
+        "subject_id": "@brand:el-pollo-loco",
+        "metric_key": "comps_pct",
+        "value_numeric": 3.9,
+        "unit": "pct",
+        "period_label": "Q2 2026",
+        "as_of": "2026-08-06",
+        "source_id": "@source:1"
+      },
+      "sources": [
+        {
+          "publisher": "El Pollo Loco Holdings, Inc.",
+          "title": "El Pollo Loco Holdings, Inc. Announces Second Quarter 2026 Financial Results",
+          "url": "https://www.globenewswire.com/news-release/2026/08/06/3340759/31831/en/El-Pollo-Loco-Holdings-Inc-Announces-Second-Quarter-2026-Financial-Results.html",
+          "date_label": "Q2 2026",
+          "quote": "System-wide comparable restaurant sales increased by 3.9% in Q2 2026."
+        },
+        {
+          "publisher": "U.S. Securities and Exchange Commission",
+          "title": "El Pollo Loco Holdings, Inc. — Form 8-K, exhibit 99.1 (Q2 2026 results)",
+          "url": "https://www.sec.gov/Archives/edgar/data/0001606366/000160636626000044/loco-20260806xex99.htm",
+          "date_label": "2026-08-06",
+          "quote": "Filed exhibit carrying the Q2 2026 results release. Cited as the primary record; not fetched — see the batch summary."
+        }
+      ]
+    },
+    {
+      "target_table": "public.facts",
+      "title": "Huey Magoo's average unit volume, FY2025 (2026 FDD Item 19)",
+      "entity_label": "Huey Magoo's",
+      "operation": "insert",
+      "confidence": "medium",
+      "dedupe_key": "huey-magoos-auv-fy2025",
+      "rationale": "Huey Magoo's is one component short of a CSW Score: it has a cap rate and systemwide sales growth, and an AUV is the third. Item 19 of the 2026 FDD reports average gross revenue of $2,037,471 across the 68 restaurants open for the full measured period, 30 December 2024 through 28 December 2025. The precision is the FDD's own, not rounding on my part. Note the earlier 2025 FDD is quoted in two places as both $2.01M and $2.1M for the FY2024 period — that inconsistency is in the trade coverage, not in this figure, and is the reason this is medium rather than high. The 68-restaurant measured set is smaller than the 85 units the site records at YE2025, which is normal for Item 19 (it counts only units open the whole period) and is NOT a basis for a unit-growth derivation.",
+      "payload": {
+        "subject_type": "brand",
+        "subject_id": "@brand:huey-magoos",
+        "metric_key": "auv_usd",
+        "value_numeric": 2037471,
+        "unit": "usd",
+        "period_label": "2026 FDD",
+        "as_of": "2025-12-28",
+        "note": "Item 19 average gross revenue across 68 restaurants open 30 Dec 2024 – 28 Dec 2025",
+        "source_id": "@source:1"
+      },
+      "sources": [
+        {
+          "publisher": "Franchise Times",
+          "title": "The Tender Truth: Why \"Real Tenders\" Win and Why Huey Magoo's Is Built for Growth",
+          "url": "https://www.franchisetimes.com/sponsored_content/the-tender-truth-why-real-tenders-win-and-why-huey-magoo-s-is-built-for/article_b5c42983-1f11-47cf-859f-f94a3b05655b.html",
+          "date_label": "2026",
+          "quote": "68 restaurants (2 affiliate-owned and 66 franchise) in the system that were open during the measured period from December 30, 2024 through December 28, 2025, with an overall average gross revenue of $2,037,471."
+        }
+      ]
+    },
+    {
+      "target_table": "public.facts",
+      "title": "Layne's Chicken Fingers average unit volume, FY2025 (2026 FDD Item 19)",
+      "entity_label": "Layne's Chicken Fingers",
+      "operation": "insert",
+      "confidence": "low",
+      "dedupe_key": "laynes-auv-fy2025",
+      "rationale": "Layne's is also one component short — it has unit growth and a cap rate, and an AUV would rate it. The 2026 FDD is reported as showing traditional restaurants averaging over $2.2 million in 2025, and the CEO has repeated roughly $2.2M for the same year. This is submitted low rather than medium because the figure is a rounded 'over $2.2 million' rather than an Item 19 number, and because a November 2025 FDD is separately quoted at $1.98M for traditional units — two documents, two numbers, and I could read neither. If the desk wants Layne's rated, this is the figure to go and confirm in the FDD itself; I would not put a rank on it as it stands.",
+      "payload": {
+        "subject_type": "brand",
+        "subject_id": "@brand:laynes-chicken-fingers",
+        "metric_key": "auv_usd",
+        "value_numeric": 2200000,
+        "unit": "usd",
+        "period_label": "2026 FDD",
+        "as_of": "2025-12-31",
+        "note": "Traditional restaurants, 2026 FDD reporting FY2025; a Nov 2025 FDD is separately reported at $1.98M",
+        "source_id": "@source:1"
+      },
+      "sources": [
+        {
+          "publisher": "1851 Franchise",
+          "title": "Layne's Chicken Fingers AUV: Driving $2.2M+ Unit Revenues",
+          "url": "https://1851franchise.com/layneschickenfingers/auv-franchise-revenue-2732685",
+          "date_label": "2026",
+          "quote": "According to its 2026 FDD, traditional restaurants reported average revenues of over $2.2 million in 2025."
+        },
+        {
+          "publisher": "1851 Franchise",
+          "title": "How to Read Layne's Chicken Fingers' 2026 Franchise Disclosure Document",
+          "url": "https://1851franchise.com/layneschickenfingers/2026-fdd-2732305",
+          "date_label": "2026",
+          "quote": "Companion piece on the same 2026 FDD. Cited so the reviewer can compare the two AUV figures in circulation."
+        }
+      ]
+    },
+    {
+      "target_table": "public.facts",
+      "title": "Chicken Salad Chick average unit volume, FY2025",
+      "entity_label": "Chicken Salad Chick",
+      "operation": "insert",
+      "confidence": "medium",
+      "dedupe_key": "chicken-salad-chick-auv-fy2025",
+      "rationale": "The freshness check flags this one at 20 months: the site carries a FY2024 AUV of $1.48M, and the brand has since reported raising AUV to $1.5 million in its franchise disclosure document. A small move, but it is the component that ranks the brand and it is two fiscal years behind. The $1.5M is reported as rounded, so it is worth taking the FDD's own figure if the desk has it.",
+      "payload": {
+        "subject_type": "brand",
+        "subject_id": "@brand:chicken-salad-chick",
+        "metric_key": "auv_usd",
+        "value_numeric": 1500000,
+        "unit": "usd",
+        "period_label": "FY2025",
+        "as_of": "2025-12-31",
+        "note": "Reported from the franchise disclosure document; rounded as published",
+        "source_id": "@source:1"
+      },
+      "sources": [
+        {
+          "publisher": "QSR Magazine",
+          "title": "Chicken Salad Chick Finds Record Growth in a Category of One",
+          "url": "https://www.qsrmagazine.com/story/chicken-salad-chick-finds-record-growth-in-a-category-of-one/",
+          "date_label": "2026",
+          "quote": "Chicken Salad Chick increased average unit volumes to $1.5 million, according to its franchise disclosure document."
+        }
+      ]
+    },
+    {
+      "target_table": "public.facts",
+      "title": "Chicken Salad Chick U.S. systemwide sales, FY2025",
+      "entity_label": "Chicken Salad Chick",
+      "operation": "insert",
+      "confidence": "medium",
+      "dedupe_key": "chicken-salad-chick-systemwide-sales-fy2025",
+      "rationale": "Not a scoring input itself, but the site derives systemwide sales growth from this stat and dates it from it, so a brand without one has an undated momentum component. Total U.S. systemwide sales of $458 million for 2025, alongside 42 openings across 13 states and nearly 100 franchise deals awarded.",
+      "payload": {
+        "subject_type": "brand",
+        "subject_id": "@brand:chicken-salad-chick",
+        "metric_key": "systemwide_sales",
+        "value_numeric": 458000000,
+        "unit": "usd",
+        "period_label": "FY2025",
+        "as_of": "2025-12-31",
+        "source_id": "@source:1"
+      },
+      "sources": [
+        {
+          "publisher": "QSR Magazine",
+          "title": "Chicken Salad Chick Finds Record Growth in a Category of One",
+          "url": "https://www.qsrmagazine.com/story/chicken-salad-chick-finds-record-growth-in-a-category-of-one/",
+          "date_label": "2026",
+          "quote": "Total U.S. systemwide sales are at $458 million."
+        }
+      ]
+    },
+    {
+      "target_table": "public.facts",
+      "title": "KFC U.S. same-store sales — period label for the figure already on file",
+      "entity_label": "KFC U.S.",
+      "operation": "insert",
+      "confidence": "low",
+      "dedupe_key": "kfc-comps-q2-2026",
+      "rationale": "This is a provenance repair, not a new number. KFC's comps of +2.0% is one of two scoring inputs on the whole site carried with no period label and no source, which the new freshness check reports as undated. Yum reported Q2 2026 on 30 July 2026 and the U.S. figure is summarised as +2%, which matches what is on file and would date it. It is submitted low because the coverage is not consistent: one summary gives KFC U.S. +2% for the quarter and another gives +5% attributed to the late-March nuggets launch, and I could not open the release to tell whether those are the same measure. Do not approve this to make the undated flag go away — if the reviewer cannot confirm the period from the 8-K, the honest state is undated, and the site now says so.",
+      "payload": {
+        "subject_type": "brand",
+        "subject_id": "@brand:kfc",
+        "metric_key": "comps_pct",
+        "value_numeric": 2.0,
+        "unit": "pct",
+        "period_label": "Q2 2026",
+        "as_of": "2026-07-30",
+        "source_id": "@source:1"
+      },
+      "sources": [
+        {
+          "publisher": "U.S. Securities and Exchange Commission",
+          "title": "Yum! Brands, Inc. — Form 8-K, exhibit 99.1 (Q2 2026 results)",
+          "url": "https://www.sec.gov/Archives/edgar/data/0001041061/000104106126000149/a8kex9917302026.htm",
+          "date_label": "2026-07-30",
+          "quote": "Q2 2026 results release. Cited as the primary record; not fetched — see the batch summary."
+        },
+        {
+          "publisher": "CNBC",
+          "title": "Yum Brands (YUM) Q2 2026 earnings",
+          "url": "https://www.cnbc.com/2026/07/30/yum-brands-yum-q2-2026-earnings.html",
+          "date_label": "2026-07-30",
+          "quote": "KFC reported same-store sales growth of 2% in the U.S. during the second quarter of 2026."
+        }
+      ]
+    }
+  ]
+}
