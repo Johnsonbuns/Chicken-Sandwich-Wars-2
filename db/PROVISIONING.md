@@ -19,7 +19,7 @@ to link. An earlier draft of `db/SCHEMA.md` said otherwise; it was wrong.
 | `RESEND_API_KEY` + `CSW_NOTIFY_EMAIL` | being told a lead arrived | Yes, or submissions land unread |
 | Migrations `0016`–`0020` | the intelligence desk | **Yes — `/admin/` is built** |
 | A Supabase user for yourself, and one line of SQL | signing in to the desk | Yes, once |
-| Confirm `intake` is in **Exposed schemas** | `POST /api/submit` working at all | **Worth checking now — see §6** |
+| `intake` in **Exposed schemas**, and migration `0021` applied | `POST /api/submit` working at all | Both required — see §6 |
 
 **Phase 1 needs no credentials from you at all.** Migrations are `.sql` files; you paste
 them into the Supabase SQL Editor and press Run. Nothing has to leave the dashboard.
@@ -159,29 +159,34 @@ and nothing else — it cannot read your other repositories, act on your behalf 
 or touch anything but `data/`. The endpoint only ever writes the thirteen data files, and
 refuses to commit at all if the export fails its checks.
 
-## 6. One thing worth checking: is `intake` exposed?
+## 6. Settled: what it takes to reach `intake`
 
-`api/submit.js` reaches the form-submission tables by sending PostgREST an
-`Accept-Profile: intake` header. That header only works if `intake` is listed under
-**Settings → API → Exposed schemas**. `db/SCHEMA.md` and `CLAUDE.md` both say the schema
-is *not* exposed, which — if true — means every form submission since Phase 3 has been
-failing and falling back to the old `mailto:` behaviour. That failure is invisible: the
-fallback works, so nothing looks broken.
+`api/submit.js` reaches the form tables by sending PostgREST an `Accept-Profile: intake`
+header. That needs **two** things, and until 2026-09-01 this project had neither, so every
+form submission since Phase 3 fell back to `mailto:` — invisibly, because the fallback
+works.
 
-Two ways to tell, either is fine:
+1. **`intake` listed under Settings → API → Exposed schemas.** Without it PostgREST will
+   not address the schema at all.
+2. **`service_role` granted usage on it.** Migration `0021` does this. A schema created by
+   a migration does not inherit the default privileges Supabase sets up for `public`, so
+   the key that is supposed to write there got *permission denied for schema intake* —
+   which the endpoint reports as a 502.
 
-- Open the desk's **Leads** screen. If submissions are listed, the endpoint is working.
-  If it says the schema is not exposed, it is not.
-- **Table Editor → schema dropdown → intake → submissions.** An empty table on a site
-  that has had traffic is the same answer.
+Neither step widens access. `0010` revokes every privilege on that schema from `anon` and
+`authenticated`, and `0021` grants only `service_role`, which never leaves the server;
+`supabase/tests/intake_access.sql` asserts both directions on every `db:validate` run.
 
-If it is not exposed, add `intake` to the exposed schemas list. It is safe: every
-privilege on that schema is revoked from `anon` and `authenticated` by migration `0010`,
-so exposure alone grants nobody anything — the service-role key in `api/submit.js` is
-still the only thing that can read or write it.
+**To check it in a minute:** submit the contact form on the live site. “Received. Someone
+from the desk will be in touch.” means the insert landed; “Copied to your clipboard and
+opening your email client…” is the fallback, which means it did not. For the exact reason,
+`curl -i -X POST https://www.chickensandwichwars.com/api/submit` with a form payload —
+502 is the insert being rejected (look in Vercel's logs for `submit failed:`), 503 is
+`SUPABASE_URL` or `SUPABASE_SERVICE_ROLE_KEY` missing. Note the `www`: the apex
+308-redirects and curl will not resend a POST body across a redirect.
 
 The desk itself is unaffected either way. It reads leads through a `security definer`
-function in `public`, precisely so it does not depend on the answer.
+function in `public`, precisely so it does not depend on any of this.
 
 ---
 

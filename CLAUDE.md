@@ -381,20 +381,27 @@ with global `fetch`. `lib/supabase-rest.js` is shared by `api/admin.js` and `api
 and lives outside `api/` on purpose: every `.js` file directly under `api/` becomes its own
 serverless function, and Vercel's file tracing pulls this one in from either.
 
-**An open question about `intake`.** `api/submit.js` reaches the form tables by sending
-`Accept-Profile: intake`, and PostgREST only honours that header for a schema listed under
-*Settings → API → Exposed schemas* — which contradicts the line below, and `0010`'s comment,
-saying the schema is not exposed. Either it is exposed and those comments are wrong, or
-every form submission has been failing and falling back to `mailto:` since Phase 3, which
-looks like nothing being wrong. `db/PROVISIONING.md` §6 has the two ways to tell. Exposure
-is not itself a risk: `0010` revokes every privilege on that schema from `anon` and
-`authenticated`, so the service-role key remains the only thing that can read it. The desk
-does not depend on the answer — it reads leads through a `security definer` function in
-`public`.
+**Reaching `intake` takes two things, and it took both.** The open question from earlier
+sessions is settled: form submissions *were* failing into the `mailto:` fallback, from
+Phase 3 until 2026-09-01. `api/submit.js` sends `Accept-Profile: intake`, and that needs
+
+1. `intake` listed under *Settings → API → Exposed schemas*, or PostgREST refuses to
+   address the schema at all; and
+2. `service_role` holding privileges on it — which nothing granted. `0008` creates the
+   schema and `0010` revokes everything from `anon` and `authenticated`, but a schema a
+   migration creates does not inherit the default privileges Supabase sets up for
+   `public`, so the one role meant to write there got *permission denied for schema
+   intake*. Migration `0021` grants it, and `supabase/tests/intake_access.sql` asserts
+   both halves: the service-role key reads and writes, `anon` and `authenticated` still
+   cannot touch it.
+
+Exposure alone grants nobody anything, which is why (2) is the half that is easy to miss.
+The endpoint reports either failure as a 503/502 and `assets/js/site.js` falls back to
+`mailto:` — so the symptom of both was a site that looked perfectly healthy.
 
 The service-role key bypasses every RLS policy. It is read from the environment inside the
-function and must never reach a browser, a build artifact or a commit. The `intake` schema
-is not exposed to PostgREST, so this endpoint is the only door to it.
+function and must never reach a browser, a build artifact or a commit. It is the only role
+with any privilege on `intake`, so this endpoint remains the only door to it.
 
 Submissions are stored but **nobody is notified unless `RESEND_API_KEY` and
 `CSW_NOTIFY_EMAIL` are set**. A database nobody reads is worse than the `mailto:` it
