@@ -1,0 +1,154 @@
+{
+  "batch": {
+    "ref": "2026-09-freshness-rerun-primary-sources",
+    "title": "September 2026 freshness sweep, re-run against primary documents",
+    "model": "claude-opus-5",
+    "task_prompt": "Redo the weekly freshness run. Do the research directly rather than delegating it, and read the primary documents rather than search-result summaries of them.",
+    "summary": "A re-run of 2026-09-freshness-and-unrated, which reported that direct page fetches were blocked by this environment's egress proxy and therefore sourced every figure from search-result summaries. That is no longer true: sec.gov, data.sec.gov and Wisconsin's franchise registry are all reachable from here now, and every figure below was read out of the document it cites. Two proposals carry confidence 'confirmed' on that basis. The earlier run's El Pollo Loco comp of 3.9% is independently confirmed here from the 10-Q itself rather than repeated, so item 1 supersedes that proposal rather than duplicating it. The material new finding is not a stale figure but a wrong one, and it is in 'decisions' rather than 'items' because the intake contract has no operation that expresses it: KFC U.S. is scored on a comparable-sales figure that Yum does not publish for the United States. Five FDD-derived AUVs could not be refreshed — the documents that supersede them exist and are dated in 'fdd_supersessions', but Wisconsin publishes filing metadata without the document and Minnesota's CARDS returns 403, so Item 19 itself was not readable. The public aggregator sites that claim to quote it disagree with each other by up to $300k on Zaxby's, so nothing from them is proposed. Those five stay overdue and disclosed, which is what the editorial rule asks for."
+  },
+
+  "items": [
+    {
+      "target_table": "public.facts",
+      "title": "El Pollo Loco system-wide comparable restaurant sales, Q2 2026",
+      "entity_label": "El Pollo Loco",
+      "operation": "insert",
+      "confidence": "confirmed",
+      "dedupe_key": "el-pollo-loco-comps-q2-2026",
+      "rationale": "Closes the live staleness the freshness check reports: the site scores El Pollo Loco's Consumer Demand on a comp published for Q4 2025, which is eight months old against a metric its publisher restates every quarter. The prior batch proposed this same 3.9% at medium confidence from a search-result summary; it is confirmed here by reading the 10-Q, so this supersedes that proposal rather than adding a second one. The site's existing series is the system-wide basis, and this keeps it — company-operated comps were +3.0% and franchise +4.5% over the same quarter, and a reviewer who prefers one of those should change the whole series rather than a single observation. as_of is the period end (2026-07-01) rather than the 2026-08-07 filing date, matching the period-end convention in metricsMeta. Moves El Pollo Loco's Consumer Demand component and therefore its rank.",
+      "payload": {
+        "subject_type": "brand",
+        "subject_id": "@brand:el-pollo-loco",
+        "metric_key": "comps_pct",
+        "value_numeric": 3.9,
+        "unit": "pct",
+        "period_label": "Q2 2026",
+        "as_of": "2026-07-01",
+        "source_id": "@source:1"
+      },
+      "sources": [
+        {
+          "publisher": "U.S. Securities and Exchange Commission",
+          "title": "El Pollo Loco Holdings, Inc. — Form 10-Q for the quarterly period ended July 1, 2026",
+          "url": "https://www.sec.gov/Archives/edgar/data/1606366/000160636626000047/loco-20260701x10q.htm",
+          "date_label": "2026-08-07",
+          "quote": "For the thirteen and twenty-six weeks ended July 1, 2026, system-wide comparable restaurant sales increased by 3.9% and 4.9%, respectively, from the comparable period in the prior year. For company-operated restaurants, comparable restaurant sales for the thirteen and twenty-six weeks ended July 1, 2026 increased by 3.0% and 4.2%, respectively. For franchise-operated restaurants, comparable restaurant sales increased by 4.5% and 5.2% for the thirteen and twenty-six weeks ended July 1, 2026, respectively."
+        }
+      ]
+    },
+
+    {
+      "target_table": "public.facts",
+      "title": "El Pollo Loco U.S. unit count, 511 across ten states",
+      "entity_label": "El Pollo Loco",
+      "operation": "insert",
+      "confidence": "confirmed",
+      "dedupe_key": "el-pollo-loco-us-units-q2-2026",
+      "rationale": "Not on the freshness check's overdue list — usUnits is not a scoring input — but the record on file is wrong in a way a reader can see. The site shows 500 units with the note 'Company-operated and franchised across nine states'; as of July 1, 2026 the count is 511 and the tenth state is open. The same 10-Q names the openings that account for it: six franchised restaurants in the twenty-six weeks (two in Colorado, one each in California, Arizona, Idaho and Texas) plus one company-operated opening. Cheap to approve alongside item 1, since both come from the same document, and it retires a stale note as well as a stale number.",
+      "payload": {
+        "subject_type": "brand",
+        "subject_id": "@brand:el-pollo-loco",
+        "metric_key": "us_units",
+        "value_numeric": 511,
+        "unit": "count",
+        "period_label": "Q2 2026",
+        "as_of": "2026-07-01",
+        "source_id": "@source:1"
+      },
+      "sources": [
+        {
+          "publisher": "U.S. Securities and Exchange Commission",
+          "title": "El Pollo Loco Holdings, Inc. — Form 10-Q for the quarterly period ended July 1, 2026",
+          "url": "https://www.sec.gov/Archives/edgar/data/1606366/000160636626000047/loco-20260701x10q.htm",
+          "date_label": "2026-08-07",
+          "quote": "As of July 1, 2026, we had 511 locations in ten states. For the twenty-six weeks ended July 1, 2026, our franchisees opened six new restaurants, two in Colorado and one in each of the following states: California, Arizona, Idaho, and Texas, and the Company opened one new restaurant."
+        }
+      ]
+    }
+  ],
+
+  "decisions": [
+    {
+      "title": "KFC U.S. is scored on a comparable-sales figure that Yum does not publish for the United States",
+      "entity_label": "KFC U.S.",
+      "severity": "correctness, not freshness",
+      "confidence": "confirmed",
+      "why_not_an_item": "The intake contract's operations are insert and update. What this needs is the removal of a scoring input, or a relabelling of the brand record it hangs on, and neither is expressible as a payload. It is recorded here for a reviewer instead of being forced into a shape that would misrepresent it.",
+      "finding": "The freshness check lists 'KFC U.S. — Consumer Demand: no as-of date recorded' among its two undated inputs, which reads as a missing date on an otherwise sound figure. It is not. brand.metrics.compsPct for KFC is 2, and Yum's KFC Division same-store sales for Q2 2026 are +2% — an exact match. The KFC Division is 90% non-U.S. by unit count (34,747 units, 90% outside the U.S. as of June 30, 2026), so the number scoring KFC's U.S. Consumer Demand is a global figure. The rest of the same record is genuinely U.S.-scoped — 3,523 U.S. units, 161 closures in FY2025, 207 closures over fifteen months — which is what makes the mismatch easy to miss.",
+      "verification": "Yum publishes no KFC U.S. same-store sales figure in any of the three primary documents checked. In the Q2 2026 10-Q, no window containing 'same-store' also contains both 'KFC' and 'U.S.' (0 of 0). In the FY2025 10-K, likewise 0, and no occurrence of 'comparable sales' anywhere in the document sits within 200 characters of 'U.S.'. In the Q2 2026 earnings release (8-K exhibit 99.1), the single occurrence of the string 'KFC U.S.' is a note about relocating the KFC U.S. corporate office to the KFC Global headquarters. Yum reports same-store sales at Division level only.",
+      "recommended_action": "Drop the Consumer Demand input for KFC U.S. so the component renders '—' and the brand is scored on its remaining components, per the editorial rule that an unpublished number is shown as '—' rather than estimated. A global comp standing in for a U.S. one is an estimate in the sense the rule means. Note this will change KFC's score: with Consumer Demand removed the remaining weights renormalise, and if it drops below three available components the brand becomes unrated.",
+      "alternative_if_the_desk_disagrees": "Keep the figure but relabel it honestly as KFC Division (global) rather than KFC U.S., and decide separately whether a global comp belongs in a U.S. brand's Consumer Demand score. This is the weaker option: it leaves a global input scoring a U.S. record.",
+      "sources": [
+        {
+          "publisher": "U.S. Securities and Exchange Commission",
+          "title": "YUM! Brands, Inc. — Form 10-Q for the quarterly period ended June 30, 2026",
+          "url": "https://www.sec.gov/Archives/edgar/data/1041061/000104106126000160/yum-20260630.htm",
+          "date_label": "2026-08-05",
+          "quote": "The KFC Division has 34,747 units, 90% of which are located outside the U.S. Additionally, 99% of the KFC Division units were operated by franchisees as of June 30, 2026. [...] Same-Store Sales Growth (Decline) % 2"
+        },
+        {
+          "publisher": "U.S. Securities and Exchange Commission",
+          "title": "YUM! Brands, Inc. — Form 10-K for the fiscal year ended December 31, 2025",
+          "url": "https://www.sec.gov/Archives/edgar/data/1041061/000104106126000084/yum-20251231.htm",
+          "date_label": "2026-02-20",
+          "quote": "Checked for a KFC U.S. same-store sales disclosure; none present. No occurrence of 'comparable sales' in the document falls within 200 characters of 'U.S.'."
+        },
+        {
+          "publisher": "U.S. Securities and Exchange Commission",
+          "title": "YUM! Brands, Inc. — Form 8-K exhibit 99.1, second quarter 2026 results",
+          "url": "https://www.sec.gov/Archives/edgar/data/1041061/000104106126000149/a8kex9917302026.htm",
+          "date_label": "2026-07-30",
+          "quote": "Single occurrence of 'KFC U.S.' in the release is the corporate office relocation note; no U.S. same-store sales figure is given."
+        }
+      ]
+    }
+  ],
+
+  "fdd_supersessions": [
+    {
+      "note": "Five scoring inputs rest on Franchise Disclosure Document Item 19 figures. Each franchisor has since registered a newer FDD, so each figure on the site is superseded by a document that exists and is dated. The values themselves were not readable: Wisconsin's registry publishes filing metadata without the document (the Zaxby's detail page confirms only 'File uploaded on 04/24/2026'), and Minnesota's CARDS system, which does publish FDD PDFs, returns HTTP 403 from this environment. Public aggregator sites quoting Item 19 disagree with one another — two of them give Zaxby's as $2,847,345 and $2,544,354, a $303k spread — so no value from that class of source is proposed. These stay overdue and disclosed. The dates below are what a reviewer needs to pull the right document.",
+      "registry": "Wisconsin Department of Financial Institutions, franchise registration search",
+      "registry_url": "https://apps.dfi.wi.gov/apps/FranchiseSearch/MainSearch.aspx",
+      "checked_on": "2026-09-01",
+      "brands": [
+        {
+          "brand": "Zaxby's",
+          "site_figure": "auvUsd 2710000, period YE2024 (Unit Economics, 20 months overdue); salesGrowthPct 4.6 FY2024 (System Momentum, 20 months overdue)",
+          "registrant": "Zaxby's SPE Franchisor LLC",
+          "wi_file_number": "641240",
+          "current_fdd_effective": "2026-04-24",
+          "status": "Registered, expires 2027-04-24"
+        },
+        {
+          "brand": "Bojangles",
+          "site_figure": "auvUsd 2351000, period FY2024 (Unit Economics, 20 months overdue)",
+          "registrant": "Bojangles Opco, LLC",
+          "current_fdd_effective": "2026-04-20",
+          "status": "Registered, expires 2027-04-20"
+        },
+        {
+          "brand": "Chicken Salad Chick",
+          "site_figure": "auvUsd 1480000, period FY2024 (Unit Economics, 20 months overdue); Expansion input dated May 2025 (due for review)",
+          "registrant": "Simply Southern Restaurant Group, LLC",
+          "current_fdd_effective": "2026-04-21",
+          "status": "Registered, expires 2027-04-21"
+        },
+        {
+          "brand": "Slim Chickens",
+          "site_figure": "auvUsd 2440000, period 2025 FDD (Unit Economics, 20 months overdue); salesGrowthPct 23.4 FY2024 (System Momentum, 20 months overdue)",
+          "registrant": "Slim Chicken's Development Company, LLC",
+          "current_fdd_effective": "2026-04-29",
+          "status": "Registered, expires 2027-04-29; the 2025 FDD the site cites expired 2026-04-28"
+        },
+        {
+          "brand": "Dave's Hot Chicken",
+          "site_figure": "auvUsd 3000000, franchisee-reported with no as-of date recorded (Unit Economics, undated); Real Estate Strength dated 2025-06 (due for review)",
+          "registrant": "Dave's Hot Chicken Franchise Co. SPV LLC",
+          "current_fdd_effective": "2026-05-04",
+          "status": "Registered, expires 2027-05-04; a prior registration effective 2025-10-02 also appears",
+          "extra": "This is the undated figure the check flags. It is labelled franchisee-reported, and the site's own convention treats an undated number as overdue rather than current, so dating it against the current FDD would both refresh it and remove it from the undated list."
+        }
+      ]
+    }
+  ]
+}
