@@ -187,22 +187,39 @@ const sentServiceRole = (cs) => cs.some((c) =>
   /* The shrink guard counts records per file. Both file shapes have to count: an array
      of records, and an object of named groups — movement.json is openings and closures,
      sources.json is one object per key. Counting an object as "1" would make the guard
-     silently useless on exactly the files that hold the most. */
+     silently useless on exactly the files that hold the most.
+
+     Fixtures rather than the real counts: data/ is generated, so every publish moves
+     them, and an assertion pinned to today's dataset fails on the next brand the desk
+     adds — which is how this one broke. The arithmetic is what has to hold. */
+  {
+    const n = (v) => publish.recordCount(JSON.stringify(v));
+    const ok = n([{ slug: 'a' }, { slug: 'b' }, { slug: 'c' }]) === 3
+      /* movement.json's shape: two named groups, five records. The number to beat is
+         2, which is what counting one entry per key would give. */
+      && n({ openings: [1, 2, 3], closures: [4, 5] }) === 5
+      /* sources.json's shape: one record per key, each an object. */
+      && n({ 'qsr-50': { url: 'x' }, 'wing-10k': { url: 'y' } }) === 2
+      && n([]) === 0 && n({}) === 0
+      && publish.recordCount('not json') === null;
+    console.log(`  ${ok ? 'ok  ' : 'FAIL'} record counts read both file shapes`);
+    if (!ok) all = false;
+  }
+  /* And over the real files, where the only thing that can drift is a new shape: a file
+     the counter returns null for is a file the guard silently cannot protect. */
   {
     const fs = require('fs');
     const path = require('path');
     const D = path.join(__dirname, '..', 'data');
-    const n = (f) => publish.recordCount(fs.readFileSync(path.join(D, f), 'utf8'));
-    const brands = n('brands.json');
-    const sources = n('sources.json');
-    const movement = n('movement.json');
-    /* movement.json is { openings: [...], closures: [...] } and holds 17 records
-       between them — the number to beat is 2, which is what counting an object as one
-       entry per key would give. */
-    const ok = brands === 21 && sources === 108 && movement === 17
-      && publish.recordCount('not json') === null;
-    console.log(`  ${ok ? 'ok  ' : 'FAIL'} record counts read both file shapes`
-      + `  -> brands ${brands}, sources ${sources}, movement ${movement}`);
+    const files = fs.readdirSync(D).filter((f) => f.endsWith('.json'));
+    const uncounted = files.filter(
+      (f) => publish.recordCount(fs.readFileSync(path.join(D, f), 'utf8')) === null);
+    const raw = fs.readFileSync(path.join(D, 'movement.json'), 'utf8');
+    const grouped = publish.recordCount(raw) > Object.keys(JSON.parse(raw)).length;
+    const ok = files.length > 0 && uncounted.length === 0 && grouped;
+    console.log(`  ${ok ? 'ok  ' : 'FAIL'} every file in data/ is a shape it can count`
+      + `  -> ${files.length} files`
+      + (uncounted.length ? `, uncounted: ${uncounted.join(', ')}` : ''));
     if (!ok) all = false;
   }
   await run(publish, 'GET is rejected', mkReq('GET', {}), (r) => r.code === 405);
