@@ -19,7 +19,7 @@ to link. An earlier draft of `db/SCHEMA.md` said otherwise; it was wrong.
 | `RESEND_API_KEY` + `CSW_NOTIFY_EMAIL` | being told a lead arrived | Yes, or submissions land unread |
 | Migrations `0016`–`0020` | the intelligence desk | **Yes — `/admin/` is built** |
 | A Supabase user for yourself, and one line of SQL | signing in to the desk | Yes, once |
-| Confirm `intake` is in **Exposed schemas** | `POST /api/submit` working at all | **Worth checking now — see §5** |
+| Confirm `intake` is in **Exposed schemas** | `POST /api/submit` working at all | **Worth checking now — see §6** |
 
 **Phase 1 needs no credentials from you at all.** Migrations are `.sql` files; you paste
 them into the Supabase SQL Editor and press Run. Nothing has to leave the dashboard.

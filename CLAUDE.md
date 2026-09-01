@@ -22,37 +22,42 @@ links, footnote superscripts with no matching anchor, near-empty pages, `undefin
 from `sources.json`, and a sitemap that has drifted from the page count. It exits
 non-zero, so it is safe to chain.
 
-**Sparse records break page modules, and `data/` is generated now.** The database has
-no opinion about which optional fields a record has: a brand added through the desk with a
-name and a slug exports as `{slug, name, stats:{}, metrics:{}}`, and six page modules
-called `.join()` or `.split()` straight on fields that are not there. The first brand
-anyone added failed the deploy. Defaults are applied once in `build.js` rather than at
-each call site, and `scripts/check-sparse.js` builds the whole site against a minimal
-record of each kind so the next page module cannot reintroduce it.
+`scripts/check-sparse.js` is the seventh check, and it exists because **`data/` is
+generated now and the database has no opinion about which optional fields a record has.**
+A brand added through the desk with a name and a slug exports as
+`{slug, name, stats:{}, metrics:{}}`, and six page modules called `.join()`, `.map()` or
+`.split()` straight on fields that were always present when `data/` was hand-written. The
+first brand anyone added through the desk failed the Vercel deploy. Defaults are applied
+once in `build.js` rather than at each call site, because the seventh call site is the
+problem; this check builds the whole site against a deliberately minimal brand, operator,
+transaction and news item so the next page module cannot reintroduce it. It found a second
+crash on its first run (`t.brand.toLowerCase()` on a transaction with no brand), which is
+the kind of thing the desk can create the moment someone records an undisclosed deal.
 
-`scripts/check-admin.js` is the ninth check, covering `api/admin.js` and `api/agent.js`.
-It asserts the two properties that no amount of reading the code proves: that neither
-endpoint ever sends the service-role key and that the dashboard forwards the signed-in
-user's own token, and that the agent endpoint can reach nothing but four review RPCs. It
-enumerates every request those handlers can be made to issue, so an edit that adds a table
-read to the agent path fails it.
-
-`./supabase/validate.sh` applies every migration to a throwaway local Postgres and then
-runs `supabase/tests/*.sql` against the result — 80 assertions over the review queue,
-confidentiality and the role model. It is not part of `npm test` because it needs a
-Postgres server, but it is what to run after touching a migration.
-
-`scripts/check-api.js` is the eighth check. It stubs `fetch` and exercises
-`api/submit.js` without credentials, covering the things that are expensive to get wrong:
-that the endpoint refuses what it should, that a raw IP address is never written, and that
-submitting a valuation request does not quietly opt someone into the newsletter.
-
-`scripts/mobile-check.js` is the seventh check and the only one that needs a browser,
+`scripts/mobile-check.js` is the eighth check and the only one that needs a browser,
 so it skips with a notice rather than failing when there is no Chromium (Vercel's build
 box has none). It asserts two things at a phone width: that no page scrolls horizontally,
 and that no table hides content without showing something that says so. Both are
 failures the site has actually shipped, and neither is visible to a static check — they
 only exist once a viewport has a width.
+
+`scripts/check-api.js` is the ninth check. It stubs `fetch` and exercises
+`api/submit.js` without credentials, covering the things that are expensive to get wrong:
+that the endpoint refuses what it should, that a raw IP address is never written, and that
+submitting a valuation request does not quietly opt someone into the newsletter.
+
+`scripts/check-admin.js` is the tenth, covering `api/admin.js`, `api/agent.js` and
+`api/publish.js`. It asserts the properties that no amount of reading the code proves:
+that the dashboard forwards the signed-in user's own token and holds no privileged key,
+that the agent endpoint can reach nothing but four review RPCs, and that the service-role
+key `api/publish.js` does hold reaches Supabase and never GitHub. It enumerates every
+request those handlers can be made to issue, so an edit that adds a table read to the
+agent path fails it.
+
+`./supabase/validate.sh` applies every migration to a throwaway local Postgres and then
+runs `supabase/tests/*.sql` against the result — 97 assertions over the review queue,
+confidentiality and the role model. It is not part of `npm test` because it needs a
+Postgres server, but it is what to run after touching a migration.
 
 For anything visual, render a page in the Chromium binary at
 `/opt/pw-browsers/chromium-*/chrome-linux/chrome` with `--headless --screenshot`.
@@ -351,7 +356,7 @@ serverless function, and Vercel's file tracing pulls this one in from either.
 *Settings → API → Exposed schemas* — which contradicts the line below, and `0010`'s comment,
 saying the schema is not exposed. Either it is exposed and those comments are wrong, or
 every form submission has been failing and falling back to `mailto:` since Phase 3, which
-looks like nothing being wrong. `db/PROVISIONING.md` §5 has the two ways to tell. Exposure
+looks like nothing being wrong. `db/PROVISIONING.md` §6 has the two ways to tell. Exposure
 is not itself a risk: `0010` revokes every privilege on that schema from `anon` and
 `authenticated`, so the service-role key remains the only thing that can read it. The desk
 does not depend on the answer — it reads leads through a `security definer` function in
@@ -379,6 +384,14 @@ before pushing — a broken footnote anchor or an unresolvable source id is invi
 review but obvious to the script. If you touched a migration, run `npm run db:validate`
 too; it needs a local Postgres on port 5433 and it is the only thing that will tell you a
 `security definer` function no longer does what its comment says.
+
+**Two Postgres details that will cost an hour each if rediscovered.** A `search_path`
+list must be unquoted — `set search_path = public, extensions`, because
+`set search_path = 'public, extensions'` is one schema *named* `public, extensions` and
+every unqualified type in the body then fails to resolve at `create function` time. And a
+bare string literal appended to a `text[]` is parsed as an array literal, not an element:
+`errors := errors || 'no source cited'` raises *malformed array literal* and needs an
+explicit `::text`.
 
 **Adding data now means adding it through the queue**, not by editing `data/*.json` by
 hand — either at `/admin/` or, for an agent, through `POST /api/agent`. Approving writes
