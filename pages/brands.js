@@ -11,7 +11,7 @@ function primaryUnits(b) {
 }
 
 module.exports = function brands(ctx) {
-  const { data, sources, ranking, scoreBySlug, operatorsByBrand } = ctx;
+  const { data, sources, ranking, scoreBySlug, operatorsByBrand, freshnessBySlug } = ctx;
   const out = [];
 
   /* ---------------- index ---------------- */
@@ -140,7 +140,16 @@ module.exports = function brands(ctx) {
           <div class="scorenum">${sc.score}</div>
           <div class="note">Rank #${sc.rank} of ${ranking.rated.length} rated brands<br>${sc.coverage} of 5 components available${sc.penalty ? `<br>Includes a ${sc.penalty}-point net-closure adjustment` : ''}</div>
         </div>
-        ${C.scoreBars(sc.parts)}
+        ${C.scoreBars(sc.parts, freshnessBySlug[b.slug])}
+        ${(() => {
+          const f = freshnessBySlug[b.slug];
+          if (!f || f.state === 'current' || f.state === 'unrated') return '';
+          const overdue = f.items.filter((it) => it.state === 'stale' || it.state === 'unknown');
+          if (!overdue.length) return '';
+          return `<p class="note" style="margin:12px 0 0">${overdue.map((it) => it.asOf
+            ? `${esc(it.label)} has not been republished since ${esc(it.asOf)}.`
+            : `${esc(it.label)} is carried without an as-of date.`).join(' ')} It keeps its published value here — CSW does not roll a figure forward — and the <a href="../rankings/">rankings page</a> lists every overdue input.</p>`;
+        })()}
       </div>
     </div>` : `<div class="panel" style="min-width:min(280px,100%);flex:0 1 340px"><div class="panel-head"><h3>CSW Score</h3></div><div class="panel-body"><p class="note" style="margin:0">Unrated. Fewer than three of the five scoring components have been published for this brand. CSW does not fill that gap with an estimate.</p></div></div>`}
   </div>

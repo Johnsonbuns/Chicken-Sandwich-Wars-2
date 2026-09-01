@@ -216,6 +216,13 @@ sup.ref a{color:var(--accent)}
 .bar .fill{height:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent));border-radius:3px}
 .bar .val{font-family:var(--mono);text-align:right;color:var(--ink-2)}
 .bar .lbl{color:var(--ink-3)}
+/* The as-of date under a score component's label. Mono so the periods line up down the
+   column, and never smaller than 12px. Its colour is the finding: an undated or overdue
+   figure is the one thing on this panel the eye should catch. */
+.bar .asof{display:block;font-family:var(--mono);font-size:12px;line-height:1.3;margin-top:3px;color:var(--ink-3)}
+.bar .asof.aging{color:#FFC7A1}
+.bar .asof.stale{color:#FFB3B6}
+.bar .asof.unknown{color:#FFC7A1;font-style:italic}
 
 /* ---------- charts ---------- */
 .chart{width:100%}

@@ -136,6 +136,28 @@ async function buildDataFiles(db) {
     if (sg && sg.note) metricsOut.salesGrowthNote = sg.note;
     if (cr && cr.note) metricsOut.capRateBasis = cr.note;
 
+    /* The as-of date behind each scoring input.
+     *
+     * `metrics` is a bag of bare numbers — it has to be, because lib/score.js reads it
+     * arithmetically — so the period and source on the underlying fact were dropped here
+     * and the five figures that decide the rankings became the only numbers on the site
+     * with no provenance. lib/freshness.js can infer most of them from the matching stat,
+     * but inference is a fallback; this is the real answer, straight off the fact the
+     * figure was written from. Emitted as a sibling map rather than inside `metrics` so
+     * that scoring keeps seeing numbers and nothing else. */
+    const metricsMeta = {};
+    for (const [jsonKeyName, row] of [['unitGrowthPct', ug], ['salesGrowthPct', sg],
+                                      ['auvUsd', av], ['compsPct', cp], ['capRateMid', cr]]) {
+      if (!row) continue;
+      const meta = clean({
+        asOf: row.period_label ?? undefined,
+        on: row.as_of ?? undefined,
+        src: K(row.source_id) || undefined,
+        derived: row.derivation === 'derived' ? true : undefined
+      });
+      if (Object.keys(meta).length) metricsMeta[jsonKeyName] = meta;
+    }
+
     const cap = capRow;
     const reNote = (notesBy.get(`brand:${b.id}:real_estate_note`) || [])[0];
     const realEstate = clean({
@@ -152,7 +174,7 @@ async function buildDataFiles(db) {
       hq: b.hq_label ?? undefined, founded: b.founded_year ?? undefined,
       parent: b.parent_label ?? undefined, ownership: b.ownership_label ?? undefined,
       franchiseModel: b.franchise_model_md ?? undefined,
-      stats, metrics: metricsOut, realEstate,
+      stats, metrics: metricsOut, metricsMeta, realEstate,
       pipeline: (notesBy.get(`brand:${b.id}:pipeline`) || []).sort(byOrd)
         .map((n) => clean({ text: n.body_md, src: K(n.source_id) })),
       momentum: b.momentum ?? undefined, analysis: b.analysis_md ?? undefined

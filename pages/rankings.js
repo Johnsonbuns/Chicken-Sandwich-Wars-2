@@ -2,23 +2,27 @@
 const C = require('../lib/components');
 const { esc, pct, usd, num } = require('../lib/util');
 const { COMPONENTS } = require('../lib/score');
+const { POLICY, STATE_LABEL } = require('../lib/freshness');
 
 module.exports = function rankings(ctx) {
-  const { data, sources, ranking } = ctx;
+  const { data, sources, ranking, freshnessBySlug } = ctx;
+  const freshOf = (slug) => freshnessBySlug[slug] || { items: [], state: 'unknown', unknowns: 0 };
   const out = [];
   const R = C.refs(sources);
 
   const cards = ranking.rated.map((s) => {
     const b = s.brand;
+    const f = freshOf(b.slug);
     return `<div class="panel" style="margin-bottom:18px">
       <div class="panel-head">
         <h3 style="font-family:var(--display);font-size:20px">#${s.rank} ${esc(b.name)}</h3>
         ${C.momentumBadge(b.momentum)}
+        ${C.freshnessBadge(f.state, STATE_LABEL[f.state])}
         <span style="margin-left:auto;font-family:var(--display);font-size:30px;font-weight:800">${s.score}</span>
       </div>
       <div class="panel-body">
         <div class="split" style="gap:24px">
-          <div>${C.scoreBars(s.parts)}
+          <div>${C.scoreBars(s.parts, f)}
             <p class="note" style="margin:14px 0 0">${s.coverage} of 5 components published${s.penalty ? ` · ${s.penalty}-point net-closure adjustment applied` : ''} · <a href="../brands/${b.slug}.html">Full brand profile →</a></p>
           </div>
           <div>${b.analysis
@@ -28,6 +32,27 @@ module.exports = function rankings(ctx) {
       </div>
     </div>`;
   }).join('');
+
+  /* Every scoring input that is overdue or undated, worst first. This is the table the
+     desk works from: each row is one figure to go and re-read at its primary source. */
+  const ORDER = { stale: 0, unknown: 1, aging: 2 };
+  const flagged = [];
+  for (const s of ranking.rated) {
+    for (const item of freshOf(s.brand.slug).items) {
+      if (item.state === 'current') continue;
+      flagged.push({ slug: s.brand.slug, name: s.brand.name, rank: s.rank, item });
+    }
+  }
+  flagged.sort((a, b) => (ORDER[a.item.state] - ORDER[b.item.state])
+    || ((b.item.ageMonths ?? -1) - (a.item.ageMonths ?? -1))
+    || (a.rank - b.rank));
+
+  const counts = { stale: 0, unknown: 0 };
+  for (const s of ranking.rated) {
+    const st = freshOf(s.brand.slug).state;
+    if (st === 'stale') counts.stale++;
+    else if (st === 'unknown') counts.unknown++;
+  }
 
   const body = `
 <section class="section"><div class="wrap">
@@ -57,6 +82,24 @@ module.exports = function rankings(ctx) {
 <section class="section"><div class="wrap">
   <h2>Brand by brand</h2>
   ${cards}
+</div></section>
+
+<section class="section"><div class="wrap">
+  <h2>How current are these rankings?</h2>
+  <p class="note" style="max-width:74ch">A ranking is only as current as the oldest figure inside it. Every score component below is dated, and a brand is flagged on the age of its <b>oldest</b> input rather than an average that would let one overdue number hide behind four fresh ones. Review windows are set by how often the publisher republishes the figure — comps are quarterly, AUV and growth rates are annual — and are listed on the <a href="../methodology/">methodology page</a>. CSW does not roll a figure forward or estimate the gap; an overdue number keeps its published value and says how old it is.</p>
+
+  ${flagged.length ? C.table({
+    cols: [{ label: 'Brand', id: true }, 'Component', 'Published for', { label: 'Age', num: true, hideSmall: true }, 'Status'],
+    rows: flagged.map((r) => [
+      `<a href="../brands/${r.slug}.html"><b>${esc(r.name)}</b></a>`,
+      esc(r.item.label),
+      r.item.asOf ? `<span class="mono">${esc(r.item.asOf)}</span>` : '<span class="note">not recorded</span>',
+      r.item.ageMonths == null ? '<span class="note">—</span>' : `${r.item.ageMonths} mo`,
+      C.freshnessBadge(r.item.state, STATE_LABEL[r.item.state]) || '<span class="note">Current</span>'
+    ])
+  }) : '<p class="note">Every scoring input behind every ranked brand is inside its review window.</p>'}
+
+  <p class="note" style="margin-top:12px">${counts.stale} of the ${ranking.rated.length} ranked brands rest on at least one figure past its review window, and ${counts.unknown} on a figure whose as-of date was never recorded. An undated figure is treated as a problem rather than as current — the site cannot vouch for the age of a number it did not date.</p>
 </div></section>
 
 <section class="section"><div class="wrap">
@@ -104,6 +147,24 @@ module.exports = function rankings(ctx) {
   })}
 
   <p class="note" style="margin-top:16px">One uniform adjustment is applied after the weighted average: a system in net unit decline carries a four-point penalty. It is applied identically to every brand that qualifies, with no discretion.</p>
+
+  <h2 style="margin-top:40px">How current a figure has to be</h2>
+  <p class="note" style="max-width:74ch">A published figure does not stop being true, but it does stop being current, and a ranking built on last year's number while this year's is sitting on the publisher's site is an accuracy failure whatever its sources say. Each component therefore carries a review window set by how often its publisher republishes it. Past the window the figure keeps its published value — CSW does not roll it forward, interpolate it or replace it with a peer's — and is marked overdue wherever it appears, including on the <a href="../rankings/">rankings</a>.</p>
+
+  ${C.table({
+    cols: [{ label: 'Component', id: true }, 'Published', { label: 'Review at', num: true }, { label: 'Overdue at', num: true }],
+    rows: COMPONENTS.map((c) => {
+      const pol = POLICY[c.key] || {};
+      return [
+        `<b>${esc(c.label)}</b>`,
+        `<span class="note">${esc(pol.cadence || 'unknown')}</span>`,
+        pol.fresh == null ? '—' : `${pol.fresh} mo`,
+        pol.stale == null ? '—' : `${pol.stale} mo`
+      ];
+    })
+  })}
+
+  <p class="note" style="margin-top:16px">A figure whose as-of date was never recorded is treated as overdue rather than as current. The site cannot vouch for the age of a number it did not date, and defaulting an undated figure to fresh would be exactly the estimate this methodology refuses to make everywhere else.</p>
 
   <h2 style="margin-top:40px">What counts as a source</h2>
   <ul class="bullets" style="max-width:74ch">

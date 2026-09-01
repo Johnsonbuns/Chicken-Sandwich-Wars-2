@@ -10,6 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const layout = require('./lib/layout');
 const { rankBrands } = require('./lib/score');
+const { brandFreshness, today } = require('./lib/freshness');
 const { pct, usd, num } = require('./lib/util');
 
 const ROOT = __dirname;
@@ -78,6 +79,17 @@ const ranking = rankBrands(data.brands);
 const scoreBySlug = Object.fromEntries(ranking.all.map((s) => [s.brand.slug, s]));
 const brandBySlug = Object.fromEntries(data.brands.map((b) => [b.slug, b]));
 
+/* How old is the number behind each ranking?
+ *
+ * The five figures that decide the CSW Score live in `brand.metrics`, which — unlike
+ * every rendered stat — carries no as-of date, so until now the site had no way to know
+ * or say that a #4 seat was resting on a comp two quarters out of date. `NOW` is
+ * resolved once for the whole build so that every page dates the same figure the same
+ * way; a build that straddled midnight would otherwise disagree with itself. */
+const NOW = today();
+const freshnessBySlug = Object.fromEntries(
+  data.brands.map((b) => [b.slug, brandFreshness(b, { today: NOW, sources })]));
+
 const operatorsByBrand = {};
 for (const o of data.operators) {
   for (const bn of o.chickenBrands || []) {
@@ -121,7 +133,7 @@ const SITE_ORIGIN = (
 ).replace(/\/+$/, '');
 const IS_PRODUCTION = (process.env.VERCEL_ENV || 'production') === 'production';
 
-const ctx = { data, sources, ranking, scoreBySlug, brandBySlug, operatorsByBrand };
+const ctx = { data, sources, ranking, scoreBySlug, brandBySlug, operatorsByBrand, freshnessBySlug, now: NOW };
 
 /* ---------- run page modules ---------- */
 const modules = ['home', 'brands', 'operators', 'realestate', 'rankings', 'news', 'markets', 'misc'];
