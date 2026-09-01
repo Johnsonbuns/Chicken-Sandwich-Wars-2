@@ -5,12 +5,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm test              # build, then the six checks — run before every push
+npm test              # build, then the checks — run before every push
 npm run build         # data/ -> docs/  (77 pages today, plus the /admin/ desk)
 npm run serve         # build, then preview at http://localhost:4173
 npm run preview:admin # the intelligence desk on fixtures, no Supabase needed
 npm run check:mobile  # layout check at 393px; pass a width to use another
 npm run check:sparse  # does the build survive a record with almost nothing in it
+npm run check:freshness # how old are the figures behind the rankings
+npm run check:freshness:strict # ...and fail if any of them is overdue
 npm run db:validate   # migrations + supabase/tests/ against a throwaway Postgres
 npm run clean         # rm -rf docs
 ```
@@ -54,6 +56,21 @@ key `api/publish.js` does hold reaches Supabase and never GitHub. It enumerates 
 request those handlers can be made to issue, so an edit that adds a table read to the
 agent path fails it.
 
+`scripts/check-freshness.js` is the eleventh, and it exists because **the five figures
+that decide the rankings were the only numbers on the site with no as-of date.** Every
+rendered stat carries a publisher, a URL and a period; `brand.metrics` carried a bare
+number, so a brand could hold its seat on a comp two quarters out of date and nothing
+would say so. `lib/freshness.js` resolves the date behind each scoring input — from an
+explicit `metricsMeta` entry where the exporter wrote one, otherwise along the same
+metric-to-stat correspondence `scripts/db-import.js` uses to write the fact in the first
+place — and the check asserts that the resolution still works and that the rankings page
+publishes what it finds. It fails on a period label the parser cannot read, a provenance
+mirror that stopped matching, and an overdue figure the page does not disclose. It does
+*not* fail on old data: taking the whole site down over one aged figure is not the site's
+answer to an aged figure, and the answer it does have — say how old the number is — is
+already rendered. `--strict` turns staleness into a failure, which is the gate to run
+before a release.
+
 `./supabase/validate.sh` applies every migration to a throwaway local Postgres and then
 runs `supabase/tests/*.sql` against the result — 97 assertions over the review queue,
 confidentiality and the role model. It is not part of `npm test` because it needs a
@@ -87,6 +104,10 @@ bugs but are deliberate:
 - The properties marketplace and job board render **empty states**, not sample listings.
 - Figures derived arithmetically from two published numbers are marked *derived*;
   franchisee-reported figures are labelled as such.
+- A figure past its review window keeps its published value and is marked overdue rather
+  than being rolled forward, and a figure whose as-of date was never recorded is treated
+  as overdue rather than as current. Defaulting an undated number to fresh would be an
+  estimate, and this is the one page that cannot make one.
 
 If asked to add data, add the source to `data/sources.json` first and reference its key.
 A stat whose `src` does not resolve renders silently without a footnote — `npm test`
@@ -234,7 +255,15 @@ A stat is `{ v, fmt?, asOf, src, note? }` where `fmt` is `'usd'`, `'pct'` or abs
 because `$2.0M` vs `$2.1M` is a meaningful AUV distinction that `$2M` hides.
 
 Brand records carry `stats` (rendered, sourced), `metrics` (numeric, feeds scoring),
-`realEstate`, `pipeline`, `tags`, `momentum` and a written `analysis`. The momentum
+`metricsMeta`, `realEstate`, `pipeline`, `tags`, `momentum` and a written `analysis`.
+
+`metrics` holds bare numbers on purpose — `lib/score.js` reads them arithmetically — so
+`metricsMeta` carries the period, source and derivation for each scoring input alongside
+it: `{ auvUsd: { asOf: 'FY2025', on: '2025-12-31', src: 'qsr50-2026-chicken' } }`. It is
+written by `scripts/export-data.js` off the fact the figure came from. Until the next
+publish writes it, `lib/freshness.js` infers the same dates from the matching stat and
+the site is dated either way; the round-trip check reports `metricsMeta` as added in the
+meantime, which is this schema addition rather than drift. The momentum
 vocabulary is enumerated in `MOMENTUM` in `lib/components.js`; an unknown value falls
 back to a neutral badge rather than erroring.
 
@@ -352,20 +381,27 @@ with global `fetch`. `lib/supabase-rest.js` is shared by `api/admin.js` and `api
 and lives outside `api/` on purpose: every `.js` file directly under `api/` becomes its own
 serverless function, and Vercel's file tracing pulls this one in from either.
 
-**An open question about `intake`.** `api/submit.js` reaches the form tables by sending
-`Accept-Profile: intake`, and PostgREST only honours that header for a schema listed under
-*Settings → API → Exposed schemas* — which contradicts the line below, and `0010`'s comment,
-saying the schema is not exposed. Either it is exposed and those comments are wrong, or
-every form submission has been failing and falling back to `mailto:` since Phase 3, which
-looks like nothing being wrong. `db/PROVISIONING.md` §6 has the two ways to tell. Exposure
-is not itself a risk: `0010` revokes every privilege on that schema from `anon` and
-`authenticated`, so the service-role key remains the only thing that can read it. The desk
-does not depend on the answer — it reads leads through a `security definer` function in
-`public`.
+**Reaching `intake` takes two things, and it took both.** The open question from earlier
+sessions is settled: form submissions *were* failing into the `mailto:` fallback, from
+Phase 3 until 2026-09-01. `api/submit.js` sends `Accept-Profile: intake`, and that needs
+
+1. `intake` listed under *Settings → API → Exposed schemas*, or PostgREST refuses to
+   address the schema at all; and
+2. `service_role` holding privileges on it — which nothing granted. `0008` creates the
+   schema and `0010` revokes everything from `anon` and `authenticated`, but a schema a
+   migration creates does not inherit the default privileges Supabase sets up for
+   `public`, so the one role meant to write there got *permission denied for schema
+   intake*. Migration `0021` grants it, and `supabase/tests/intake_access.sql` asserts
+   both halves: the service-role key reads and writes, `anon` and `authenticated` still
+   cannot touch it.
+
+Exposure alone grants nobody anything, which is why (2) is the half that is easy to miss.
+The endpoint reports either failure as a 503/502 and `assets/js/site.js` falls back to
+`mailto:` — so the symptom of both was a site that looked perfectly healthy.
 
 The service-role key bypasses every RLS policy. It is read from the environment inside the
-function and must never reach a browser, a build artifact or a commit. The `intake` schema
-is not exposed to PostgREST, so this endpoint is the only door to it.
+function and must never reach a browser, a build artifact or a commit. It is the only role
+with any privilege on `intake`, so this endpoint remains the only door to it.
 
 Submissions are stored but **nobody is notified unless `RESEND_API_KEY` and
 `CSW_NOTIFY_EMAIL` are set**. A database nobody reads is worse than the `mailto:` it
@@ -373,9 +409,22 @@ replaced, so treat those two variables as part of shipping, not as a nice-to-hav
 desk's Leads screen is the other half of that: `db/SCHEMA.md` §12.4 offered an email
 notification *or* an auth-gated view over `intake.submissions`, and this is the second one.
 
-**Data freshness.** Figures are current to August 2026. Quarterly results from Popeyes,
-Wingstop, KFC and El Pollo Loco move the rankings; stale rankings on a site whose product
-is accuracy are worse than none.
+**Data freshness.** The site now measures this rather than asserting it. Run
+`npm run check:freshness` for the current list; as of 2026-09-01 it reports seven overdue
+scoring inputs across five of the twelve ranked brands and two carried with no as-of date
+at all (Dave's AUV, which is franchisee-reported with no period attached, and KFC's U.S.
+comps). Review windows live in `POLICY` in `lib/freshness.js` and are published on
+/methodology/; they follow how often the publisher restates the figure, so a comp is
+overdue in eight months and an AUV in twenty.
+
+The rule is that an overdue figure keeps its published value and says how old it is.
+Rolling a number forward, interpolating it or borrowing a peer's would be the same
+estimate the editorial rule refuses everywhere else — the disclosure *is* the fix, and
+the actual refresh goes through the queue like any other figure.
+
+`db/findings/` holds research proposals prepared for `POST /api/agent` but not yet
+submitted — read the batch summary before submitting one, because it records how far the
+run got and what it could not verify.
 
 ## Working conventions
 
