@@ -93,14 +93,15 @@ system variables.
 
 ## Unverified, uncertain, or left undone
 
-**Is the `intake` schema exposed to PostgREST?** Unresolved and worth five minutes.
-`api/submit.js` sends `Accept-Profile: intake`, which PostgREST honours only for a schema
-in *Settings → API → Exposed schemas* — contradicting `0010`'s comment and `CLAUDE.md`.
-If the docs are right, **every form submission since Phase 3 has been failing into the
-`mailto:` fallback**, which looks exactly like nothing being wrong. `db/PROVISIONING.md`
-§6 has two ways to tell; the desk's Leads screen is the quickest. Exposure is not itself a
-risk — `0010` revokes everything from `anon`/`authenticated`. The desk does not depend on
-the answer (it reads leads through a `security definer` function).
+**~~Is the `intake` schema exposed?~~ Answered, and it was worse than the question.**
+Every form submission from Phase 3 until 2026-09-01 failed into the `mailto:` fallback.
+Two causes at once: the schema was not listed under *Settings → API → Exposed schemas*,
+and — the half nobody had thought to check — nothing ever granted `service_role` any
+privilege on it, so even once listed, the endpoint got *permission denied for schema
+intake* and returned a 502. Migration `0021` grants it; `supabase/tests/intake_access.sql`
+holds both halves in place. Exposure is safe on its own, because the grant is what decides
+access. **The leads from that period are not recoverable from the database** — they went
+out as `mailto:` drafts, so anything a visitor actually sent is in the desk's inbox.
 
 **The existing dataset's provenance caveat still stands.** All 108 sources are flagged
 `verified_against_primary = false`; the figures came from search-result summaries rather
@@ -125,13 +126,14 @@ developer machine. The desk is the intended path now.
 
 ## Recommended next steps
 
-1. **Settle the `intake` question** (above). It is the only thing that might mean the site
-   has been silently losing leads for weeks.
+1. **Set `RESEND_API_KEY` and `CSW_NOTIFY_EMAIL`.** Submissions insert now, which makes
+   this the live gap: the desk's Leads screen is a pull, and `notify()` returns
+   `"not configured"` without them. The endpoint reports `notified` in its 200 response,
+   so one test submission proves it.
 2. **Do a real research run.** Mint an agent key under Settings, hand a session
    `db/AGENT_INTAKE.md` and the key, and have it verify a handful of AUVs against primary
    documents. That exercises the agent path with real work and starts paying down the
    provenance debt at the same time. `scripts/agent-submit.js --dry-run` first.
-3. **Set `RESEND_API_KEY` and `CSW_NOTIFY_EMAIL`** if leads are actually arriving — the
-   desk's Leads screen is a pull, not a push, and nobody is notified without them.
+3. **Watch the first real submission land.** The path has been exercised once, by a test.
 4. **Consider a second admin or an editor account** before relying on the desk. There is
    currently one admin; the last-admin guard prevents removing them, but not losing them.

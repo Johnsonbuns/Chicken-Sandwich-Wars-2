@@ -95,10 +95,12 @@ afterthought.
 | `intake` | Form submissions, contacts, consent, buyer criteria — **all PII** | **No.** Service-role only, server-side |
 | `audit` | Change log | No |
 
-`intake` is deliberately not exposed to PostgREST. Browser code never touches it; writes
-go through `POST /api/submit`, a Vercel Function holding the service-role key. This is
-simpler to reason about than getting insert-only RLS right on a PII table, and it removes
-a whole class of misconfiguration.
+`intake` is listed under *Exposed schemas* — PostgREST cannot honour `api/submit.js`'s
+`Accept-Profile: intake` otherwise — but holds no privilege for `anon` or `authenticated`,
+so listing it grants nobody anything. Browser code never touches it; writes go through
+`POST /api/submit`, a Vercel Function holding the service-role key, which `0021` grants
+usage. This is simpler to reason about than getting insert-only RLS right on a PII table,
+and it removes a whole class of misconfiguration.
 
 ---
 
@@ -1296,16 +1298,24 @@ create table public.staff_profiles (
 );
 ```
 
-### 12.2 `intake` is not exposed
+### 12.2 `intake` reaches nobody but the service role
 
-Revoke everything from `anon` and `authenticated` on the `intake` schema and leave it out
-of PostgREST's exposed schemas. Writes happen in `POST /api/submit` with the service-role
-key, server-side only.
+Revoke everything from `anon` and `authenticated` on the `intake` schema, and grant it to
+`service_role` — a schema created by a migration does not inherit the default privileges
+Supabase configures for `public`, so without the grant the key that is supposed to write
+there gets *permission denied for schema intake*. Writes happen in `POST /api/submit`,
+server-side only.
 
 ```sql
 revoke all on schema intake from anon, authenticated;
 revoke all on all tables in schema intake from anon, authenticated;
+grant usage on schema intake to service_role;
+grant all privileges on all tables in schema intake to service_role;
 ```
+
+The schema must also be listed under *Settings → API → Exposed schemas*, or PostgREST will
+not address it at all. Listing it is safe precisely because of the revokes above: it is
+the grant, not the listing, that decides who can read a submission.
 
 **The service-role key is never sent to the browser.** It lives in a Vercel environment
 variable read only inside `api/`. The anon key may ship in the client.
