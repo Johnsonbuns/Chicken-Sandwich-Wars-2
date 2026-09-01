@@ -11,7 +11,7 @@ approving it.
 
 ```bash
 npm test            # build, then the five checks — run before pushing
-npm run build       # data/ -> docs/  (76 pages, no dependencies)
+npm run build       # data/ -> docs/  (77 pages today, no dependencies)
 npm run serve       # build, then preview at http://localhost:4173
 npm run preview:admin  # the intelligence desk on fixtures — no database needed
 ```
@@ -47,7 +47,7 @@ USDA ERS, and the trade press covering each event.
 ```
 data/          the dataset — the single source of truth
   sources.json      108 cited sources keyed by id
-  brands.json       21 chicken brands: units, sales, AUV, comps, real estate, analysis
+  brands.json       22 chicken brands: units, sales, AUV, comps, real estate, analysis
   operators.json    16 franchisee groups and investment platforms
   news.json         33 sourced briefs, each with a "what it means" analysis
   transactions.json property comps + corporate/franchise portfolio deals
@@ -74,6 +74,9 @@ db/              SCHEMA.md, ADMIN.md, AGENT_INTAKE.md, PROVISIONING.md
 build.js         orchestrates everything, writes docs/ + search index + sitemap
 docs/            generated output — git-ignored, rebuilt by Vercel on every deploy
 ```
+
+The counts above are what is in `data/` today, not fixed sizes: `data/*.json` is exported
+from the database now, so every publish from the desk moves them.
 
 ## The CSW Score
 
@@ -157,7 +160,7 @@ Set `CSW_SITE_ORIGIN` to override. Preview deployments canonicalise at productio
 ship `noindex`, so they never compete with the live site in search.
 
 **Web Analytics has to be switched on in the dashboard** (Project → Analytics → Enable).
-The script tag is already in the root layout and ships on all 76 pages, but
+The script tag is already in the root layout and ships on every page, but
 `/_vercel/insights/script.js` returns 404 until analytics is enabled on the project — so
 "the tag is there" is not the same as "analytics is recording".
 

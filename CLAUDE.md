@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 npm test              # build, then the six checks — run before every push
-npm run build         # data/ -> docs/  (76 pages, plus the /admin/ desk)
+npm run build         # data/ -> docs/  (77 pages today, plus the /admin/ desk)
 npm run serve         # build, then preview at http://localhost:4173
 npm run preview:admin # the intelligence desk on fixtures, no Supabase needed
 npm run check:mobile  # layout check at 393px; pass a width to use another
@@ -81,8 +81,9 @@ different category and may be justified — but they must never leak into the bu
 This is not a style preference — it is the product. Consequences that will look like
 bugs but are deliberate:
 
-- 9 of 21 brands are **unrated** in the rankings because fewer than three scoring
-  components have been published for them. Do not fill the gap.
+- 10 of 22 brands are **unrated** in the rankings because fewer than three scoring
+  components have been published for them. Do not fill the gap. (The count moves every
+  time the desk publishes — the rule is what is fixed, not the number.)
 - The properties marketplace and job board render **empty states**, not sample listings.
 - Figures derived arithmetically from two published numbers are marked *derived*;
   franchisee-reported figures are labelled as such.
