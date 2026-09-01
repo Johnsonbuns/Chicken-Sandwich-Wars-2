@@ -284,6 +284,7 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
     ['overview', 'Overview', '◈'],
     ['queue', 'Review queue', '⊙', 'pending'],
     ['add', 'Add intelligence', '＋'],
+    ['import', 'Import research', '⇥'],
     ['publish', 'Publish to site', '⇪'],
     ['runs', 'Research runs', '⚗'],
     ['data', 'Intelligence', '▤'],
@@ -1402,6 +1403,159 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
         await api('grantStaff', { email: $('#grantEmail').value.trim(), role: $('#grantRole').value });
         toast('Access granted.'); views.settings();
       } catch (e) { toast(e.message, true); }
+    });
+  };
+
+
+  /* ---------- import research ----------
+   *
+   * A Claude research run produces a findings file. Getting it into the queue used to
+   * mean an agent key and a terminal, which is fine for an agent and useless for the
+   * person who actually works this desk every week. Nothing new is needed underneath:
+   * `submit` already takes a whole batch and already calls the same review_submit an
+   * agent calls, with the signed-in user's own token. This is the missing doorway, not
+   * a second entrance — the same queue, the same approval, the same publish.
+   *
+   * Everything is checked here before anything is sent, and the errors are written for
+   * someone who did not write the file. */
+  function fmtValue(v) {
+    if (v == null) return '—';
+    if (typeof v === 'number') return Number(v).toLocaleString('en-US');
+    return String(v);
+  }
+
+  const METRIC_LABEL = {
+    auv_usd: 'average unit volume', comps_pct: 'same-store sales',
+    unit_growth_pct: 'unit growth', sales_growth_pct: 'systemwide sales growth',
+    cap_rate_mid: 'cap rate', net_unit_decline: 'net unit decline',
+    systemwide_sales: 'systemwide sales'
+  };
+
+  /* One finding in a sentence a reviewer can judge without reading JSON. */
+  function describeItem(it) {
+    const p = it.payload || {};
+    const metric = METRIC_LABEL[p.metric_key] || p.metric_key || 'value';
+    const unit = p.unit === 'usd' ? '$' : '';
+    const suffix = p.unit === 'pct' ? '%' : '';
+    const value = p.value_numeric != null
+      ? `${unit}${fmtValue(p.value_numeric)}${suffix}` : fmtValue(p.value_text);
+    const period = p.period_label ? ` for ${p.period_label}` : '';
+    return `${it.entity_label || 'unknown record'} — ${metric} → <b>${h(value)}</b>${h(period)}`;
+  }
+
+  /* Plain-English validation. Returns a list of problems; empty means it can be sent. */
+  function checkFindings(parsed) {
+    const probs = [];
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      return ['This is not a findings file. It should be a single block starting with { and ending with }.'];
+    }
+    if (!Array.isArray(parsed.items) || !parsed.items.length) {
+      probs.push('There is no "items" list, or it is empty — there is nothing to submit.');
+      return probs;
+    }
+    if (parsed.items.length > 100) probs.push(`This file has ${parsed.items.length} findings; the queue takes 100 at a time.`);
+    parsed.items.forEach((it, i) => {
+      const n = `Finding ${i + 1}${it.title ? ` ("${it.title}")` : ''}`;
+      if (!it || typeof it !== 'object') return void probs.push(`${n} is not filled in.`);
+      if (!it.target_table) probs.push(`${n} does not say which table it belongs in.`);
+      if (!it.payload || typeof it.payload !== 'object') probs.push(`${n} has no values in it.`);
+      if (!Array.isArray(it.sources) || !it.sources.length) {
+        probs.push(`${n} cites no source. It can still be sent — it will land in "Needs verification" rather than the approval queue.`);
+      }
+    });
+    return probs;
+  }
+
+  views['import'] = async () => {
+    setHead('Import research', 'Paste what a research run produced — it lands in the queue like anything else');
+
+    $('#view').innerHTML = `
+      <div class="card">
+        <h3>Paste the findings file</h3>
+        <p class="note">A research run writes a file of findings — one block of text starting
+          with <code>{</code>. Paste the whole thing here, or choose the file. Nothing is sent
+          until you have seen what is in it and pressed the button.</p>
+        <p class="note">Findings go into the <b>review queue</b>, exactly like something typed
+          in by hand. Nothing here changes the site, and nothing here is published — you still
+          approve each one, then press <b>Publish to site</b>.</p>
+        <input type="file" id="impFile" accept=".json,application/json" class="hint" style="margin-bottom:var(--sp-4)">
+        <textarea id="impText" rows="10" spellcheck="false"
+          style="width:100%;font-family:var(--mono,monospace);font-size:13px"
+          placeholder='{ "batch": { ... }, "items": [ ... ] }'></textarea>
+        <div style="display:flex;gap:var(--sp-4);margin-top:var(--sp-4)">
+          <button class="btn-primary" id="impCheck">Check it</button>
+          <button class="btn btn-ghost" id="impClear">Clear</button>
+        </div>
+        <div id="impOut"></div>
+      </div>`;
+
+    const out = $('#impOut');
+    const text = $('#impText');
+
+    $('#impFile').addEventListener('change', async (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (f) { text.value = await f.text(); $('#impCheck').click(); }
+    });
+    $('#impClear').addEventListener('click', () => { text.value = ''; out.innerHTML = ''; });
+
+    $('#impCheck').addEventListener('click', () => {
+      out.innerHTML = '';
+      let parsed;
+      try {
+        parsed = JSON.parse(text.value);
+      } catch (err) {
+        out.innerHTML = `<div class="msg err"><b>This is not readable as a findings file</b>
+          Check that you copied the whole thing, from the first <code>{</code> to the last
+          <code>}</code>.<br><span class="note">${h(err.message)}</span></div>`;
+        return;
+      }
+
+      const probs = checkFindings(parsed);
+      const blocking = probs.filter((x) => !/Needs verification/.test(x));
+      const items = Array.isArray(parsed.items) ? parsed.items : [];
+
+      out.innerHTML = `
+        ${probs.length ? `<div class="msg ${blocking.length ? 'err' : 'warn'}">
+          <b>${blocking.length ? 'This cannot be sent yet' : 'Worth knowing before you send'}</b>
+          <ul>${probs.map((x) => `<li>${h(x)}</li>`).join('')}</ul></div>` : ''}
+        ${items.length ? `<h3 style="margin-top:var(--sp-5)">
+            ${items.length} finding${items.length === 1 ? '' : 's'}${parsed.batch && parsed.batch.title ? ` · ${h(parsed.batch.title)}` : ''}</h3>
+          <div class="list">${items.map((it) => `<div class="item" style="cursor:default">
+            <div>${describeItem(it)}</div>
+            <div class="note">${h(it.rationale || '')}</div>
+            <div class="note">confidence: <b>${h(it.confidence || 'not stated')}</b>${
+              Array.isArray(it.sources) && it.sources.length
+                ? ` · ${it.sources.map((sr) => sr.url
+                    ? `<a href="${h(sr.url)}" target="_blank" rel="noopener noreferrer">${h(sr.publisher || 'source')}</a>`
+                    : h(sr.publisher || 'source')).join(', ')}`
+                : ' · <b>no source cited</b>'}</div>
+          </div>`).join('')}</div>` : ''}
+        ${blocking.length || !items.length ? '' : `
+          <button class="btn-primary" id="impSend" style="margin-top:var(--sp-5)">
+            Send ${items.length} finding${items.length === 1 ? '' : 's'} to the review queue</button>`}`;
+
+      const send = $('#impSend');
+      if (!send) return;
+      send.addEventListener('click', async () => {
+        send.disabled = true;
+        send.textContent = 'Sending…';
+        try {
+          const { result } = await api('submit', { batch: parsed.batch, items });
+          const ok = (result && result.accepted) != null ? result.accepted : items.length;
+          const no = (result && result.rejected) || 0;
+          out.innerHTML = `<div class="msg ok"><b>${ok} finding${ok === 1 ? '' : 's'} are in the queue</b>
+            ${no ? `${no} were rejected — open the queue to see why.<br>` : ''}
+            Nothing is on the site yet. Review them, approve what holds up, then press
+            <b>Publish to site</b>.<br>
+            <a href="#/queue">Open the review queue →</a></div>`;
+          api('stats').then(({ stats }) => { state.stats = stats; renderNav('import'); });
+        } catch (e) {
+          send.disabled = false;
+          send.textContent = 'Try sending again';
+          out.insertAdjacentHTML('afterbegin',
+            `<div class="msg err"><b>The queue did not accept this</b>${h(e.message)}</div>`);
+        }
+      });
     });
   };
 
