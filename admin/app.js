@@ -1386,10 +1386,44 @@ values ('${h(me.user_id)}', 'admin', '${h((me.email || '').split('@')[0])}');</d
       mint.disabled = true;
       try {
         const { secret } = await api('agentKeyCreate', { name: $('#keyName').value.trim() });
+        /* The key is shown once and is not recoverable, so nothing may redraw this view
+           while it is on screen. Re-rendering the settings list here used to wipe the
+           only copy of the key a second after it appeared — the list is refreshed from
+           the Done button instead, once the person says they have it. */
         $('#newKey').innerHTML = `<div class="msg ok" style="margin-top:var(--sp-4)">
           <b>Copy this now — it is not stored and cannot be shown again</b>
-          <div class="secret" style="margin-top:8px">${h(secret)}</div></div>`;
-        views.settings();
+          <div class="secret" id="keySecret" title="Click to select"
+               style="margin-top:8px;cursor:pointer;user-select:all;word-break:break-all">${h(secret)}</div>
+          <div style="display:flex;gap:var(--sp-4);margin-top:var(--sp-4);align-items:center">
+            <button class="btn-primary" id="keyCopy">Copy key</button>
+            <button class="btn btn-ghost" id="keyDone">Done — I have saved it</button>
+            <span class="note" id="keyCopied"></span>
+          </div></div>`;
+
+        const secretEl = $('#keySecret');
+        const selectAll = () => {
+          const r = document.createRange(); r.selectNodeContents(secretEl);
+          const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+        };
+        secretEl.addEventListener('click', selectAll);
+
+        $('#keyCopy').addEventListener('click', async () => {
+          let ok = false;
+          /* navigator.clipboard needs a secure context; the desk is served over HTTPS,
+             but a preview on plain http falls back rather than failing silently. */
+          try {
+            if (navigator.clipboard && window.isSecureContext) {
+              await navigator.clipboard.writeText(secret); ok = true;
+            }
+          } catch { /* fall through to the selection fallback */ }
+          if (!ok) { selectAll(); try { ok = document.execCommand('copy'); } catch { ok = false; } }
+          $('#keyCopied').textContent = ok
+            ? 'Copied. Paste it somewhere safe before you close this.'
+            : 'Could not copy automatically — the key is selected, press Cmd/Ctrl+C.';
+          if (!ok) selectAll();
+        });
+
+        $('#keyDone').addEventListener('click', () => views.settings());
       } catch (e) { toast(e.message, true); mint.disabled = false; }
     });
     $('#view').querySelectorAll('[data-revoke]').forEach((b) => b.addEventListener('click', async () => {
