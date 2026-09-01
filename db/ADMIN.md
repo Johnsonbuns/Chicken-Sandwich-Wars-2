@@ -74,6 +74,21 @@ metadata. It cannot drift from the schema: add a column to a target's `allowed_c
 and it appears here with its type, its enum values and its foreign key already understood.
 Your own entries go through the queue like everyone else's.
 
+**Import research** — the doorway for a research run's findings file. A run produces a
+block of JSON; paste it in (or choose the file), press **Check it**, and every finding is
+listed in a sentence — which brand, which figure, what value, for what period — with its
+reasoning, its confidence and its sources as links. Nothing is sent until you have read
+that and pressed the button.
+
+It needs no agent key and no terminal. It calls the same `review_submit` an agent calls,
+with your own login, so a pasted batch and an agent's batch are the same rows in the same
+queue, waiting on the same approval. Submitting is not publishing: approve each finding,
+then press **Publish to site**.
+
+Check the confidence line before approving. A run that could not open the primary document
+says so, and a `low` confidence figure is one to verify rather than wave through — some of
+them are load-bearing enough to seat a brand in the rankings.
+
 **Research runs** — one run is one task. It carries the prompt the agent was given, which
 is what makes forty proposals reviewable: without it you cannot tell what was in scope.
 
