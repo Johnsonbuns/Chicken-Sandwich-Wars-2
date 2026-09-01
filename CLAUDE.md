@@ -428,12 +428,19 @@ run got and what it could not verify.
 
 ## Working conventions
 
-Develop on a branch, open a pull request against `main`, and let Vercel's preview build
-be part of the review. Keep `docs/` out of commits (it is git-ignored). Run `npm test`
-before pushing — a broken footnote anchor or an unresolvable source id is invisible in
-review but obvious to the script. If you touched a migration, run `npm run db:validate`
-too; it needs a local Postgres on port 5433 and it is the only thing that will tell you a
-`security definer` function no longer does what its comment says.
+Pushing straight to `main` is allowed. A branch and pull request are optional now —
+worth it when a change is large enough to want Vercel's preview build in front of it, or
+when someone else should see it before it is live, but a routine change can be committed
+to `main` and pushed. Keep `docs/` out of commits (it is git-ignored).
+
+**The checks carry more weight now that they may be the only reader.** A push to `main`
+deploys to production, so `npm test` before pushing is not a formality — a broken
+footnote anchor or an unresolvable source id is invisible in review and there may be no
+review; the script is what catches it. If you touched a migration, run
+`npm run db:validate` too; it needs a local Postgres on port 5433 and it is the only
+thing that will tell you a `security definer` function no longer does what its comment
+says. If either fails, fix it before pushing rather than after — on `main` the failure is
+already live.
 
 **Two Postgres details that will cost an hour each if rediscovered.** A `search_path`
 list must be unquoted — `set search_path = public, extensions`, because
