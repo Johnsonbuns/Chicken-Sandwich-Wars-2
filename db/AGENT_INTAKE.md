@@ -19,8 +19,15 @@ reviewer an evening.
 
 ## The endpoint
 
+**Post to `www`, not the apex.** `chickensandwichwars.com` 308-redirects to
+`www.chickensandwichwars.com`, and both `fetch` and `curl` drop the `Authorization`
+header when a redirect changes host. The request therefore arrives with no key and comes
+back `401 — Send an agent key`, which reads as a revoked or malformed key and sends you
+looking in the wrong place. This document named the apex until 2026-09-01 and cost a run
+exactly that detour.
+
 ```
-POST https://chickensandwichwars.com/api/agent
+POST https://www.chickensandwichwars.com/api/agent
 Authorization: Bearer csw_ag_...
 Content-Type: application/json
 ```

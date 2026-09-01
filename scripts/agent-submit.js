@@ -26,7 +26,10 @@ const flag = (name) => args.includes(name);
 const opt = (name, d) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : d; };
 
 const KEY = process.env.CSW_AGENT_KEY || opt('--key');
-const BASE = (opt('--url', process.env.CSW_SITE_URL || 'https://chickensandwichwars.com'))
+// The apex domain 308-redirects to www, and fetch drops the Authorization header across
+// a host change — so posting to the apex arrives unauthenticated and comes back 401
+// "send an agent key", which reads as a bad key rather than a wrong URL. Default to www.
+const BASE = (opt('--url', process.env.CSW_SITE_URL || 'https://www.chickensandwichwars.com'))
   .replace(/\/+$/, '');
 const DRY = flag('--dry-run');
 
