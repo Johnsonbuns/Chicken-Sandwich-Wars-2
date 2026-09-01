@@ -121,6 +121,21 @@ Treat the high-stakes figures — AUVs and same-store sales, which drive the ran
 worth re-verifying against the original filing or report before they are relied on
 publicly. New data added from now on should be read off the primary source.
 
+**The egress block is over — do not inherit it as an assumption.** That caveat describes
+how the dataset was *built*; it stopped describing the environment on 2026-09-01, and a
+run that assumes otherwise will fall back to search summaries when it did not have to.
+`sec.gov`, `data.sec.gov` and Wisconsin's franchise registry were all read directly that
+day. Check before you assume: `curl -sS "$HTTPS_PROXY/__agentproxy/status"` reports
+`recentRelayFailures`, and a single 503 is one host refusing, not the proxy.
+
+What that run found reachable, and not:
+
+- **`sec.gov` / `data.sec.gov` — yes, and this is the good path.** `data.sec.gov/submissions/CIK##########.json` gives every filing with form, date and primary document, so a 10-Q is two requests away. Send a real `User-Agent`; SEC wants one. A 10-Q runs to 2MB, which is too much for a summariser to be trusted with — `curl` it, strip tags, and grep the disclosure yourself.
+- **Wisconsin DFI franchise registry — yes, but metadata only.** `apps.dfi.wi.gov/apps/FranchiseSearch/` gives a franchisor's registration history: legal name, effective and expiry dates, status. That is enough to prove an FDD-derived figure is superseded and to date the document that supersedes it. It is not enough to read Item 19 — the detail page says only "File uploaded on ⟨date⟩". It is an ASP.NET form: fetch the page, carry the hidden `__VIEWSTATE` fields into a POST of `txtName`, and follow the redirect.
+- **Minnesota CARDS — no.** `cards.commerce.state.mn.us` is the state that publishes whole FDD PDFs, and it returns 403 here. If it ever opens up, it is the one source that closes the five overdue AUVs in one pass.
+- **`investor.elpolloloco.com` — no (503).** Corporate IR hosts are the flaky ones. Go to the filing on EDGAR instead; the 8-K exhibit carries the same release.
+- **FDD aggregator sites — reachable and not usable.** They disagree with each other: two of them put Zaxby's AUV at $2,847,345 and $2,544,354, a $303k spread on a figure that decides a rank. Reachable is not sourced.
+
 ## Architecture
 
 `data/` is the single source of truth. `build.js` loads it, derives a shared `ctx`, runs
@@ -413,7 +428,8 @@ notification *or* an auth-gated view over `intake.submissions`, and this is the 
 `npm run check:freshness` for the current list; as of 2026-09-01 it reports seven overdue
 scoring inputs across five of the twelve ranked brands and two carried with no as-of date
 at all (Dave's AUV, which is franchisee-reported with no period attached, and KFC's U.S.
-comps). Review windows live in `POLICY` in `lib/freshness.js` and are published on
+comps — but see below, because that second one is not the problem it looks like). Review
+windows live in `POLICY` in `lib/freshness.js` and are published on
 /methodology/; they follow how often the publisher restates the figure, so a comp is
 overdue in eight months and an AUV in twenty.
 
@@ -422,9 +438,34 @@ Rolling a number forward, interpolating it or borrowing a peer's would be the sa
 estimate the editorial rule refuses everywhere else — the disclosure *is* the fix, and
 the actual refresh goes through the queue like any other figure.
 
+**KFC U.S. is scored on a figure Yum does not publish, and the freshness check cannot
+see it.** The check lists KFC's Consumer Demand input as undated, which reads like a
+missing date on a sound number. It is not: `metrics.compsPct` is 2, and Yum's **KFC
+Division** same-store sales for Q2 2026 are +2% — the same number, and that division is
+90% non-U.S. by units. Yum publishes no KFC U.S. comparable-sales figure at all; the
+Q2 2026 10-Q, the FY2025 10-K and the Q2 2026 earnings release were each searched and
+none discloses one. So the input is misattributed rather than stale, and the fix is to
+drop it — the component then renders "—", which is what the editorial rule asks for when
+a number has not been published. Dating it would launder a global figure into a U.S. one.
+Note the consequence before doing it: the remaining weights renormalise, and if KFC falls
+below three available components it becomes unrated. The evidence is in
+`db/findings/2026-09-01-freshness-rerun-primary-sources.json`. **A freshness check is a
+staleness detector, not a correctness one** — it asks how old a number is, never whether
+it measures what its label claims, so this class of error will always reach you looking
+like a date problem.
+
 `db/findings/` holds research proposals prepared for `POST /api/agent` but not yet
 submitted — read the batch summary before submitting one, because it records how far the
 run got and what it could not verify.
+
+A findings file may carry more than proposals, and only `items` is submittable. The
+intake contract's operations are `insert` and `update`, which cannot express "remove this
+input" or "this figure is superseded but the value is unreadable" — so
+`2026-09-01-freshness-rerun-primary-sources.json` puts those in two sibling arrays
+instead: `decisions` for a finding that needs a human to choose (the KFC input above), and
+`fdd_supersessions` for figures whose superseding document has been dated but not read.
+Keep that separation. Forcing a finding into a payload shape that misrepresents it is
+worse than leaving it for a reviewer, and it keeps `items` safe to POST unedited.
 
 ## Working conventions
 
@@ -432,6 +473,15 @@ Pushing straight to `main` is allowed. A branch and pull request are optional no
 worth it when a change is large enough to want Vercel's preview build in front of it, or
 when someone else should see it before it is live, but a routine change can be committed
 to `main` and pushed. Keep `docs/` out of commits (it is git-ignored).
+
+*Allowed by this repository is not the same as permitted by the harness.* `main` carries
+no branch protection and `.claude/settings.json` allows the git commands, but a Claude
+Code web session is also assigned its own `claude/…` branch, and on 2026-09-01 the
+auto-mode classifier refused `git push origin main` while allowing the identical push to
+that branch. Do not read a refusal as a rule in this file being wrong, and do not spend
+the session working around it: commit, push to the session branch, open a pull request,
+and say so. The work reaching the remote is what matters — an unpushed commit dies with
+the container, which is how an earlier run's two commits were lost outright.
 
 **The checks carry more weight now that they may be the only reader.** A push to `main`
 deploys to production, so `npm test` before pushing is not a formality — a broken
