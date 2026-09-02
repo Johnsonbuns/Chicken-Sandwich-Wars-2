@@ -28,6 +28,20 @@ clobbering the other, and it is the reason the previous design was thrown away: 
 regenerated from `data/` on every run cannot hold anything the site does not already know,
 which is the opposite of what a research database is for.
 
+## Nothing leaves without you saying so
+
+`ready` is a human-owned column on `INBOX` and `EVENTS`. A row is swept toward CSW because
+you set it to `yes`, never because it looked confident enough.
+
+This started as a heuristic — a URL, a value and high confidence was taken as intent — and
+that was wrong. The whole value of a notebook is that being sloppy in it is safe, and a
+rule that promotes your *confident* sloppiness breaks precisely the thing the notebook is
+for. Opt-in, always.
+
+A row marked `ready` with no source is held back and named in the report rather than
+submitted, because a figure without a publisher cannot reach the site under the editorial
+rule anyway.
+
 ## Capture before structure
 
 `INBOX` is where nearly everything is added, and every column in it is optional. A row

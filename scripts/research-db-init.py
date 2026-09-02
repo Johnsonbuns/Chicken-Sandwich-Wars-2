@@ -85,7 +85,7 @@ COLVOCAB = {
     'item19_done': 'yesnop', 'item20_done': 'yesnop', 'roster_done': 'yesnop',
     'priority': 'priority', 'unit': 'unit', 'basis': 'basis',
     'is_chicken': 'yesno', 'still_operating': 'yesno',
-    '» csw_status': 'csw_status', '» conflict_status': 'conf_status',
+    '» csw_status': 'csw_status', '» conflict_status': 'conf_status', 'ready': 'yesno',
 }
 # q_status and loc_status are applied by explicit tab+column below
 SPECIAL_VOCAB = {('QUEUE', 'status'): 'q_status', ('LOCATIONS', 'status'): 'loc_status'}
@@ -219,18 +219,18 @@ ws.column_dimensions['A'].width = 108
 
 # ==================================================================== INBOX ==
 sheet('INBOX', ACCENT,
-      'PUT EVERYTHING HERE. Fill what you know, leave the rest blank. A sentence and a link is a valid row. '
-      'Do not look anything up first — matching, de-duplicating and filing is done later, by me.',
+      'PUT EVERYTHING HERE. Fill what you know, leave the rest blank — a sentence and a link is a valid row. '
+      'Nothing leaves this tab until you set ready = yes, so be as sloppy as you like everywhere else.',
       ['date_found', 'found_by', 'what', 'entity_name', 'brand', 'category', 'value', 'unit',
-       'period', 'source_url', 'source_name', 'quote', 'confidence', 'entity_type', 'notes',
-       '» row_id', '» op_id', '» csw_status', '» csw_note'],
+       'period', 'source_url', 'source_name', 'quote', 'confidence', 'ready', 'entity_type',
+       'notes', '» row_id', '» op_id', '» csw_status', '» csw_note'],
       [{'date_found': TODAY, 'found_by': 'claude',
         'what': 'EXAMPLE ROW — delete me. Yum does not publish a KFC U.S. same-store sales figure; the 2% on the site is the KFC Division number, and that division is ~90% non-U.S. by units.',
         'entity_name': 'KFC', 'brand': 'KFC', 'category': 'other', 'value': '', 'unit': 'text',
         'period': 'YE2025', 'source_url': 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=YUM',
         'source_name': 'Yum! Brands Q2 2026 10-Q, FY2025 10-K, Q2 2026 release',
         'quote': 'Checked all three; none discloses a KFC U.S. comparable-sales figure.',
-        'confidence': 'confirmed', 'entity_type': 'brand',
+        'confidence': 'confirmed', 'ready': 'no', 'entity_type': 'brand',
         'notes': 'This is what a good row looks like: a claim, who it is about, where it came from, and how sure I am.',
         '» row_id': 'IN-000001', '» csw_status': 'review'}])
 
@@ -346,7 +346,7 @@ sheet('EVENTS', STRUCT,
       'agreements, refranchising. One row per event. Promote these out of INBOX once they are firm.',
       ['date', 'event_type', 'headline', 'operator_name', 'brand', 'counterparty', 'value_usd',
        'units_involved', 'states', 'detail', 'source_url', 'source_name', 'confidence',
-       '» event_id', '» op_id', '» from_csw', '» csw_status'], ev_rows)
+       'ready', '» event_id', '» op_id', '» from_csw', '» csw_status'], ev_rows)
 
 # ================================================================== SOURCES ==
 src_rows = []

@@ -101,7 +101,7 @@ roster = table('FDD_ROSTER')
 events = table('EVENTS')
 
 report = {'new': [], 'unmatched_operators': [], 'fuzzy': [], 'contradicts': [],
-          'ready': [], 'needs_source': []}
+          'ready': [], 'needs_source': [], 'ready_no_source': []}
 assign = []            # (tab, row, column-name, value)
 next_in = 1 + max([int(re.sub(r'\D', '', str(r.get('» row_id') or '0')) or 0) for r in inbox] or [0])
 
@@ -147,11 +147,14 @@ for r in inbox:
             except ValueError:
                 pass
 
-    if (status in ('', 'review', 'queued')
-            and str(r.get('source_url') or '').strip()
-            and str(r.get('confidence') or '') in ('confirmed', 'high')
-            and r.get('value')):
-        report['ready'].append(r)
+    # Opt-in, never inferred. A row leaves the notebook because you said so, not because it
+    # looked confident enough — the whole point of a notebook is that being sloppy in it is
+    # safe, and a heuristic that promotes your *confident* sloppiness breaks exactly that.
+    if str(r.get('ready') or '').strip().lower() == 'yes' and status not in ('submitted', 'live'):
+        if not str(r.get('source_url') or '').strip():
+            report['ready_no_source'].append((rid, str(r.get('what', ''))[:70]))
+        else:
+            report['ready'].append(r)
 
 # ------------------------------------------------------- findings payload ----
 items = []
@@ -199,10 +202,16 @@ block('probable matches — confirm by adding to the alias column, I will not gu
       report['fuzzy'], lambda x: f'{x[0]}  "{x[1]}"  ->  {x[2]}?')
 block('CONTRADICTS the live site', report['contradicts'],
       lambda x: f'{x[0]}  {x[1]} {x[2]}: site {x[3]:,} vs database {x[4]:,}')
-block('no source — cannot go to CSW without one', report['needs_source'],
+block('marked ready but has no source — cannot go to CSW without one, so held back',
+      report['ready_no_source'], lambda x: f'{x[0]}  {x[1]}')
+_named = {x[0] for x in report['ready_no_source']}
+block('no source yet (fine — just not submittable)',
+      [x for x in report['needs_source'] if x[0] not in _named],
       lambda x: f'{x[0]}  {x[1]}')
 
-W(f'  ready to submit: {len(items)}\n')
+W(f'  marked ready and submittable: {len(items)}\n')
+if not items:
+    W('  (nothing is waiting. Set ready = yes on an INBOX row to promote it.)\n')
 if items:
     out = os.path.join(ROOT, 'research', f'sweep-{TODAY}.findings.json')
     json.dump({'batch': {'ref': f'sweep-{TODAY}',
