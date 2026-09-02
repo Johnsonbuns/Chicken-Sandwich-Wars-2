@@ -1,0 +1,69 @@
+{
+  "batch": {
+    "ref": "zaxbys-item19-2026-09-02",
+    "title": "Zaxby's Item 19 read from the primary document",
+    "model": "claude-opus-5",
+    "task_prompt": "Read Item 19 of the newest Zaxby's FDD available and compare it with the figure CSW publishes.",
+    "summary": "Read from the source. NOT SUBMITTED — the finding is that CSW's figure is the median labelled as an average, and mean-vs-median is a definition question for the owner that affects every other Item 19 figure. Recorded here so the evidence survives the container; the PDF itself is re-downloadable in seconds with scripts/fdd-fetch.py."
+  },
+  "document": {
+    "source": "Minnesota CARDS, www.cards.commerce.state.mn.us",
+    "franchisor": "ZAXBY'S SPE FRANCHISOR LLC",
+    "file_number": "10106",
+    "document_id": "35134-202512-02",
+    "document_type": "Marked FDD",
+    "registry_year": "2025",
+    "received_date": "2025-12-16",
+    "internal_header": "Zaxbys - 0412/25 FDD Amendment",
+    "pages": 346,
+    "retrieved_on": "2026-09-02",
+    "note": "This is the newest Zaxby's FDD in CARDS. Wisconsin shows a registration effective 2026-04-24; CARDS does not carry it yet. Lag between state registries is normal."
+  },
+  "item19": {
+    "table": "Table 1 — Average Gross Revenues of Franchised Restaurants",
+    "fiscal_year": "FY2024",
+    "period": "2024-01-01 to 2024-12-29",
+    "basis": "776 measured franchised restaurants",
+    "excluded": "143 affiliate-owned (Zax Restaurants), 13 closed >1 month, 37 opened during period, 7 closed during period",
+    "systemwide_context": "969 open and operating restaurants as of 2024-12-29, of which 826 third-party franchised",
+    "all_measured": {
+      "count": 776,
+      "average_gross_revenues": 2782488,
+      "median_gross_revenues": 2710374,
+      "lowest": 1000042,
+      "highest": 6348725,
+      "pct_above_average": 45.9
+    },
+    "quartiles": [
+      { "label": "Top",    "count": 194, "average": 3889984, "median": 3771700, "lowest": 3279430, "highest": 6348725 },
+      { "label": "Second", "count": 194, "average": 2971499, "median": 2980076, "lowest": 2712252, "highest": 3258258 },
+      { "label": "Third",  "count": 194, "average": 2458132, "median": 2460485, "lowest": 2202511, "highest": 2708495 },
+      { "label": "Bottom", "count": 194, "average": 1810336, "median": 1924081, "lowest": 1000042, "highest": 2202465 }
+    ],
+    "quote": "All Measured Restaurants 776 $2,782,488 356 45.9% $2,710,374 $1,000,042 $6,348,725"
+  },
+  "decisions": [
+    {
+      "id": "auv-mean-or-median",
+      "subject": "brand.metrics.auvUsd, all brands",
+      "finding": "CSW publishes 2710000 for Zaxby's. That is the MEDIAN gross revenues in this table, not the average (2782488). Same document, same period, wrong statistic.",
+      "why_it_matters": "Every Item 19 figure pulled from now on faces the same fork, and several brands publish mean and median by quartile. Picking per-brand would make the ranking incomparable across brands, which is worse than either choice made consistently.",
+      "options": [
+        "Average of all measured units — the more common reading of 'AUV', and what most trade press quotes.",
+        "Median of all measured units — less skewed by the top quartile, arguably the better central estimate for a franchisee's expected outcome."
+      ],
+      "consequence": "Whichever is chosen, /methodology/ has to say so, and the existing Zaxby's figure is corrected either by relabelling it as median or by replacing it with 2782488.",
+      "status": "open — owner decision"
+    }
+  ],
+  "conflicts_resolved": [
+    {
+      "id": "CF-0001",
+      "subject": "Zaxby's AUV",
+      "was": "Two FDD aggregator sites gave $2,847,345 and $2,544,354 — a $303k spread on a figure that decides a rank.",
+      "now": "Neither matches the primary document. The mean is $2,782,488 and the median $2,710,374; both aggregator values are wrong. The conflict is closed by the source rather than by picking a side.",
+      "lesson": "Reachable is not sourced. This is the worked example."
+    }
+  ],
+  "items": []
+}

@@ -41,6 +41,54 @@ The general lesson, which is worth more than the URL: **a "blocked" note in `CLA
 a hypothesis, not a finding.** Re-test before planning around it. One missing subdomain
 cost this project two quarters of stale data and a whole fabricated shopping list.
 
+## Where the FDDs live: nowhere, on purpose
+
+**No FDD is stored in this repo and none is waiting for you.** One Zaxby's FDD was
+downloaded to a scratch directory to prove the path works; that directory is ephemeral and
+is gone. `research/fdd/` is git-ignored.
+
+That is deliberate, not an oversight. The documents are ~4MB each and there are dozens of
+brand-years; committing them would bloat the repo for files that `scripts/fdd-fetch.py`
+re-fetches in seconds. **Re-download what you need, when you need it.**
+
+What *does* survive is the extracted evidence:
+`db/findings/2026-09-02-zaxbys-item19-cards.json` carries the full Item 19 table, the
+quartiles, the document id and the verbatim quote. Do the same for every FDD you read —
+the PDF is disposable, the extraction is not.
+
+## THE RULE FOR EVERYTHING YOU PULL OUT OF AN FDD
+
+> **FDD contents go into the Google Sheet. They do NOT go into the website.**
+
+This is the owner's explicit instruction and it is the point of the whole setup. A run that
+reads five FDDs and files five proposals into the CSW review queue has done the wrong job.
+
+- Franchisee lists, unit counts by state, transfers, terminations, openings, closures,
+  addresses, phone numbers, operator names → **`FDD_ROSTER` and `FDD_UNITS` in the Google
+  Sheet.** All of it, including the boring rows.
+- Only a figure the owner later marks `ready` goes anywhere near CSW, and even then it
+  goes through the review queue, not into `data/`.
+
+The Sheet is where research accumulates over years. The website is a small, strict,
+published subset of it. Do not invert that.
+
+The live workbook is a native Google Sheet in the owner's Drive:
+
+| | |
+|---|---|
+| Title | `CSWResearchDatabase` |
+| File id | `1zePMXe4EW_-uw9kMIzSWSb62RTrHUx5ddrULk5JSa20` |
+| Link | https://docs.google.com/spreadsheets/d/1zePMXe4EW_-uw9kMIzSWSb62RTrHUx5ddrULk5JSa20/edit |
+
+Readable through the Google Drive connector (`read_file_content` with that id) — verified
+2026-09-02, all 13 tabs intact. **The connector reads but cannot write cells.** So to add
+extracted rows you either hand the owner a block to paste, or build the Apps Script that
+runs the sweep inside the Sheet. Ask before assuming which; the owner has not chosen yet.
+
+The repo copy at `research/CSW-Research-Database.xlsx` is the SEED, not the live data. Once
+the owner has typed into the Sheet, the repo copy is stale by definition — never treat it
+as current and never regenerate the Sheet from it.
+
 ## Where the work stands
 
 **Zaxby's Item 19 is read.** From the 2025 FDD (FY2024, 776 measured franchised
@@ -73,10 +121,9 @@ action against the fact, then Publish.
 
 ## The research database
 
-`research/CSW-Research-Database.xlsx` — a standalone workbook, the owner's notebook for
-accumulating research over years. It is **not** part of the build and nothing regenerates
-it. Live copy is in the owner's Google Drive (`CSWResearchDatabase.xlsx`, readable through
-the Drive connector); the repo copy is the seed.
+The owner's notebook for accumulating research over years. It is **not** part of the build
+and nothing regenerates it. The live copy is the native Google Sheet linked above; the repo
+copy is only the seed.
 
 Two rules that are the whole design:
 
@@ -101,11 +148,14 @@ aliases, flags contradictions with published figures, and emits a findings file 
    figure depends on the answer.
 3. **Apply the KFC removal** at the desk, then Publish.
 4. **El Pollo Loco Q4 comps** — overdue, self-serviceable from EDGAR, no blockers.
-5. **Build the roster extractor.** Item 20 carries a complete franchisee list and, under
-   16 CFR 436.5(t)(3), a list of franchisees who left in the last fiscal year with contact
-   details. Several years per brand are already downloadable. Load whole lists into
-   `FDD_ROSTER` — a name missing this year only means an exit if last year's list was
-   complete — then diff. This is the proprietary dataset; everything above is maintenance.
+5. **Build the roster extractor — this is the real work, and it targets the Sheet.**
+   Item 20 carries a complete franchisee list and, under 16 CFR 436.5(t)(3), a list of
+   franchisees who left in the last fiscal year with contact details. Several years per
+   brand are already downloadable. Load whole lists into `FDD_ROSTER` — a name missing this
+   year only means an exit if last year's list was complete — then diff across years to get
+   who grew, who shrank, who vanished, and who bought their units. Everything above this
+   line is maintenance; this is the proprietary dataset.
+   **Output goes to the Google Sheet, not to CSW.** See the rule above.
 6. **Golden Chick** (2023 FDD, 44 months, oldest figure on the site) is not in CARDS. Needs
    another state, or it stays overdue and disclosed.
 
