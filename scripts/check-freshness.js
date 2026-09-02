@@ -66,8 +66,12 @@ for (const [key, s] of Object.entries(sources)) {
  * them growing because a mirror in freshness.js stopped matching the stat key the
  * exporter writes — so this pins the known gaps by name and fails on any new one. */
 const KNOWN_UNDATED = new Set([
-  'daves-hot-chicken:economics',  // AUV is franchisee-reported with no period attached
-  'kfc:demand'                    // U.S. comps carried without a period label
+  // Empty since 2026-09-01: the desk published as-of dates for both entries that used to
+  // be here (daves-hot-chicken:economics and kfc:demand), so the allowance went stale and
+  // the check below said so. Keep the mechanism — a figure that arrives without a period
+  // label belongs here by name, so that the count of undated inputs can only shrink by a
+  // deliberate edit rather than drift upward when a mirror in lib/freshness.js stops
+  // matching the stat key the exporter writes.
 ]);
 
 const ranking = rankBrands(brands);

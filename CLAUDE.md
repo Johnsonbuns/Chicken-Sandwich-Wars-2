@@ -439,8 +439,10 @@ estimate the editorial rule refuses everywhere else — the disclosure *is* the 
 the actual refresh goes through the queue like any other figure.
 
 **KFC U.S. is scored on a figure Yum does not publish, and the freshness check cannot
-see it.** The check lists KFC's Consumer Demand input as undated, which reads like a
-missing date on a sound number. It is not: `metrics.compsPct` is 2, and Yum's **KFC
+see it.** The check used to list KFC's Consumer Demand input as undated. On 2026-09-01 the
+desk published an as-of date for it — `YE2025`, cited to `thestreet-kfc-207` — so it now
+reports as *overdue* instead, and the underlying problem is harder to see rather than
+fixed. It is not a date problem at all: `metrics.compsPct` is 2, and Yum's **KFC
 Division** same-store sales for Q2 2026 are +2% — the same number, and that division is
 90% non-U.S. by units. Yum publishes no KFC U.S. comparable-sales figure at all; the
 Q2 2026 10-Q, the FY2025 10-K and the Q2 2026 earnings release were each searched and

@@ -1,142 +1,115 @@
-# Next session prompt — implement the database
+# Next session prompt
 
 Copy everything below the line into a fresh Claude Code session on this repository.
 
+Last updated 2026-09-01, at the end of the freshness re-run. The database phases this
+file used to describe are all merged and shipped; nothing below refers to them.
+
 ---
 
-## Task
+## Where things stand
 
-Implement the Postgres/Supabase backend described in `db/SCHEMA.md`. **Read that document
-in full before writing anything** — it is the design of record, and the reasoning in it
-matters as much as the DDL.
+The site is live on Vercel, `main` deploys to production, and `npm test` passes on `main`
+as of the last commit. Read `CLAUDE.md` in full first — the environment notes in it were
+rewritten on 2026-09-01 and the old ones would send you down a wrong path.
 
-**Phase 1 is complete.** Your scope is **Phase 2 only** — import, export and the
-round-trip gate. Do not start Phase 3 (forms) until the Phase 2 gate passes, and do not
-touch Phase 5 (Sanity) at all.
+The freshness check currently reports **11 overdue scoring inputs, 0 undated, 1 due for
+review** across 15 ranked brands. Overdue is not a failure — it is the disclosure working.
+`npm test` passing is the bar.
 
-Branch: continue on `claude/database-schema-design` (pull request #16), or cut
-`claude/database-phase-2` from it. Do not branch from `main` — the migrations are not
-merged yet.
+## The one thing worth doing first
 
-Provisioning that only the owner can do is in `db/PROVISIONING.md`. Phase 1 needs no
-credentials — migrations are `.sql` files run in the Supabase SQL Editor. Never ask for or
-accept a `service_role` / secret key in the conversation; if Phase 2 needs one, have the
-owner run the import themselves.
+**KFC U.S. is scored on a number Yum does not publish.** `metrics.compsPct` is `2`, which
+is Yum's *KFC Division* same-store sales — a division that is 90% non-U.S. by units. It is
+attached to a brand record whose every other figure is U.S.-scoped.
 
-## Non-negotiable constraints
+This was verified against three primary documents (Q2 2026 10-Q, FY2025 10-K, Q2 2026
+earnings release); none of them discloses a KFC U.S. comparable-sales figure. Evidence and
+exact quotes are in `db/findings/2026-09-01-freshness-rerun-primary-sources.json` under
+`decisions`.
 
-These are the things that will quietly ruin the project if you get them wrong.
+On 2026-09-01 the desk published an as-of date for it (`YE2025`, cited to
+`thestreet-kfc-207`). That moved it from "undated" to "overdue" in the check and made it
+look like an ordinary stale figure. **It is not stale, it is mislabelled**, and dating it
+did not address that.
 
-1. **`node build.js` must keep running on stock Node with zero dependencies.**
-   `vercel.json` has no install step, so `node_modules` does not exist on the Vercel build
-   box. The build must never import a database driver. Talk to Supabase over PostgREST
-   with global `fetch`. Do not add `pg` or `@supabase/supabase-js`. Do not add an install
-   step to `vercel.json`.
+The recommended fix is to drop the input so Consumer Demand renders "—", per the editorial
+rule. Before doing it, work out the consequence: the remaining weights renormalise, and if
+KFC drops below three available components it becomes unrated. That is a real editorial
+decision, so put the numbers in front of the owner rather than deciding it yourself.
 
-2. **The site must build identically at every commit.** `npm test` must report **75
-   pages**, links resolving, footnotes anchored, sitemap complete. Run it before every
-   push. It is not a unit-test suite; it is six integrity checks that each catch a failure
-   this codebase has actually shipped.
+If the desk would rather keep a number, the honest alternative is to relabel it as KFC
+Division (global) and decide separately whether a global comp belongs in a U.S. brand's
+score. That is the weaker option.
 
-3. **Never invent, estimate or backfill a figure.** `NULL` means "not published" and the
-   site renders an em dash. If an import cannot resolve a value, leave it null and report
-   it. The nine unrated brands stay unrated — that is the editorial rule, not a data gap.
+## What is still overdue, and why it is stuck
 
-4. **Keep `data/*.json` unchanged in this session.** Phase 2 proves the database can
-   reproduce it; Phase 4 (a later session) flips the direction. `git diff data/` must be
-   empty when you finish.
+Five AUVs rest on FDD Item 19 figures that could not be read. Their superseding documents
+exist and are dated — see `fdd_supersessions` in the same findings file:
 
-5. **Do not commit `docs/`.** It is git-ignored and Vercel rebuilds it.
+| Brand | Current FDD effective |
+|---|---|
+| Bojangles | 2026-04-20 |
+| Chicken Salad Chick | 2026-04-21 |
+| Zaxby's | 2026-04-24 |
+| Slim Chickens | 2026-04-29 |
+| Dave's Hot Chicken | 2026-05-04 |
 
-## Phase 1 — Schema ✅ already done
+Wisconsin's registry publishes the filing metadata but not the document. Minnesota's CARDS
+system, which does publish whole FDD PDFs, returns 403 from this environment. **If CARDS
+ever becomes reachable, that is one pass that closes all five** — it is the single highest
+-leverage thing on this list.
 
-`supabase/migrations/0001_extensions.sql` … `0011_seed_vocab.sql` exist and are validated.
-43 tables (38 `public`, 4 `intake`, 1 `audit`), 27 enums, 76 RLS policies. Read them before
-writing the import — they are the contract.
+Do not fill these from FDD aggregator sites. Two of them put Zaxby's AUV at $2,847,345 and
+$2,544,354 — a $303k spread on a figure that decides a rank. Reachable is not sourced.
 
-`./supabase/validate.sh` applies the whole set to a throwaway local Postgres and exercises
-the constraints that carry design weight. It passes. Re-run it after any migration change.
+Two more brands entered the rankings on 2026-09-01 and arrived overdue: Pollo Campero
+(2024 FDD, 32 months) and Golden Chick (2023 FDD, 44 months).
 
-Two things it does not cover, both stated in the script: PostGIS is usually absent locally,
-so the two `extensions.geography` lines are substituted; and it stubs Supabase's `anon`,
-`authenticated`, `service_role` roles and `auth` schema. Neither has been executed against
-a real Supabase project yet — **the first person to run these against Supabase should
-report what happens**, since that is the one untested surface.
+## How to actually submit research
 
-`0011_seed_vocab.sql` is generated from `data/*.json` and `lib/score.js`. Regenerate it
-rather than hand-editing if the vocabularies change.
+Use `www`, not the apex:
 
-## Phase 2 — Import, export, round-trip ✅ already done
+```bash
+node scripts/agent-submit.js <findings.json> --dry-run
+node scripts/agent-submit.js <findings.json>
+```
 
-`scripts/db-import.js` (JSON → idempotent SQL seed), `scripts/export-data.js` (DB → JSON,
-via psql locally or PostgREST against Supabase), `scripts/db-roundtrip-check.js` (the
-gate). Wired as `npm run db:import`, `db:export`, `db:check`.
+The script defaults to `https://www.chickensandwichwars.com` since 2026-09-01. The apex
+308-redirects to `www` and both `fetch` and `curl` drop the `Authorization` header across
+a host change, so posting to the apex returns `401 — Send an agent key` with a perfectly
+good key. If you see that 401, check the URL before you conclude the key is bad; that
+mistake cost a session an hour.
 
-The gate passes: all thirteen files round-trip clean, `npm test` still builds 75 pages,
-scores recompute identically (12 rated, 9 unrated), and `data/` is untouched. Verified
-against a database seeded exactly the way production was.
+`CSW_AGENT_KEY` is already set in this environment. `--dry-run` validates shape and
+targets without queueing anything.
 
-Migrations `0012`–`0015` all came out of writing the import — the data correcting the
-model. Read their headers; each explains what broke and why.
+Only the `items` array is submittable. `decisions` and `fdd_supersessions` are for human
+readers — the intake contract has only `insert` and `update`, so a removal or an unreadable
+supersession cannot be expressed as a payload. Keep that separation.
 
-## Your scope: Phase 3 — forms
+## Two process facts that will otherwise cost you time
 
-`api/submit.js`, the `intake` tables (already created), a `/privacy/` page, and an email
-notification. Update `assets/js/site.js` to POST and fall back to the existing `mailto:`
-if the request fails, so a function outage degrades to today's behaviour rather than
-losing a lead.
+**Approving is not publishing.** The build reads `data/*.json` and never touches the
+database. A figure reaches the site only when someone presses **Publish to site** in the
+desk. If you tell the owner a number is live before that, you will be wrong.
 
-The privacy policy ships in the SAME pull request as the endpoint, not after it — the
-moment the first submission lands the site is collecting names, emails, phone numbers and
-property addresses with no disclosure.
+**Pushing to `main` is allowed by this repo but may be refused by the harness.** `main`
+carries no branch protection and `.claude/settings.json` allows the git commands, but on
+2026-09-01 the auto-mode classifier refused `git push origin main` while allowing the
+identical push to the session's own `claude/…` branch. Do not spend the session fighting
+it — commit, push to the session branch, open a pull request, and say so. An unpushed
+commit dies with the container; that is how an earlier run lost two commits outright.
 
-Remember `vercel.json` has no install step: use global `fetch` against PostgREST, add no
-dependencies, and never put the service-role key anywhere the browser can see it.
+## Environment
 
-## Import details that will bite
+Direct page fetches work. `sec.gov` and `data.sec.gov` are the good path —
+`data.sec.gov/submissions/CIK##########.json` lists every filing with form, date and
+primary document. Send a real `User-Agent`. A 10-Q runs to 2MB, which is too much to hand
+a summariser: `curl` it, strip tags, and grep the disclosure yourself. That is how the
+El Pollo Loco and KFC findings were established, and it is the difference between
+`confirmed` and `medium` confidence in a findings file.
 
-- **`asOf` is not a date.** Values include `FY2025`, `Jul 2025 – Jul 2026`, `2025 FDD`,
-  `YE2025 target`. Store the string in `period_label` verbatim; populate `period_start` /
-  `period_end` only where unambiguous. Round-trip fidelity depends on the label.
-- **`stats` is sparse.** 33 distinct keys across 21 brands, 24 used exactly once. Every one
-  becomes a `facts` row. Do not drop the rare ones.
-- **Use `metrics.json_key`, never a snake_case algorithm.** snake_case is not reversible:
-  `closuresTTM` → `closures_ttm` → `closuresTtm`. Every metric row stores the exact key it
-  had in `data/*.json`; the exporter must round-trip through that column.
-- **`metrics.*Derived` flags** (`unitGrowthDerived`, `salesGrowthDerived`) map to
-  `derivation = 'derived'`. The site labels these; losing the flag breaks the editorial rule.
-- **Three `metrics` fields are not metrics.** `capRateBasis` → `brand_cap_rates.basis`;
-  `auvNote` and `salesGrowthNote` → the `note` column on their respective fact row.
-  `netClosures` is the boolean gating the −4 penalty and is stored as metric
-  `net_unit_decline` with value 1 or 0.
-- **Operator `brands[]` includes 12 non-chicken brands, and not all are restaurants.**
-  Taco Bell, Arby's, Sonic, Subway, Burger King, Little Caesars, Pizza Hut, 7 Brew, Au Bon
-  Pain, 7-Eleven, Meineke, Take 5 Oil Change. Create them as `brands` rows with
-  `is_chicken = false` and the correct `sector` (Meineke and Take 5 are `automotive`,
-  7-Eleven is `convenience`) so `brand_operators` is a real FK. `chickenBrands[]` is the
-  subset where `is_chicken = true`. Only chicken brands are `is_published`.
-- **`news[].brand` is a slug and is sometimes `null`.** Null means no single subject.
-- **Aggregate closures are not properties.** `{brand: 'kfc', location: 'United States',
-  count: 312}` is a `facts` row, not a `property_occupancies` row. Only individually
-  located events become occupancies with a property.
-- **Transactions with `location: "Not disclosed"`** get zero rows in
-  `transaction_properties`. Do not fabricate a property to satisfy a join.
-- **The FCPT row is a portfolio of two Popeyes properties in one transaction** — the
-  many-to-many case the join table exists for.
-- **`transactions.property[]` with `type: 'Listing'`** belongs in `listings`, not
-  `transactions`. Round-trip it back into the property array on export.
-- **`realestate.benchmarks[]`** are category-level facts (`subject_type = 'category'`),
-  with a single synthetic category subject row.
-- **Sources are keyed by string** (`qsr50-2026-chicken`). Preserve those keys exactly —
-  footnotes, `check.js` and the downloadable dataset all depend on them.
-
-## What to report back
-
-1. Whether the migrations applied, and whether you could actually execute them.
-2. The round-trip result: clean, or precisely what differs.
-3. Any place the existing data contradicts the schema's assumptions — those are findings
-   about the data, and worth more than a silent workaround.
-4. Anything you deliberately left for a later phase.
-
-Commit in logical units, push to `claude/database-phase-1-2`, and do not open a pull
-request unless asked.
+`CLAUDE.md` has the full list of what is reachable and what is not. Check
+`curl -sS "$HTTPS_PROXY/__agentproxy/status"` before concluding the network is at fault —
+a single 503 is one host refusing, not the proxy.
