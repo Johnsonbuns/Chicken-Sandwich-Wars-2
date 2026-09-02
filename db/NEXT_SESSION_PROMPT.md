@@ -2,114 +2,127 @@
 
 Copy everything below the line into a fresh Claude Code session on this repository.
 
-Last updated 2026-09-01, at the end of the freshness re-run. The database phases this
-file used to describe are all merged and shipped; nothing below refers to them.
+Last updated 2026-09-02. The previous version of this file told you Minnesota CARDS was
+unreachable. That was wrong, and everything downstream of it was wrong too — see below.
 
 ---
 
-## Where things stand
+## Read first
 
-The site is live on Vercel, `main` deploys to production, and `npm test` passes on `main`
-as of the last commit. Read `CLAUDE.md` in full first — the environment notes in it were
-rewritten on 2026-09-01 and the old ones would send you down a wrong path.
+`CLAUDE.md` in full. Then this. Then `db/RESEARCH_DB.md` if you are touching the research
+workbook.
 
-The freshness check currently reports **11 overdue scoring inputs, 0 undated, 1 due for
-review** across 15 ranked brands. Overdue is not a failure — it is the disclosure working.
-`npm test` passing is the bar.
+The site is live on Vercel, `main` deploys to production, `npm test` passes.
 
-## The one thing worth doing first
+## The correction that changes the plan
 
-**KFC U.S. is scored on a number Yum does not publish.** `metrics.compsPct` is `2`, which
-is Yum's *KFC Division* same-store sales — a division that is 90% non-U.S. by units. It is
-attached to a brand record whose every other figure is U.S.-scoped.
+**Minnesota CARDS works. It always did.** The host is
+`www.cards.commerce.state.mn.us` — without the `www.` it is NXDOMAIN, which two earlier
+runs recorded first as "403" and then as a proxy policy block. On the strength of that,
+five AUVs were written up as unobtainable and sat overdue for twenty months.
 
-This was verified against three primary documents (Q2 2026 10-Q, FY2025 10-K, Q2 2026
-earnings release); none of them discloses a KFC U.S. comparable-sales figure. Evidence and
-exact quotes are in `db/findings/2026-09-01-freshness-rerun-primary-sources.json` under
-`decisions`.
-
-On 2026-09-01 the desk published an as-of date for it (`YE2025`, cited to
-`thestreet-kfc-207`). That moved it from "undated" to "overdue" in the check and made it
-look like an ordinary stale figure. **It is not stale, it is mislabelled**, and dating it
-did not address that.
-
-The recommended fix is to drop the input so Consumer Demand renders "—", per the editorial
-rule. Before doing it, work out the consequence: the remaining weights renormalise, and if
-KFC drops below three available components it becomes unrated. That is a real editorial
-decision, so put the numbers in front of the owner rather than deciding it yourself.
-
-If the desk would rather keep a number, the honest alternative is to relabel it as KFC
-Division (global) and decide separately whether a global comp belongs in a U.S. brand's
-score. That is the weaker option.
-
-## What is still overdue, and why it is stuck
-
-Five AUVs rest on FDD Item 19 figures that could not be read. Their superseding documents
-exist and are dated — see `fdd_supersessions` in the same findings file:
-
-| Brand | Current FDD effective |
-|---|---|
-| Bojangles | 2026-04-20 |
-| Chicken Salad Chick | 2026-04-21 |
-| Zaxby's | 2026-04-24 |
-| Slim Chickens | 2026-04-29 |
-| Dave's Hot Chicken | 2026-05-04 |
-
-Wisconsin's registry publishes the filing metadata but not the document. Minnesota's CARDS
-system, which does publish whole FDD PDFs, returns 403 from this environment. **If CARDS
-ever becomes reachable, that is one pass that closes all five** — it is the single highest
--leverage thing on this list.
-
-Do not fill these from FDD aggregator sites. Two of them put Zaxby's AUV at $2,847,345 and
-$2,544,354 — a $303k spread on a figure that decides a rank. Reachable is not sourced.
-
-Two more brands entered the rankings on 2026-09-01 and arrived overdue: Pollo Campero
-(2024 FDD, 32 months) and Golden Chick (2023 FDD, 44 months).
-
-## How to actually submit research
-
-Use `www`, not the apex:
+`scripts/fdd-fetch.py` now drives it:
 
 ```bash
-node scripts/agent-submit.js <findings.json> --dry-run
-node scripts/agent-submit.js <findings.json>
+python3 scripts/fdd-fetch.py --list "Bojangles"
+python3 scripts/fdd-fetch.py --get "Bojangles" --year 2025 --out research/fdd/
 ```
 
-The script defaults to `https://www.chickensandwichwars.com` since 2026-09-01. The apex
-308-redirects to `www` and both `fetch` and `curl` drop the `Authorization` header across
-a host change, so posting to the apex returns `401 — Send an agent key` with a perfectly
-good key. If you see that 401, check the URL before you conclude the key is bad; that
-mistake cost a session an hour.
+Marked FDDs on file as of 2026-09-02: Bojangles 7 years, Dave's Hot Chicken 7,
+Slim Chickens 6, Chicken Salad Chick 5, Popeyes 4, Pollo Campero 4, Zaxby's 2.
+Golden Chick none. **Several years per brand means the longitudinal roster comparison —
+who grew, who shrank, who disappeared — is buildable now, not after a document hunt.**
 
-`CSW_AGENT_KEY` is already set in this environment. `--dry-run` validates shape and
-targets without queueing anything.
+CARDS lags state registration: a franchisor registered in Wisconsin as of 2026-04 may only
+have its 2025 edition here. Normal. The older edition is still the primary source for its
+own fiscal year.
 
-Only the `items` array is submittable. `decisions` and `fdd_supersessions` are for human
-readers — the intake contract has only `insert` and `update`, so a removal or an unreadable
-supersession cannot be expressed as a payload. Keep that separation.
+The general lesson, which is worth more than the URL: **a "blocked" note in `CLAUDE.md` is
+a hypothesis, not a finding.** Re-test before planning around it. One missing subdomain
+cost this project two quarters of stale data and a whole fabricated shopping list.
 
-## Two process facts that will otherwise cost you time
+## Where the work stands
+
+**Zaxby's Item 19 is read.** From the 2025 FDD (FY2024, 776 measured franchised
+restaurants, period 2024-01-01 to 2024-12-29):
+
+| | |
+|---|---|
+| Average Gross Revenues, all measured | **$2,782,488** |
+| Median | $2,710,374 |
+| Top quartile average | $3,889,984 |
+| Bottom quartile average | $1,810,336 |
+
+Two findings fall out and **neither has been submitted yet**:
+
+1. The site shows `auvUsd 2710000` for Zaxby's, which is the **median**, not the average,
+   labelled as AUV. Same document, same period, wrong statistic. Decide whether CSW's AUV
+   means mean or median, apply it consistently, then correct the figure.
+2. The two aggregator sites that disagreed by $303k gave $2,847,345 and $2,544,354.
+   **Both are wrong** — neither is the mean or the median. `CONFLICTS` row CF-0001 in the
+   workbook can be closed, and "reachable is not sourced" now has a worked example.
+
+**KFC U.S. — decided by the owner: US-only, so the input goes.** `metrics.compsPct = 2` is
+Yum's KFC *Division* figure (~90% non-U.S. by units) and Yum publishes no KFC U.S. comp at
+all. Dropping it takes KFC from score 48 / rank 8 to **score 31 / rank 15 of 15**, still
+rated on exactly three components; no other brand changes rating. The +2% was scoring
+83/100 and single-handedly holding a brand that closed 312 U.S. restaurants eight places up
+the table. **Not yet applied.** `facts` supersedes and the intake contract has only
+insert/update, so there is no way to express a removal as a proposal — this is a desk
+action against the fact, then Publish.
+
+## The research database
+
+`research/CSW-Research-Database.xlsx` — a standalone workbook, the owner's notebook for
+accumulating research over years. It is **not** part of the build and nothing regenerates
+it. Live copy is in the owner's Google Drive (`CSWResearchDatabase.xlsx`, readable through
+the Drive connector); the repo copy is the seed.
+
+Two rules that are the whole design:
+
+- **`»` columns are the machine's**, grey, far right of every tab. A human never types in
+  one; a sweep never writes outside one.
+- **`ready` is opt-in.** Nothing is promoted toward CSW unless the owner marked it. Do not
+  reintroduce a heuristic that infers intent from confidence.
+
+`scripts/research-db-sweep.py <file>` reports what is new, matches operator names against
+aliases, flags contradictions with published figures, and emits a findings file for
+`scripts/agent-submit.js`. Fuzzy matches are reported, never applied.
+
+## What to do next, in order
+
+1. **Pull the FDDs and read Item 19 for the four other stuck brands** — Bojangles,
+   Chicken Salad Chick, Slim Chickens, Dave's Hot Chicken. This closes most of the eleven
+   overdue scoring inputs and it is now a scripted download, not a favour to ask.
+   Watch the basis: Zaxby's publishes mean *and* median by quartile, and picking the wrong
+   one is how the current Zaxby's figure went wrong.
+2. **Settle mean-vs-median for `auvUsd`**, document it on /methodology/, and correct
+   Zaxby's. This is a definition question, not a data question, and every other Item 19
+   figure depends on the answer.
+3. **Apply the KFC removal** at the desk, then Publish.
+4. **El Pollo Loco Q4 comps** — overdue, self-serviceable from EDGAR, no blockers.
+5. **Build the roster extractor.** Item 20 carries a complete franchisee list and, under
+   16 CFR 436.5(t)(3), a list of franchisees who left in the last fiscal year with contact
+   details. Several years per brand are already downloadable. Load whole lists into
+   `FDD_ROSTER` — a name missing this year only means an exit if last year's list was
+   complete — then diff. This is the proprietary dataset; everything above is maintenance.
+6. **Golden Chick** (2023 FDD, 44 months, oldest figure on the site) is not in CARDS. Needs
+   another state, or it stays overdue and disclosed.
+
+## Process facts that still hold
 
 **Approving is not publishing.** The build reads `data/*.json` and never touches the
-database. A figure reaches the site only when someone presses **Publish to site** in the
-desk. If you tell the owner a number is live before that, you will be wrong.
+database. A figure reaches the site only when someone presses **Publish to site**.
 
-**Pushing to `main` is allowed by this repo but may be refused by the harness.** `main`
-carries no branch protection and `.claude/settings.json` allows the git commands, but on
-2026-09-01 the auto-mode classifier refused `git push origin main` while allowing the
-identical push to the session's own `claude/…` branch. Do not spend the session fighting
-it — commit, push to the session branch, open a pull request, and say so. An unpushed
-commit dies with the container; that is how an earlier run lost two commits outright.
+**Never hand-edit `data/*.json`.** It is generated. Additions go through the queue, at
+`/admin/` or via `POST /api/agent`.
 
-## Environment
+**Post to `www`, not the apex**, for `api/agent` too — the apex 308-redirects and both
+`fetch` and `curl` drop the `Authorization` header across a host change, giving a 401 with
+a perfectly good key. `scripts/agent-submit.js` already defaults correctly.
 
-Direct page fetches work. `sec.gov` and `data.sec.gov` are the good path —
-`data.sec.gov/submissions/CIK##########.json` lists every filing with form, date and
-primary document. Send a real `User-Agent`. A 10-Q runs to 2MB, which is too much to hand
-a summariser: `curl` it, strip tags, and grep the disclosure yourself. That is how the
-El Pollo Loco and KFC findings were established, and it is the difference between
-`confirmed` and `medium` confidence in a findings file.
+**Push to the session branch, not `main`.** The repo allows `main`; the harness classifier
+has refused it. Commit, push to `claude/…`, open a PR, say so. An unpushed commit dies with
+the container.
 
-`CLAUDE.md` has the full list of what is reachable and what is not. Check
-`curl -sS "$HTTPS_PROXY/__agentproxy/status"` before concluding the network is at fault —
-a single 503 is one host refusing, not the proxy.
+**`npm test` before every push.** On `main` a failure is already live.
