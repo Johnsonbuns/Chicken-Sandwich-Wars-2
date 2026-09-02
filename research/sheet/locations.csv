@@ -1,0 +1,17 @@
+loc_id,address_raw,address_normalized,city,state,postal_code,brand_id,op_id,csw_property_slug,status,opened_date,closed_date,first_seen_doc,last_seen_doc,is_second_generation,verification,visibility,notes
+LOC-000001,"Upper East Side, Manhattan, NY",upper east side manhattan ny,,,,BR-zaxbys,,,operating,2026-07,,csw:movement.json,csw:movement.json,,unverified,public,"1267 First Avenue; 2,800+ SF with 16 dine-in seats and self-order kiosks."
+LOC-000002,"Bronx, NY",bronx ny,,,,BR-zaxbys,,,operating,2026-06-29,,csw:movement.json,csw:movement.json,,unverified,public,First Zaxby's restaurant in New York City; 24th state for the brand.
+LOC-000003,Eight U.S. markets in one day,eight us markets in one day,,,,BR-daves-hot-chicken,,,operating,2026-04,,csw:movement.json,csw:movement.json,,unverified,public,"Brand record: eight restaurants opened on a single day, pushing the system past 400 locations worldwide."
+LOC-000004,"Hollywood Boulevard, Los Angeles, CA",hollywood blvd los angeles ca,,,,BR-raising-canes,,,operating,2026-03,,csw:movement.json,csw:movement.json,,unverified,public,"1,000th Raising Cane's — two stories, LED screens and a seven-foot golden statue of Cane III."
+LOC-000005,"Little Elm, TX",little elm tx,,,,BR-golden-chick,,,operating,2026,,csw:movement.json,csw:movement.json,,unverified,public,"250th restaurant, following a record 23 openings in 2025."
+LOC-000006,"Magnolia, NJ",magnolia nj,,,,BR-zaxbys,,,operating,2025-12,,csw:movement.json,csw:movement.json,,unverified,public,First New Jersey location and the brand's Northeast debut.
+LOC-000007,"Colorado Springs, CO",colorado springs co,,,,BR-el-pollo-loco,,,operating,2025,,csw:movement.json,csw:movement.json,,unverified,public,500th El Pollo Loco restaurant; nine openings in 2025.
+LOC-000008,United States,united states,,,,BR-chicken-salad-chick,,,operating,2025-05,,csw:movement.json,csw:movement.json,,unverified,public,300th location; unit count up 13% year over year.
+LOC-000009,"Las Vegas, NV",las vegas nv,,,,BR-bojangles,,,operating,2025-01,,csw:movement.json,csw:movement.json,,unverified,public,First Las Vegas restaurant with four more planned.
+LOC-000010,National,national,,,,BR-zaxbys,,,operating,2026-02,,csw:movement.json,csw:movement.json,,unverified,public,"Brand surpassed 1,000 locations."
+LOC-000011,"5979 TN-153, Hixson (Chattanooga), TN",5979 tn-153 hixson (chattanooga) tn,,,,,,,operating,,,csw:transactions.json,csw:transactions.json,,unverified,public,Property sale 2026-07 $2770000
+LOC-000012,"Naugatuck, CT",naugatuck ct,,,,,,,operating,,,csw:transactions.json,csw:transactions.json,,unverified,public,Property sale 2026-08 $1746000
+LOC-000013,Not disclosed,not disclosed,,,,,,,operating,,,csw:transactions.json,csw:transactions.json,,unverified,public,Property sale 2025 $6840000
+LOC-000014,Not disclosed,not disclosed,,,,,,,operating,,,csw:transactions.json,csw:transactions.json,,unverified,public,Portfolio acquisition 2026 $4700000
+LOC-000015,"Midwest City, OK",midwest city ok,,,,,,,operating,,,csw:transactions.json,csw:transactions.json,,unverified,public,Listing 2026 $2111597
+LOC-000016,South Carolina,south carolina,,,,,,,operating,,,csw:transactions.json,csw:transactions.json,,unverified,public,Property sale 2023 $1600000

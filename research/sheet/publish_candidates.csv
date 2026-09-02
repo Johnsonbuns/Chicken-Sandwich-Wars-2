@@ -1,0 +1,1 @@
+candidate_id,source_obs_id,target_table,operation,entity_label,dedupe_key,payload_json,sources_json,confidence,rationale,ready_to_submit,submitted_on,batch_ref,review_outcome,notes

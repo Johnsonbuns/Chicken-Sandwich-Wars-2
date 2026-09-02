@@ -1,0 +1,2 @@
+signal_id,signal_type,subject_type,subject_ref,direction,severity,as_of,description,evidence_refs,confidence,verification,derived_or_manual,visibility,status,notes
+SIG-0001,system_contraction,brand,BR-kfc-us,negative,high,2026-07,312 U.S. restaurants permanently closed in twelve months — 7.64% of the American footprint.,SRC-thestreet-kfc-300,confirmed,verified,manual,public,active,312 second-generation boxes entering supply. KBP holds ~25% of the system and is both the largest buyer and the largest source of dispositions.
